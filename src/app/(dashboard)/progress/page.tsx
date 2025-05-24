@@ -23,8 +23,7 @@ export default function ProgressPage() {
       </Box>
 
       <Grid container spacing={3}>
-        <Grid>
-        {/* <Grid item xs={12} md={6}> */}
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -42,8 +41,7 @@ export default function ProgressPage() {
           </Card>
         </Grid>
 
-        <Grid>
-        {/* <Grid item xs={12} md={6}> */}
+        <Grid size={{ xs: 12, md: 4 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -57,8 +55,7 @@ export default function ProgressPage() {
           </Card>
         </Grid>
 
-        <Grid>
-        {/* <Grid item xs={12}> */}
+        <Grid size={{ xs: 12, md: 6 }}>
           <Card>
             <CardContent>
               <Typography variant="h6" gutterBottom>

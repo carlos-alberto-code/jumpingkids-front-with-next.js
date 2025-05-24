@@ -124,8 +124,7 @@ export default function WorkoutsPage() {
 
       <Grid container spacing={3}>
         {/* Área de Trabajo Principal - 65% */}
-        <Grid>
-        {/* <Grid item xs={12} md={8}> */}
+        <Grid size={{ xs: 12, md: 8 }}>
           <Card sx={{ height: 'fit-content' }}>
             <CardContent>
               {currentExercise ? (
@@ -160,13 +159,18 @@ export default function WorkoutsPage() {
                     textAlign: 'center',
                     bgcolor: theme.palette.grey[100],
                     borderRadius: theme.shape.borderRadius,
-                    p: 4
+                    p: 4,
+                    minHeight: 200,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column'
                   }}>
-                    <Typography variant="h6" color="text.secondary">
+                    <Typography variant="h6" color="text.secondary" gutterBottom>
                       GIF del Ejercicio
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {currentExercise.gifUrl}
+                      {currentExercise.title}
                     </Typography>
                   </Box>
 
@@ -178,13 +182,13 @@ export default function WorkoutsPage() {
                     <Typography variant="h6" gutterBottom>
                       Instrucciones:
                     </Typography>
-                    <ul>
+                    <Box component="ul" sx={{ pl: 2 }}>
                       {currentExercise.instructions.map((instruction, index) => (
-                        <li key={index}>
+                        <Box component="li" key={index} sx={{ mb: 1 }}>
                           <Typography variant="body2">{instruction}</Typography>
-                        </li>
+                        </Box>
                       ))}
-                    </ul>
+                    </Box>
                   </Box>
 
                   {/* Panel de Control */}
@@ -194,7 +198,9 @@ export default function WorkoutsPage() {
                     justifyContent: 'space-between',
                     p: 2,
                     bgcolor: theme.palette.grey[50],
-                    borderRadius: theme.shape.borderRadius
+                    borderRadius: theme.shape.borderRadius,
+                    flexWrap: 'wrap',
+                    gap: 2
                   }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                       <Typography variant="h4" sx={{ fontFamily: 'monospace' }}>
@@ -229,8 +235,7 @@ export default function WorkoutsPage() {
         </Grid>
 
         {/* Panel Derecho - 35% */}
-        <Grid>
-        {/* <Grid item xs={12} md={4}> */}
+        <Grid size={{ xs: 12, md: 8 }}>
           {/* Indicador de Progreso */}
           <Card sx={{ mb: 3 }}>
             <CardContent>
@@ -265,16 +270,22 @@ export default function WorkoutsPage() {
                     sx={{ 
                       cursor: 'pointer',
                       border: currentExercise?.id === exercise.id ? 
-                        `2px solid ${theme.palette.primary.main}` : undefined
+                        `2px solid ${theme.palette.primary.main}` : undefined,
+                      '&:hover': {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                      transition: theme.transitions.create(['background-color', 'border'], {
+                        duration: theme.transitions.duration.short,
+                      }),
                     }}
                   >
                     <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Box>
+                        <Box sx={{ flex: 1 }}>
                           <Typography variant="subtitle2" gutterBottom>
                             {exercise.title}
                           </Typography>
-                          <Stack direction="row" spacing={1}>
+                          <Stack direction="row" spacing={1} flexWrap="wrap">
                             <Chip label={exercise.category} size="small" />
                             <Chip label={exercise.duration} variant="outlined" size="small" />
                           </Stack>
@@ -282,6 +293,7 @@ export default function WorkoutsPage() {
                         <IconButton
                           color="primary"
                           onClick={() => handleSelectExercise(exercise)}
+                          sx={{ ml: 1 }}
                         >
                           <PlayArrowIcon />
                         </IconButton>
