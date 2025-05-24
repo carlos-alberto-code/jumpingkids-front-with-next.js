@@ -1,54 +1,32 @@
-// src/app/layout.tsx
-import type { Metadata } from 'next';
-import { AppProvider } from '@toolpad/core';
-import type { Navigation } from '@toolpad/core';
 import ThemeRegistry from '@/components/ThemeRegistry';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import SettingsIcon from '@mui/icons-material/Settings';
+import HomeIcon from '@mui/icons-material/Home';
+import InfoIcon from '@mui/icons-material/Info';
+import type { Navigation } from '@toolpad/core';
+import { AppProvider } from '@toolpad/core';
+import type { Metadata } from 'next';
 import './globals.css';
 
-// Definición de la navegación
+// Navegación súper simple con 2 páginas
 const NAVIGATION: Navigation = [
   {
-    kind: 'header',
-    title: 'Entrenamientos',
+    segment: '',
+    title: 'Inicio',
+    icon: <HomeIcon />,
   },
   {
-    segment: 'worksouts',
-    title: 'Mis Ejercicios',
-    icon: <FitnessCenterIcon />,
-  },
-  {
-    kind: 'divider',
-  },
-  {
-    kind: 'header',
-    title: 'Analytics',
-  },
-  {
-    segment: 'progress',
-    title: 'Mi Progreso',
-    icon: <TrendingUpIcon />,
-  },
-  {
-    kind: 'divider',
-  },
-  {
-    segment: 'settings',
-    title: 'Configuración',
-    icon: <SettingsIcon />,
+    segment: 'about',
+    title: 'Acerca de',
+    icon: <InfoIcon />,
   },
 ];
 
-// Información de la aplicación (branding)
 const BRANDING = {
-  title: 'Workout App',
+  title: 'Mi App Básica',
 };
 
 export const metadata: Metadata = {
-  title: 'Workout App',
-  description: 'Aplicación de entrenamientos y ejercicios',
+  title: 'Mi App Básica',
+  description: 'Ejemplo básico de Toolpad Core',
 };
 
 export default function RootLayout({
@@ -57,14 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html 
-      lang="es" 
-      suppressHydrationWarning
-      data-toolpad-color-scheme="light"
-    >
+    <html lang="es" suppressHydrationWarning>
       <body>
         <ThemeRegistry>
-          <AppProvider 
+          <AppProvider
             navigation={NAVIGATION}
             branding={BRANDING}
           >
