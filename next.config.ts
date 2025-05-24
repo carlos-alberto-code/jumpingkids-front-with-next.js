@@ -1,12 +1,24 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
-  /* config options here */
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Configuración para permitir solicitudes de desarrollo desde diferentes orígenes
   allowedDevOrigins: [
-    'localhost:3000',
-    '127.0.0.1:3000',
-    '10.0.0.218:3000', // IP de red actual
+    'localhost',
+    '127.0.0.1',
+    '10.0.0.218', // Tu IP de red actual (sin el puerto)
   ],
+  
+  // Configuración para imágenes si planeas usar next/image
+  images: {
+    domains: [
+      // Agrega aquí los dominios de donde cargarás imágenes
+    ],
+  },
+  
+  // Optimizar el bundle
+  compiler: {
+    // Remover console.logs en producción
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
