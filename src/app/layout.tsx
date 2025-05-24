@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { AppProvider } from '@toolpad/core/nextjs';
+import { AppProvider } from '@toolpad/core';
 import type { Navigation } from '@toolpad/core';
 import ThemeRegistry from '@/components/ThemeRegistry';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
@@ -57,7 +57,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es">
+    <html 
+      lang="es" 
+      suppressHydrationWarning
+      data-toolpad-color-scheme="light"
+    >
       <body>
         <ThemeRegistry>
           <AppProvider 
