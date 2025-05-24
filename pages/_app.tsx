@@ -4,32 +4,37 @@ import { PageContainer } from '@toolpad/core/PageContainer';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import Head from 'next/head';
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import InfoIcon from '@mui/icons-material/Info';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import type { Navigation } from '@toolpad/core/AppProvider';
 import type { AppProps } from 'next/app';
 
-// Definir la navegación - aquí agregamos nuestras dos páginas
 const NAVIGATION: Navigation = [
   {
     kind: 'header',
-    title: 'Páginas principales',
+    title: 'Entrenamiento',
   },
   {
-    segment: '',
-    title: 'Dashboard',
-    icon: <DashboardIcon />,
+    segment: 'exercise',
+    title: 'Ejercicios',
+    icon: <FitnessCenterIcon />,
   },
   {
-    segment: 'about',
-    title: 'Acerca de',
-    icon: <InfoIcon />,
+    segment: 'routine',
+    title: 'Rutinas',
+    icon: <ListAltIcon />,
+  },
+  {
+    segment: 'workout',
+    title: 'Entrenamiento',
+    icon: <DirectionsRunIcon />,
   },
 ];
 
 // Configuración del branding
 const BRANDING = {
-  title: 'Mi App con Toolpad',
+  title: 'Jumpingkids',
 };
 
 export default function App({ Component, pageProps }: AppProps) {

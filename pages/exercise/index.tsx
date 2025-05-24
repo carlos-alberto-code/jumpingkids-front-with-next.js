@@ -9,7 +9,7 @@ export default function AboutPage() {
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Acerca de esta aplicación
+        Pantalla de Ejercicios
       </Typography>
       
       <Card sx={{ mt: 3, maxWidth: 600 }}>
