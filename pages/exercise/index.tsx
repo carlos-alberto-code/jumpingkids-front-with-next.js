@@ -4,36 +4,46 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
+import ExerciseCard from './ExerciseCard';
 
-export default function AboutPage() {
+export default function ExercisePage() {
   return (
     <Box sx={{ p: 2 }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Pantalla de Ejercicios
-      </Typography>
-      
-      <Card sx={{ mt: 3, maxWidth: 600 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Tecnologías utilizadas
-          </Typography>
-          <Typography variant="body1" color="text.secondary" paragraph>
-            Esta aplicación está construida con las siguientes tecnologías:
-          </Typography>
-          
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', mt: 2 }}>
-            <Chip label="Next.js" color="primary" />
-            <Chip label="React" color="primary" />
-            <Chip label="Material-UI" color="secondary" />
-            <Chip label="Toolpad Core" color="success" />
-            <Chip label="TypeScript" color="info" />
-          </Box>
-          
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-            ¡Navega entre las páginas usando el menú lateral!
-          </Typography>
-        </CardContent>
-      </Card>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
+      <ExerciseCard
+        title="Levantamiento de Pesas"
+        description="Un ejercicio de fuerza que implica levantar pesas para desarrollar la masa muscular y la fuerza."
+        tags={['Fuerza', 'Yoga', 'Resistencia', 'Cardio']}
+      ></ExerciseCard>
     </Box>
   );
 }
