@@ -17,18 +17,6 @@ import {
     FitnessCenter,
 } from '@mui/icons-material';
 
-interface Exercise {
-    id: number;
-    title: string;
-    categories: string[];
-    difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
-    duration: string; // Ej: "10 min"
-    calories: number;
-    gifUrl: string;
-    description: string;
-    isFavorite?: boolean;
-}
-
 interface ExerciseCardProps {
     exercise: Exercise;
     onToggleFavorite: (exerciseId: number) => void;
@@ -170,7 +158,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                                     variant="body2"
                                     sx={{ color: theme.palette.text.secondary }}
                                 >
-                                    {exercise.duration}
+                                    {exercise.duration} minutos
                                 </Typography>
                             </Box>
 

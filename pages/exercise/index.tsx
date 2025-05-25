@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import ExerciseCard from './ExerciseCard';
+import ExerciseFilter from './ExerciseFilter';
 
 export default function ExercisePage() {
   return (
@@ -11,13 +12,25 @@ export default function ExercisePage() {
       // gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
       gap: 2 // Adds space between exercise cards
     }}>
+      <ExerciseFilter
+        onFiltersChange={(filters) => console.log('Filters changed:', filters)}
+        onViewModeChange={(mode) => console.log('View mode changed:', mode)}
+        currentFilters={{
+          searchQuery: '',
+          category: null,
+          difficulty: null,
+          favoriteFilter: 'all'
+        }}
+        currentViewMode="single"
+        availableCategories={['Fuerza', 'Cardio', 'Flexibilidad', 'Cuerpo Completo']}
+      ></ExerciseFilter>
       <ExerciseCard
         exercise={
           {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: "Principiante",
             isFavorite: true,
@@ -34,7 +47,7 @@ export default function ExercisePage() {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: 'Intermedio',
             isFavorite: false,
@@ -51,7 +64,7 @@ export default function ExercisePage() {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: "Avanzado",
             isFavorite: false,
@@ -68,7 +81,7 @@ export default function ExercisePage() {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: 'Intermedio',
             isFavorite: false,
@@ -85,7 +98,7 @@ export default function ExercisePage() {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: 'Intermedio',
             isFavorite: false,
@@ -102,7 +115,7 @@ export default function ExercisePage() {
             id: 1,
             title: 'Lagartijas',
             description: 'Un ejercicio clásico para fortalecer el pecho, hombros y tríceps. Realiza lagartijas con las manos a la altura de los hombros y el cuerpo recto.',
-            duration: '10 min',
+            duration: 10,
             calories: 50,
             difficulty: 'Intermedio',
             isFavorite: false,
