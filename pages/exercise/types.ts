@@ -30,11 +30,13 @@ interface ExerciseFilterProps {
   availableCategories: string[];     // Categorías únicas extraídas de todos los ejercicios
 }
 
-// Props para ExerciseList
 interface ExerciseListProps {
   exercises: Exercise[];
   viewMode: ViewMode;
   loading?: boolean;
+  onToggleFavorite: (exerciseId: number) => void;
+  onCardClick?: (exercise: Exercise) => void;
+  onClearFilters?: () => void;
 }
 
 // Estado de la aplicación (para index.tsx)
