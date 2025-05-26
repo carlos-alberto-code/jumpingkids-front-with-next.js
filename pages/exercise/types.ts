@@ -1,4 +1,4 @@
-interface Exercise {
+export interface Exercise {
   id: number;
   title: string;
   categories: string[]; // Múltiples categorías por ejercicio
@@ -11,18 +11,18 @@ interface Exercise {
 }
 
 // Estado de la filtración de ejercicios
-interface FilterState {
+export interface FilterState {
   searchQuery: string;
-  category: string | null; // Filtra ejercicios que contengan esta categoría
+  category: string | null;
   difficulty: Exercise['difficulty'] | null;
   favoriteFilter: 'all' | 'favorites' | 'non-favorites';
 }
 
 // Modo de vista
-type ViewMode = 'single' | 'double';
+export type ViewMode = 'single' | 'double';
 
 // Props para ExerciseFilter
-interface ExerciseFilterProps {
+export interface ExerciseFilterProps {
   onFiltersChange: (filters: FilterState) => void;
   onViewModeChange: (mode: ViewMode) => void;
   currentFilters: FilterState;
@@ -30,7 +30,7 @@ interface ExerciseFilterProps {
   availableCategories: string[];     // Categorías únicas extraídas de todos los ejercicios
 }
 
-interface ExerciseListProps {
+export interface ExerciseListProps {
   exercises: Exercise[];
   viewMode: ViewMode;
   loading?: boolean;
@@ -40,7 +40,7 @@ interface ExerciseListProps {
 }
 
 // Estado de la aplicación (para index.tsx)
-interface ExercisePageState {
+export interface ExercisePageState {
   exercises: Exercise[];
   filteredExercises: Exercise[];
   filters: FilterState;
@@ -48,11 +48,3 @@ interface ExercisePageState {
   loading: boolean;
   error: string | null;
 }
-
-// Valores por defecto
-const DEFAULT_FILTERS: FilterState = {
-  searchQuery: '',
-  category: null,
-  difficulty: null,
-  favoriteFilter: 'all'
-};

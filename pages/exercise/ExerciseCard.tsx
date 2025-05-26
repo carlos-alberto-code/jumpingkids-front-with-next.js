@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
 import {
-    Card,
-    CardContent,
-    Typography,
-    Chip,
-    IconButton,
-    Box,
-    useTheme,
-    alpha,
-} from '@mui/material';
-import {
+    AccessTime,
     Favorite,
     FavoriteBorder,
-    AccessTime,
-    LocalFireDepartment,
     FitnessCenter,
+    LocalFireDepartment,
 } from '@mui/icons-material';
+import {
+    alpha,
+    Box,
+    Card,
+    CardContent,
+    Chip,
+    IconButton,
+    Typography,
+    useTheme,
+} from '@mui/material';
+import React, { memo, useState } from 'react';
+import { Exercise } from './types';
 
 interface ExerciseCardProps {
     exercise: Exercise;
@@ -37,13 +38,12 @@ const getDifficultyColor = (difficulty: Exercise['difficulty']) => {
     }
 };
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({
+const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
     exercise,
     onToggleFavorite,
     onCardClick,
 }) => {
     const theme = useTheme();
-    const [imageLoaded, setImageLoaded] = useState(false);
     const [hovered, setHovered] = useState(false);
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -71,6 +71,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                     },
                 },
                 borderRadius: "18px",
+                minWidth: { xs: 320, sm: 400 } // Responsivo: 320px en móvil, 400px en pantallas más grandes
             }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -102,7 +103,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
                                     duration: theme.transitions.duration.short,
                                 }),
                             }}
-                            onLoad={() => setImageLoaded(true)}
                         />
                     </Box>
 
@@ -250,6 +250,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({
             </CardContent>
         </Card>
     );
-};
+});
+
+ExerciseCard.displayName = 'ExerciseCard';
 
 export default ExerciseCard;

@@ -1,6 +1,6 @@
 // Constantes para la aplicación de ejercicios
 
-// import { FilterState } from './types';
+import { FilterState } from './types';
 
 // Valores por defecto para los filtros
 export const DEFAULT_FILTERS: FilterState = {
@@ -13,7 +13,7 @@ export const DEFAULT_FILTERS: FilterState = {
 // Constantes para dificultades disponibles
 export const DIFFICULTY_OPTIONS = [
   'Principiante',
-  'Intermedio', 
+  'Intermedio',
   'Avanzado'
 ] as const;
 

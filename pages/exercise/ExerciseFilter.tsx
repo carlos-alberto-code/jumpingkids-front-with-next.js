@@ -1,30 +1,30 @@
-import React, { useState, useEffect, useMemo } from 'react';
 import {
+  FavoriteBorder as FavoriteBorderIcon,
+  Favorite as FavoriteIcon,
+  FilterListOff as FilterListOffIcon,
+  HeartBroken as HeartBrokenIcon,
+  Search as SearchIcon,
+  ViewColumn as ViewColumnIcon,
+  ViewModule as ViewModuleIcon
+} from '@mui/icons-material';
+import {
+  Box,
+  Button,
+  FormControl,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
   Stack,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   ToggleButton,
   ToggleButtonGroup,
-  Button,
-  InputAdornment,
-  Box,
-  useTheme,
-  useMediaQuery
+  useMediaQuery,
+  useTheme
 } from '@mui/material';
-import {
-  Search as SearchIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
-  HeartBroken as HeartBrokenIcon,
-  ViewColumn as ViewColumnIcon,
-  ViewModule as ViewModuleIcon,
-  FilterListOff as FilterListOffIcon
-} from '@mui/icons-material';
-// import { ExerciseFilterProps, FilterState, ViewMode } from './types';
-import { DEFAULT_FILTERS, SEARCH_DEBOUNCE_MS, DIFFICULTY_OPTIONS } from './constants';
+import React, { useEffect, useMemo, useState } from 'react';
+import { DEFAULT_FILTERS, DIFFICULTY_OPTIONS, SEARCH_DEBOUNCE_MS } from './constants';
+import { Exercise, ExerciseFilterProps, FilterState, ViewMode } from './types';
 
 const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
   onFiltersChange,
@@ -35,7 +35,7 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  
+
   // Estado local para debounce de búsqueda
   const [searchInput, setSearchInput] = useState(currentFilters.searchQuery);
 
@@ -73,25 +73,25 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
     setSearchInput(event.target.value);
   };
 
-  const handleCategoryChange = (event: any) => {
-    const value = event.target.value;
+  const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }> | { target: { value: unknown } }) => {
+    const value = (event.target.value as string);
     onFiltersChange({
       ...currentFilters,
       category: value === '' ? null : value
     });
   };
 
-  const handleDifficultyChange = (event: any) => {
-    const value = event.target.value;
+  const handleDifficultyChange = (event: React.ChangeEvent<{ value: unknown }> | { target: { value: unknown } }) => {
+    const value = (event.target.value as string);
     onFiltersChange({
       ...currentFilters,
-      difficulty: value === '' ? null : value
+      difficulty: value === '' ? null : (value as Exercise['difficulty'])
     });
   };
 
   const handleFavoriteToggle = () => {
     let nextState: FilterState['favoriteFilter'];
-    
+
     switch (currentFilters.favoriteFilter) {
       case 'all':
         nextState = 'favorites';
@@ -167,8 +167,8 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
         {/* Barra de búsqueda */}
         <TextField
           fullWidth={isMobile}
-          sx={{ 
-            flex: isMobile ? undefined : 1, 
+          sx={{
+            flex: isMobile ? undefined : 1,
             minWidth: isMobile ? undefined : 300,
             maxWidth: isMobile ? undefined : '50%'
           }}
@@ -193,7 +193,7 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
           direction="row"
           spacing={2}
           alignItems="center"
-          sx={{ 
+          sx={{
             flexWrap: isMobile ? 'wrap' : 'nowrap',
             flex: isMobile ? undefined : '0 0 auto'
           }}
@@ -210,7 +210,7 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
               <MenuItem value="">
                 <em>Todas</em>
               </MenuItem>
-              {availableCategories.map((category) => (
+              {availableCategories.map((category: string) => (
                 <MenuItem key={category} value={category}>
                   {category}
                 </MenuItem>

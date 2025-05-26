@@ -1,21 +1,20 @@
-import React from 'react';
+import {
+  FilterListOff as FilterListOffIcon,
+  FitnessCenter as FitnessCenterIcon,
+  SearchOff as SearchOffIcon
+} from '@mui/icons-material';
 import {
   Box,
-  Grid,
-  Typography,
   Button,
-  Stack,
+  Container,
+  Grid,
   Skeleton,
-  useTheme,
-  useMediaQuery,
-  Container
+  Typography,
+  useTheme
 } from '@mui/material';
-import {
-  SearchOff as SearchOffIcon,
-  FilterListOff as FilterListOffIcon,
-  FitnessCenter as FitnessCenterIcon
-} from '@mui/icons-material';
+import React from 'react';
 import ExerciseCard from './ExerciseCard';
+import { Exercise, ExerciseListProps } from './types';
 
 const ExerciseList: React.FC<ExerciseListProps> = ({
   exercises,
@@ -26,16 +25,14 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   onClearFilters
 }) => {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.down('md'));
 
   // Determinar configuración de grid basado en viewMode y breakpoints
   const getGridSizeConfig = () => {
     if (viewMode === 'single') {
       return { xs: 12 }; // Siempre 1 columna
     }
-    
-    return { 
+
+    return {
       xs: 12,  // 1 columna en móvil
       sm: 6    // 2 columnas en tablet y desktop
     };
@@ -45,7 +42,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
   const renderSkeletons = () => {
     const skeletonCount = 6;
     const gridSizeConfig = getGridSizeConfig();
-    
+
     return Array.from({ length: skeletonCount }).map((_, index) => (
       <Grid size={gridSizeConfig} key={`skeleton-${index}`}>
         <Box
@@ -67,7 +64,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
                 flexShrink: 0
               }}
             />
-            
+
             {/* Skeleton para contenido */}
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Skeleton variant="text" width="70%" height={32} sx={{ mb: 1 }} />
@@ -83,7 +80,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
               <Skeleton variant="text" width="90%" height={20} />
               <Skeleton variant="text" width="60%" height={20} />
             </Box>
-            
+
             {/* Skeleton para botón favorito */}
             <Skeleton
               variant="circular"
@@ -190,7 +187,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
 
     return (
       <Grid container spacing={2}>
-        {exercises.map((exercise) => (
+        {exercises.map((exercise: Exercise) => (
           <Grid size={gridSizeConfig} key={exercise.id}>
             <ExerciseCard
               exercise={exercise}
