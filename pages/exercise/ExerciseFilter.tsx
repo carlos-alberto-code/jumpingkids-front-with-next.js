@@ -23,6 +23,8 @@ import {
   ViewModule as ViewModuleIcon,
   FilterListOff as FilterListOffIcon
 } from '@mui/icons-material';
+// import { ExerciseFilterProps, FilterState, ViewMode } from './types';
+import { DEFAULT_FILTERS, SEARCH_DEBOUNCE_MS, DIFFICULTY_OPTIONS } from './constants';
 
 const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
   onFiltersChange,
@@ -46,7 +48,7 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
           searchQuery: searchInput
         });
       }
-    }, 300);
+    }, SEARCH_DEBOUNCE_MS);
 
     return () => clearTimeout(timeoutId);
   }, [searchInput, currentFilters, onFiltersChange]);
@@ -59,10 +61,10 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
   // Verificar si hay filtros activos
   const hasActiveFilters = useMemo(() => {
     return (
-      currentFilters.searchQuery !== '' ||
-      currentFilters.category !== null ||
-      currentFilters.difficulty !== null ||
-      currentFilters.favoriteFilter !== 'all'
+      currentFilters.searchQuery !== DEFAULT_FILTERS.searchQuery ||
+      currentFilters.category !== DEFAULT_FILTERS.category ||
+      currentFilters.difficulty !== DEFAULT_FILTERS.difficulty ||
+      currentFilters.favoriteFilter !== DEFAULT_FILTERS.favoriteFilter
     );
   }, [currentFilters]);
 
@@ -121,12 +123,7 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
 
   const handleClearFilters = () => {
     setSearchInput('');
-    onFiltersChange({
-      searchQuery: '',
-      category: null,
-      difficulty: null,
-      favoriteFilter: 'all'
-    });
+    onFiltersChange(DEFAULT_FILTERS);
   };
 
   // Render del ícono de favoritos según el estado
@@ -233,9 +230,11 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
               <MenuItem value="">
                 <em>Todas</em>
               </MenuItem>
-              <MenuItem value="Principiante">Principiante</MenuItem>
-              <MenuItem value="Intermedio">Intermedio</MenuItem>
-              <MenuItem value="Avanzado">Avanzado</MenuItem>
+              {DIFFICULTY_OPTIONS.map((difficulty) => (
+                <MenuItem key={difficulty} value={difficulty}>
+                  {difficulty}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
 

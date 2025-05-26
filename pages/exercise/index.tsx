@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Box } from '@mui/material';
 import ExerciseFilter from './ExerciseFilter';
 import ExerciseList from './ExerciseList';
+// import { Exercise, FilterState, ViewMode } from './types';
+import { DEFAULT_FILTERS, MOCK_LOADING_DELAY_MS } from './constants';
 
 // Datos mock más variados para testing
 const MOCK_EXERCISES: Exercise[] = [
@@ -92,6 +94,39 @@ const MOCK_EXERCISES: Exercise[] = [
     isFavorite: true,
     categories: ['Flexibilidad', 'Movilidad', 'Bienestar'],
     gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+  },
+  {
+    id: 8,
+    title: 'Yoga Saludo al Sol',
+    description: 'Secuencia de posturas de yoga que estira y fortalece todo el cuerpo mejorando la flexibilidad.',
+    duration: 25,
+    calories: 60,
+    difficulty: 'Intermedio',
+    isFavorite: true,
+    categories: ['Flexibilidad', 'Movilidad', 'Bienestar'],
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+  },
+  {
+    id: 8,
+    title: 'Yoga Saludo al Sol',
+    description: 'Secuencia de posturas de yoga que estira y fortalece todo el cuerpo mejorando la flexibilidad.',
+    duration: 25,
+    calories: 60,
+    difficulty: 'Intermedio',
+    isFavorite: true,
+    categories: ['Flexibilidad', 'Movilidad', 'Bienestar'],
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+  },
+  {
+    id: 9,
+    title: 'Correr en el Lugar',
+    description: 'Ejercicio cardiovascular simple que se puede hacer en casa. Corre en el lugar levantando las rodillas.',
+    duration: 30,
+    calories: 100,
+    difficulty: 'Principiante',
+    isFavorite: false,
+    categories: ['Cardio', 'Cuerpo Completo'],
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
   }
 ];
 
@@ -108,7 +143,7 @@ export default function ExercisePage() {
     // Simular delay de API
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, MOCK_LOADING_DELAY_MS);
 
     return () => clearTimeout(timer);
   }, []);
@@ -128,11 +163,11 @@ export default function ExercisePage() {
         .includes(filters.searchQuery.toLowerCase());
 
       // Filtro por categoría
-      const matchesCategory = filters.category === null || 
+      const matchesCategory = filters.category === null ||
         exercise.categories.includes(filters.category);
 
       // Filtro por dificultad
-      const matchesDifficulty = filters.difficulty === null || 
+      const matchesDifficulty = filters.difficulty === null ||
         exercise.difficulty === filters.difficulty;
 
       // Filtro por favoritos
@@ -174,6 +209,7 @@ export default function ExercisePage() {
   const handleCardClick = (exercise: Exercise) => {
     console.log('Clicked on exercise:', exercise.title);
     // Aquí podrías navegar a una página de detalle del ejercicio
+    // o abrir la pantalla de asignaciones/workout con este ejercicio
   };
 
   const handleClearFilters = () => {
@@ -181,7 +217,7 @@ export default function ExercisePage() {
   };
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       width: '100%',
       minHeight: '100vh',
       backgroundColor: 'background.default'

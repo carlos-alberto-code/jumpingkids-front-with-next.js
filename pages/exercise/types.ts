@@ -7,7 +7,7 @@ interface Exercise {
   calories: number;
   gifUrl: string;
   description: string;
-  isFavorite?: boolean;
+  isFavorite: boolean;
 }
 
 // Estado de la filtración de ejercicios
