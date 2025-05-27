@@ -7,7 +7,6 @@ import {
   LocalFireDepartment
 } from '@mui/icons-material';
 import {
-  alpha,
   Box,
   Button,
   Chip,
@@ -23,7 +22,7 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import * as React from 'react';
-import type { Exercise, ExerciseDetailModalProps } from '../../types/exercise';
+import type { ExerciseDetailModalProps } from '../../types/exercise';
 
 // ✨ Styled component para personalizar el Dialog
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -50,15 +49,6 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
     onToggleFavorite(exercise.id);
   };
 
-  const getDifficultyColor = (difficulty: Exercise['difficulty']) => {
-    switch (difficulty) {
-      case 'Principiante': return 'success';
-      case 'Intermedio': return 'warning';
-      case 'Avanzado': return 'error';
-      default: return 'default';
-    }
-  };
-
   return (
     <BootstrapDialog
       onClose={onClose}
@@ -77,12 +67,12 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
       <IconButton
         aria-label="close"
         onClick={onClose}
-        sx={(theme) => ({
+        sx={{
           position: 'absolute',
           right: 8,
           top: 8,
-          color: theme.palette.grey[500],
-        })}
+          color: theme.vars?.palette.grey[500] || theme.palette.grey[500],
+        }}
       >
         <CloseIcon />
       </IconButton>
@@ -100,7 +90,7 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
               maxHeight: 300,
               width: 'auto',
               height: 'auto',
-              borderRadius: theme.shape.borderRadius,
+              borderRadius: theme.vars?.shape?.borderRadius || theme.shape.borderRadius,
               boxShadow: theme.shadows[4],
             }}
           />
@@ -125,9 +115,9 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                   label={category}
                   variant="outlined"
                   sx={{
-                    borderColor: theme.palette.primary.main,
-                    color: theme.palette.primary.main,
-                    backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                    borderColor: theme.vars?.palette.primary.main || theme.palette.primary.main,
+                    color: theme.vars?.palette.primary.main || theme.palette.primary.main,
+                    backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.primary.main || theme.palette.primary.main} 5%, transparent)`,
                   }}
                 />
               ))}
@@ -155,10 +145,9 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                 </Box>
               </Grid>
 
-              {/* Calorías */}
               <Grid size={{ xs: 12, sm: 4 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <LocalFireDepartment sx={{ color: theme.palette.warning.main }} />
+                  <LocalFireDepartment sx={{ color: theme.vars?.palette.warning.main || theme.palette.warning.main }} />
                   <Box>
                     <Typography variant="body2" color="text.secondary">
                       Calorías
@@ -180,8 +169,29 @@ const ExerciseDetailModal: React.FC<ExerciseDetailModalProps> = ({
                     </Typography>
                     <Chip
                       label={exercise.difficulty}
-                      color={getDifficultyColor(exercise.difficulty)}
                       size="small"
+                      sx={[
+                        { borderRadius: '6px' },
+                        exercise.difficulty === 'Principiante' && {
+                          backgroundColor: theme.vars?.palette.success.main || theme.palette.success.main,
+                          color: theme.vars?.palette.success.contrastText || theme.palette.success.contrastText,
+                        },
+                        exercise.difficulty === 'Intermedio' && {
+                          backgroundColor: theme.vars?.palette.warning.main || theme.palette.warning.main,
+                          color: theme.vars?.palette.warning.contrastText || theme.palette.warning.contrastText,
+                        },
+                        exercise.difficulty === 'Avanzado' && {
+                          backgroundColor: theme.vars?.palette.error.main || theme.palette.error.main,
+                          color: theme.vars?.palette.error.contrastText || theme.palette.error.contrastText,
+                        },
+                        theme.applyStyles('dark', {
+                          backgroundColor: exercise.difficulty === 'Principiante'
+                            ? theme.palette.exerciseDifficulty.beginner
+                            : exercise.difficulty === 'Intermedio'
+                              ? theme.palette.exerciseDifficulty.intermediate
+                              : theme.palette.exerciseDifficulty.advanced,
+                        }),
+                      ]}
                     />
                   </Box>
                 </Box>

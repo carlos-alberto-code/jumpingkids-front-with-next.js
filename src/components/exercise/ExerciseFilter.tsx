@@ -158,8 +158,8 @@ const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
         alignItems={isMobile ? 'stretch' : 'center'}
         sx={{
           p: 2,
-          borderRadius: theme.shape.borderRadius,
-          backgroundColor: theme.palette.background.paper,
+          borderRadius: theme.vars?.shape?.borderRadius || theme.shape.borderRadius,
+          backgroundColor: theme.vars?.palette.background.paper || theme.palette.background.paper,
           boxShadow: theme.shadows[1],
           width: '100%'
         }}

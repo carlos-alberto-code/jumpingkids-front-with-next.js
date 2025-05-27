@@ -6,7 +6,6 @@ import {
     LocalFireDepartment,
 } from '@mui/icons-material';
 import {
-    alpha,
     Box,
     Card,
     CardContent,
@@ -23,20 +22,6 @@ interface ExerciseCardProps {
     onToggleFavorite: (exerciseId: number) => void;
     onCardClick?: (exercise: Exercise) => void;
 }
-
-// Mapeo de dificultad a colores de MUI
-const getDifficultyColor = (difficulty: Exercise['difficulty']) => {
-    switch (difficulty) {
-        case 'Principiante':
-            return 'success';
-        case 'Intermedio':
-            return 'warning';
-        case 'Avanzado':
-            return 'error';
-        default:
-            return 'default';
-    }
-};
 
 const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
     exercise,
@@ -64,7 +49,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                 }),
                 transform: hovered ? 'translateX(4px)' : 'translateX(0)',
                 boxShadow: hovered ? theme.shadows[4] : theme.shadows[1],
-                border: `1px solid ${hovered ? theme.palette.grey[300] : theme.palette.grey[200]}`,
+                border: `1px solid ${hovered ? theme.vars?.palette.grey[300] || theme.palette.grey[300] : theme.vars?.palette.grey[200] || theme.palette.grey[200]}`,
                 '&:hover': {
                     '& .exercise-image': {
                         transform: 'scale(1.05)',
@@ -110,8 +95,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 width: '100%',
                                 height: '100%',
                                 objectFit: 'cover',
-                                borderRadius: theme.shape.borderRadius,
-                                backgroundColor: theme.palette.grey[100],
+                                borderRadius: theme.vars?.shape?.borderRadius || theme.shape.borderRadius,
+                                backgroundColor: theme.vars?.palette.grey[100] || theme.palette.grey[100],
                                 transition: theme.transitions.create('transform', {
                                     duration: theme.transitions.duration.short,
                                 }),
@@ -135,13 +120,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             component="h3"
                             sx={{
                                 fontWeight: 600,
-                                mb: 0.75, // 🔄 REDUCIR de 1 a 0.75
-                                color: theme.palette.text.primary,
+                                mb: 0.75,
+                                color: theme.vars?.palette.text.primary || theme.palette.text.primary,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
-                                fontSize: '1rem', // ✨ AÑADIR - Tamaño consistente
-                                lineHeight: 1.2,  // ✨ AÑADIR - Altura de línea compacta
+                                fontSize: '1rem',
+                                lineHeight: 1.2,
                             }}
                         >
                             {exercise.title}
@@ -152,9 +137,9 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             display: 'flex',
                             flexWrap: 'wrap',
                             gap: 0.5,
-                            mb: 1, // 🔄 REDUCIR de 1.5 a 1
-                            minHeight: 28, // ✨ AÑADIR - Altura mínima para consistencia
-                            alignItems: 'flex-start' // ✨ AÑADIR
+                            mb: 1,
+                            minHeight: 28,
+                            alignItems: 'flex-start'
                         }}>
                             {exercise.categories.map((category: string, index: number) => (
                                 <Chip
@@ -165,34 +150,33 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                     sx={{
                                         fontSize: '0.7rem',
                                         height: 24,
-                                        borderColor: theme.palette.primary.main,
-                                        color: theme.palette.primary.main,
-                                        backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                                        borderColor: theme.vars?.palette.primary.main || theme.palette.primary.main,
+                                        color: theme.vars?.palette.primary.main || theme.palette.primary.main,
+                                        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.primary.main || theme.palette.primary.main} 5%, transparent)`,
                                         borderRadius: '6px',
                                     }}
                                 />
                             ))}
                         </Box>
 
-                        {/* Información en fila: Tiempo, Calorías, Dificultad */}
                         <Box sx={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 1.5, // 🔄 REDUCIR de 2 a 1.5
-                            mb: 1, // 🔄 REDUCIR de 1.5 a 1
-                            flexWrap: 'wrap' // ✨ AÑADIR - Permite wrap en pantallas pequeñas
+                            gap: 1.5,
+                            mb: 1,
+                            flexWrap: 'wrap'
                         }}>
                             {/* Duración */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <AccessTime
                                     sx={{
-                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
-                                        color: theme.palette.text.secondary,
+                                        fontSize: 14,
+                                        color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
                                     }}
                                 />
                                 <Typography
                                     variant="body2"
-                                    sx={{ color: theme.palette.text.secondary }}
+                                    sx={{ color: theme.vars?.palette.text.secondary || theme.palette.text.secondary }}
                                 >
                                     {exercise.duration} minutos
                                 </Typography>
@@ -202,13 +186,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <LocalFireDepartment
                                     sx={{
-                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
-                                        color: theme.palette.warning.main,
+                                        fontSize: 14,
+                                        color: theme.vars?.palette.warning.main || theme.palette.warning.main,
                                     }}
                                 />
                                 <Typography
                                     variant="body2"
-                                    sx={{ color: theme.palette.text.secondary }}
+                                    sx={{ color: theme.vars?.palette.text.secondary || theme.palette.text.secondary }}
                                 >
                                     {exercise.calories} cal
                                 </Typography>
@@ -218,20 +202,40 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <FitnessCenter
                                     sx={{
-                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
-                                        color: theme.palette.text.secondary,
+                                        fontSize: 14,
+                                        color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
                                     }}
                                 />
                                 <Chip
                                     label={exercise.difficulty}
                                     size="small"
-                                    color={getDifficultyColor(exercise.difficulty)}
-                                    sx={{
-                                        fontSize: '0.7rem',
-                                        height: 20,
-                                        borderRadius: '6px',
-                                        fontWeight: 500, // ✨ AÑADIR - Texto más prominente
-                                    }}
+                                    sx={[
+                                        {
+                                            fontSize: '0.7rem',
+                                            height: 20,
+                                            borderRadius: '6px',
+                                            fontWeight: 500,
+                                        },
+                                        exercise.difficulty === 'Principiante' && {
+                                            backgroundColor: theme.vars?.palette.success.main || theme.palette.success.main,
+                                            color: theme.vars?.palette.success.contrastText || theme.palette.success.contrastText,
+                                        },
+                                        exercise.difficulty === 'Intermedio' && {
+                                            backgroundColor: theme.vars?.palette.warning.main || theme.palette.warning.main,
+                                            color: theme.vars?.palette.warning.contrastText || theme.palette.warning.contrastText,
+                                        },
+                                        exercise.difficulty === 'Avanzado' && {
+                                            backgroundColor: theme.vars?.palette.error.main || theme.palette.error.main,
+                                            color: theme.vars?.palette.error.contrastText || theme.palette.error.contrastText,
+                                        },
+                                        theme.applyStyles('dark', {
+                                            backgroundColor: exercise.difficulty === 'Principiante'
+                                                ? theme.palette.exerciseDifficulty.beginner
+                                                : exercise.difficulty === 'Intermedio'
+                                                    ? theme.palette.exerciseDifficulty.intermediate
+                                                    : theme.palette.exerciseDifficulty.advanced,
+                                        }),
+                                    ]}
                                 />
                             </Box>
                         </Box>
@@ -241,28 +245,35 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     <Box sx={{ flexShrink: 0, ml: 2 }}>
                         <IconButton
                             onClick={handleFavoriteClick}
-                            sx={{
-                                p: 1.2, // 🔄 REDUCIR de 1.5 a 1.2
-                                transition: theme.transitions.create(['transform', 'background-color'], {
-                                    duration: theme.transitions.duration.short,
-                                }),
-                                '&:hover': {
-                                    backgroundColor: alpha(theme.palette.grey[500], 0.08), // 🔄 AUMENTAR opacidad
-                                    transform: 'scale(1.15)', // 🔄 AUMENTAR escala
+                            sx={[
+                                {
+                                    p: 1.2,
+                                    transition: theme.transitions.create(['transform', 'background-color'], {
+                                        duration: theme.transitions.duration.short,
+                                    }),
+                                    alignSelf: 'flex-start',
                                 },
-                                alignSelf: 'flex-start', // ✨ AÑADIR - Alineación superior
-                            }}
+                                {
+                                    '&:hover': {
+                                        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.grey[500] || theme.palette.grey[500]} 8%, transparent)`,
+                                        transform: 'scale(1.15)',
+                                    },
+                                },
+                            ]}
                             aria-label={exercise.isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                         >
                             {exercise.isFavorite ? (
-                                <Favorite sx={{ color: theme.palette.error.main, fontSize: 24 }} />
+                                <Favorite sx={{
+                                    color: theme.vars?.palette.error.main || theme.palette.error.main,
+                                    fontSize: 24
+                                }} />
                             ) : (
                                 <FavoriteBorder
                                     sx={{
-                                        color: theme.palette.text.secondary,
+                                        color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
                                         fontSize: 24,
                                         '&:hover': {
-                                            color: theme.palette.error.main,
+                                            color: theme.vars?.palette.error.main || theme.palette.error.main,
                                         },
                                     }}
                                 />

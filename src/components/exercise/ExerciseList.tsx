@@ -48,8 +48,8 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         <Box
           sx={{
             p: 2,
-            borderRadius: theme.shape.borderRadius * 2.25, // 18px como en ExerciseCard
-            border: `1px solid ${theme.palette.grey[200]}`,
+            borderRadius: theme.vars?.shape?.borderRadius ? theme.vars.shape.borderRadius * 2.25 : theme.shape.borderRadius * 2.25,
+            border: `1px solid ${theme.vars?.palette.grey[200] || theme.palette.grey[200]}`,
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -59,7 +59,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
               width={96}
               height={96}
               sx={{
-                borderRadius: theme.shape.borderRadius,
+                borderRadius: theme.vars?.shape?.borderRadius || theme.shape.borderRadius,
                 mr: 2,
                 flexShrink: 0
               }}
@@ -111,7 +111,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
       <SearchOffIcon
         sx={{
           fontSize: 64,
-          color: theme.palette.grey[400],
+          color: theme.vars?.palette.grey[400] || theme.palette.grey[400],
           mb: 2
         }}
       />
@@ -120,7 +120,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         component="h2"
         sx={{
           mb: 1,
-          color: theme.palette.text.secondary,
+          color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
           fontWeight: 500
         }}
       >
@@ -130,7 +130,7 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         variant="body1"
         sx={{
           mb: 3,
-          color: theme.palette.text.secondary,
+          color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
           maxWidth: 400
         }}
       >
@@ -165,13 +165,13 @@ const ExerciseList: React.FC<ExerciseListProps> = ({
         <FitnessCenterIcon
           sx={{
             fontSize: 20,
-            color: theme.palette.primary.main
+            color: theme.vars?.palette.primary.main || theme.palette.primary.main
           }}
         />
         <Typography
           variant="body2"
           sx={{
-            color: theme.palette.text.secondary,
+            color: theme.vars?.palette.text.secondary || theme.palette.text.secondary,
             fontWeight: 500
           }}
         >
