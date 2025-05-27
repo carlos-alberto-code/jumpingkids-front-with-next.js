@@ -72,8 +72,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                 },
                 borderRadius: "18px",
                 minWidth: { xs: 320, sm: 400 }, // Responsivo: 320px en móvil, 400px en pantallas más grandes
-                minHeight: 140,
-                maxHeight: 140,
+                minHeight: 165,
+                maxHeight: 165,
                 display: 'flex',
                 flexDirection: 'column',
             }}
@@ -126,6 +126,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100%',
+                        justifyContent: 'flex-start', // 🔄 CAMBIAR de space-between a flex-start
+                        py: 0.5, // ✨ AÑADIR - Padding vertical
                     }}>
                         {/* Título */}
                         <Typography
@@ -133,18 +135,27 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             component="h3"
                             sx={{
                                 fontWeight: 600,
-                                mb: 1,
+                                mb: 0.75, // 🔄 REDUCIR de 1 a 0.75
                                 color: theme.palette.text.primary,
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 whiteSpace: 'nowrap',
+                                fontSize: '1rem', // ✨ AÑADIR - Tamaño consistente
+                                lineHeight: 1.2,  // ✨ AÑADIR - Altura de línea compacta
                             }}
                         >
                             {exercise.title}
                         </Typography>
 
                         {/* Categorías */}
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, mb: 1.5 }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            gap: 0.5,
+                            mb: 1, // 🔄 REDUCIR de 1.5 a 1
+                            minHeight: 28, // ✨ AÑADIR - Altura mínima para consistencia
+                            alignItems: 'flex-start' // ✨ AÑADIR
+                        }}>
                             {exercise.categories.map((category: string, index: number) => (
                                 <Chip
                                     key={index}
@@ -164,12 +175,18 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                         </Box>
 
                         {/* Información en fila: Tiempo, Calorías, Dificultad */}
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1.5 }}>
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1.5, // 🔄 REDUCIR de 2 a 1.5
+                            mb: 1, // 🔄 REDUCIR de 1.5 a 1
+                            flexWrap: 'wrap' // ✨ AÑADIR - Permite wrap en pantallas pequeñas
+                        }}>
                             {/* Duración */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <AccessTime
                                     sx={{
-                                        fontSize: 16,
+                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
                                         color: theme.palette.text.secondary,
                                     }}
                                 />
@@ -185,7 +202,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <LocalFireDepartment
                                     sx={{
-                                        fontSize: 16,
+                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
                                         color: theme.palette.warning.main,
                                     }}
                                 />
@@ -201,7 +218,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <FitnessCenter
                                     sx={{
-                                        fontSize: 16,
+                                        fontSize: 14, // 🔄 CAMBIAR de 16 a 14
                                         color: theme.palette.text.secondary,
                                     }}
                                 />
@@ -213,28 +230,11 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                         fontSize: '0.7rem',
                                         height: 20,
                                         borderRadius: '6px',
+                                        fontWeight: 500, // ✨ AÑADIR - Texto más prominente
                                     }}
                                 />
                             </Box>
                         </Box>
-
-                        {/* Descripción */}
-                        <Typography
-                            variant="body2"
-                            sx={{
-                                color: theme.palette.text.secondary,
-                                display: '-webkit-box',
-                                WebkitLineClamp: 2,
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                lineHeight: 1.4,
-                                flex: 1,
-                                mt: 'auto'
-                            }}
-                        >
-                            {exercise.description}
-                        </Typography>
                     </Box>
 
                     {/* Botón de Favorito - Derecha (centrado verticalmente) */}
@@ -242,14 +242,15 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                         <IconButton
                             onClick={handleFavoriteClick}
                             sx={{
-                                p: 1.5,
+                                p: 1.2, // 🔄 REDUCIR de 1.5 a 1.2
                                 transition: theme.transitions.create(['transform', 'background-color'], {
                                     duration: theme.transitions.duration.short,
                                 }),
                                 '&:hover': {
-                                    backgroundColor: alpha(theme.palette.grey[500], 0.04),
-                                    transform: 'scale(1.1)',
+                                    backgroundColor: alpha(theme.palette.grey[500], 0.08), // 🔄 AUMENTAR opacidad
+                                    transform: 'scale(1.15)', // 🔄 AUMENTAR escala
                                 },
+                                alignSelf: 'flex-start', // ✨ AÑADIR - Alineación superior
                             }}
                             aria-label={exercise.isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
                         >
