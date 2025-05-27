@@ -34,39 +34,44 @@ const NAVIGATION: Navigation = [
   },
 ];
 
+// 🎨 Configuración del branding
 const BRANDING = {
-  title: 'JumpingKids',
+  title: 'Jumpingkids',
   logo: (
-    <img
-      src="https://cdn-icons-png.flaticon.com/512/2780/2780119.png"
+    <img 
+      src="https://webstockreview.net/images/clipart-exercise-animated-gif-13.gif"
       alt="Jumpingkids Logo"
-      style={{
-        height: 28,
-        width: "auto",
-        marginRight: 8,
-        verticalAlign: 'middle',
-        display: 'inline-block',
-        borderRadius: '50%',
-        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-        transition: 'transform 0.28s',
-        cursor: 'pointer',
-        objectFit: 'cover',
-        objectPosition: 'center',
-      }}
-      onMouseOver={(e) => (e.currentTarget.style.transform = 'scale(1.15) rotate(4deg)')}
-      onMouseOut={(e) => (e.currentTarget.style.transform = 'scale(1) rotate(0deg)')}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.animation = 'shake 2.5s ease-in-out infinite';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.animation = 'none';
-        e.currentTarget.style.transform = 'scale(1) rotate(0deg)';
-      }}
+      style={{ 
+        height: 50,
+        width: 'auto'
+      }} 
     />
   ),
 };
 
 export default function App({ Component, pageProps }: AppProps) {
+  // 🔍 Debug del tema en desarrollo
+  React.useEffect(() => {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🎨 Theme applied:', jumpingkidsTheme);
+      console.log('🌓 Color schemes:', (jumpingkidsTheme as any).colorSchemes);
+      console.log('🔧 CSS Variables config:', (jumpingkidsTheme as any).cssVariables);
+      
+      // Verificar después de un momento si aparece el toggle
+      setTimeout(() => {
+        const toggleButton = document.querySelector('[aria-label*="toggle"]') || 
+                            document.querySelector('[data-testid*="theme"]') ||
+                            document.querySelector('button[title*="theme"]');
+        
+        if (toggleButton) {
+          console.log('✅ Theme toggle found!', toggleButton);
+        } else {
+          console.warn('❌ Theme toggle not found. Check Toolpad Core version and theme config.');
+        }
+      }, 2000);
+    }
+  }, []);
+
   return (
     <AppCacheProvider>
       <Head>
@@ -74,13 +79,14 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Jumpingkids - Aplicación de Ejercicios</title>
         <meta name="description" content="Aplicación de ejercicios para mantenerte en forma" />
       </Head>
-      <NextAppProvider
-        navigation={NAVIGATION}
+      <NextAppProvider 
+        navigation={NAVIGATION} 
         branding={BRANDING}
-        theme={jumpingkidsTheme}
+        theme={jumpingkidsTheme} // 🎨 Aplicar el tema personalizado
       >
-        <DashboardLayout
+        <DashboardLayout 
           sidebarExpandedWidth={240}
+          // 🌓 El toggle debería aparecer automáticamente con colorSchemes definidos
         >
           <PageContainer>
             <Component {...pageProps} />

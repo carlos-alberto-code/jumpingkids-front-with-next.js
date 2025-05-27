@@ -2,50 +2,59 @@
 import { createTheme } from '@mui/material/styles';
 import { alpha } from '@mui/material/styles';
 
-// 🎨 Paleta de colores específica para aplicación infantil de ejercicios
-// Basada en las mejores prácticas para UI de niños: colores vibrantes pero balanceados
+// 🎨 Paleta de colores basada en la ilustración del dragón
+// Colores vibrantes y amigables perfectos para aplicación infantil
 const jumpingKidsColors = {
-  // Colores primarios - Azul océano vibrante pero suave
+  // Colores primarios - Rosa energético del dragón
   primary: {
-    light: '#64B5F6',    // Azul cielo claro
-    main: '#2196F3',     // Azul océano principal
-    dark: '#1565C0',     // Azul océano profundo
+    light: '#F48FB1',    // Rosa claro del dragón
+    main: '#E91E63',     // Rosa principal vibrante
+    dark: '#C2185B',     // Rosa oscuro intenso
   },
-  // Colores secundarios - Naranja energético como el sol
+  // Colores secundarios - Verde natura/salud
   secondary: {
-    light: '#FFB74D',    // Naranja suave
-    main: '#FF9800',     // Naranja vibrante
-    dark: '#F57C00',     // Naranja intenso
+    light: '#A5D6A7',    // Verde menta claro
+    main: '#4CAF50',     // Verde natural principal
+    dark: '#388E3C',     // Verde oscuro
   },
-  // Colores de ejercicios - Específicos para cada categoría
+  // Colores de ejercicios - Inspirados en la naturaleza y diversión
   exercise: {
-    // Dificultades con colores intuitivos
-    beginner: '#4CAF50',    // Verde = fácil/seguro
-    intermediate: '#FF9800', // Naranja = moderado
-    advanced: '#F44336',     // Rojo = difícil/cuidado
+    // Dificultades con colores intuitivos de la paleta
+    beginner: '#81C784',     // Verde menta = fácil/natural
+    intermediate: '#FF7043', // Naranja coral = moderado
+    advanced: '#E91E63',     // Rosa intenso = desafiante
     
-    // Categorías con colores temáticos
-    cardio: '#E91E63',       // Rosa energético para cardio
-    strength: '#3F51B5',     // Azul fuerte para fuerza
-    flexibility: '#9C27B0',  // Púrpura para flexibilidad
-    core: '#795548',         // Marrón para core/estabilidad
-    balance: '#607D8B',      // Gris azulado para equilibrio
-    fun: '#FFEB3B',         // Amarillo para diversión
+    // Categorías con colores de la ilustración
+    cardio: '#E91E63',       // Rosa energético del dragón
+    strength: '#8D6E63',     // Marrón chocolate para fuerza
+    flexibility: '#CE93D8',  // Morado suave para flexibilidad
+    core: '#795548',         // Marrón tierra para core
+    balance: '#4CAF50',      // Verde natural para equilibrio
+    fun: '#FFEB3B',         // Amarillo brillante para diversión
   },
-  // Estados de UI
+  // Colores adicionales de la paleta
+  nature: {
+    mintGreen: '#81C784',    // Verde menta del dragón
+    limeGreen: '#8BC34A',    // Verde lima vibrante
+    cream: '#FFF8E1',        // Crema suave para fondos
+    chocolate: '#8D6E63',    // Marrón chocolate
+    lavender: '#CE93D8',     // Morado suave
+  },
+  // Estados de UI usando la paleta natural
   states: {
-    success: '#4CAF50',
-    warning: '#FF9800',
-    error: '#F44336',
-    info: '#2196F3',
+    success: '#4CAF50',      // Verde natural
+    warning: '#FF7043',      // Naranja coral
+    error: '#E91E63',        // Rosa intenso
+    info: '#81C784',         // Verde menta
   }
 };
 
 // 🌈 Tema principal con CSS Variables y colorSchemes
 export const jumpingkidsTheme = createTheme({
   // ✨ Habilitar CSS Variables para mejor rendimiento y modo oscuro sin parpadeo
-  cssVariables: true,
-  
+  cssVariables: {
+    colorSchemeSelector: 'data-toolpad-color-scheme', // 🔧 Selector específico para Toolpad
+  },
   // 🌓 Esquemas de color para modo claro y oscuro
   colorSchemes: {
     light: {
@@ -53,34 +62,34 @@ export const jumpingkidsTheme = createTheme({
         primary: jumpingKidsColors.primary,
         secondary: jumpingKidsColors.secondary,
         success: {
-          light: '#81C784',
+          light: '#A5D6A7',
           main: jumpingKidsColors.states.success,
           dark: '#388E3C',
         },
         warning: {
-          light: '#FFB74D',
+          light: '#FFAB91',
           main: jumpingKidsColors.states.warning,
-          dark: '#F57C00',
+          dark: '#D84315',
         },
         error: {
-          light: '#E57373',
+          light: '#F48FB1',
           main: jumpingKidsColors.states.error,
-          dark: '#D32F2F',
+          dark: '#C2185B',
         },
         info: {
-          light: '#64B5F6',
+          light: '#C8E6C9',
           main: jumpingKidsColors.states.info,
-          dark: '#1976D2',
+          dark: '#388E3C',
         },
         background: {
-          default: '#FAFBFF',    // Azul muy suave para modo claro
-          paper: '#FFFFFF',      // Blanco puro para cards
+          default: jumpingKidsColors.nature.cream,    // Crema suave de la ilustración
+          paper: '#FFFFFF',                           // Blanco puro para cards
         },
         text: {
-          primary: '#1A1A1A',    // Negro suave, menos agresivo que #000
+          primary: '#2E2E2E',    // Gris oscuro suave, amigable
           secondary: '#616161',   // Gris medio para texto secundario
         },
-        // 🎯 Colores personalizados para ejercicios
+        // 🎯 Colores personalizados para ejercicios - basados en la ilustración
         exerciseDifficulty: {
           beginner: jumpingKidsColors.exercise.beginner,
           intermediate: jumpingKidsColors.exercise.intermediate,
@@ -94,43 +103,51 @@ export const jumpingkidsTheme = createTheme({
           balance: jumpingKidsColors.exercise.balance,
           fun: jumpingKidsColors.exercise.fun,
         },
+        // 🎨 Colores adicionales de la ilustración
+        dragonColors: {
+          mintGreen: jumpingKidsColors.nature.mintGreen,
+          limeGreen: jumpingKidsColors.nature.limeGreen,
+          cream: jumpingKidsColors.nature.cream,
+          chocolate: jumpingKidsColors.nature.chocolate,
+          lavender: jumpingKidsColors.nature.lavender,
+        },
       },
     },
     dark: {
       palette: {
         primary: {
-          light: '#90CAF9',      // Azul más claro para modo oscuro
-          main: '#42A5F5',       // Azul principal ajustado
-          dark: '#1976D2',       // Azul más oscuro
+          light: '#F48FB1',      // Rosa más claro para modo oscuro
+          main: '#EC407A',       // Rosa principal ajustado
+          dark: '#C2185B',       // Rosa más oscuro
         },
         secondary: {
-          light: '#FFCC02',      // Amarillo-naranja para contraste
-          main: '#FFB300',       // Naranja dorado
-          dark: '#FF8F00',       // Naranja intenso
+          light: '#C8E6C9',      // Verde menta más claro
+          main: '#66BB6A',       // Verde principal ajustado
+          dark: '#388E3C',       // Verde más oscuro
         },
         success: {
-          light: '#A5D6A7',
+          light: '#C8E6C9',
           main: '#66BB6A',       // Verde más suave para modo oscuro
           dark: '#388E3C',
         },
         warning: {
           light: '#FFCC02',
-          main: '#FFA726',       // Naranja más suave
-          dark: '#F57C00',
+          main: '#FFAB91',       // Naranja coral suave
+          dark: '#D84315',
         },
         error: {
-          light: '#EF5350',
-          main: '#F44336',       // Rojo ajustado
-          dark: '#D32F2F',
+          light: '#F48FB1',
+          main: '#EC407A',       // Rosa ajustado para oscuro
+          dark: '#C2185B',
         },
         info: {
-          light: '#64B5F6',
-          main: '#42A5F5',       // Azul info ajustado
-          dark: '#1976D2',
+          light: '#C8E6C9',
+          main: '#81C784',       // Verde menta
+          dark: '#388E3C',
         },
         background: {
-          default: '#0A0E1A',    // Azul muy oscuro pero no negro puro
-          paper: '#1A1F2E',      // Azul oscuro para cards
+          default: '#1A1625',    // Púrpura muy oscuro pero cálido
+          paper: '#2A2438',      // Púrpura oscuro para cards
         },
         text: {
           primary: '#F5F5F5',    // Blanco suave
@@ -138,17 +155,25 @@ export const jumpingkidsTheme = createTheme({
         },
         // 🎯 Colores de ejercicios ajustados para modo oscuro
         exerciseDifficulty: {
-          beginner: '#66BB6A',   // Verde más claro
-          intermediate: '#FFA726', // Naranja más claro
-          advanced: '#EF5350',   // Rojo más claro
+          beginner: '#A5D6A7',   // Verde menta más claro
+          intermediate: '#FFAB91', // Naranja coral más claro
+          advanced: '#F48FB1',   // Rosa más claro
         },
         exerciseCategory: {
-          cardio: '#EC407A',     // Rosa más claro
-          strength: '#5C6BC0',   // Azul-púrpura más claro
-          flexibility: '#AB47BC', // Púrpura más claro
-          core: '#8D6E63',       // Marrón más claro
-          balance: '#78909C',    // Gris azulado más claro
+          cardio: '#F48FB1',     // Rosa más claro
+          strength: '#A1887F',   // Marrón más claro
+          flexibility: '#DDA0DD', // Morado más claro
+          core: '#8D6E63',       // Marrón ajustado
+          balance: '#A5D6A7',    // Verde menta más claro
           fun: '#FFEE58',        // Amarillo más claro
+        },
+        // 🎨 Colores de la ilustración ajustados para modo oscuro
+        dragonColors: {
+          mintGreen: '#A5D6A7',
+          limeGreen: '#AED581',
+          cream: '#2A2438',      // Fondo oscuro en lugar de crema
+          chocolate: '#A1887F',
+          lavender: '#DDA0DD',
         },
       },
     },
@@ -401,6 +426,13 @@ declare module '@mui/material/styles' {
       balance: string;
       fun: string;
     };
+    dragonColors: {
+      mintGreen: string;
+      limeGreen: string;
+      cream: string;
+      chocolate: string;
+      lavender: string;
+    };
   }
 
   interface PaletteOptions {
@@ -416,6 +448,13 @@ declare module '@mui/material/styles' {
       core?: string;
       balance?: string;
       fun?: string;
+    };
+    dragonColors?: {
+      mintGreen?: string;
+      limeGreen?: string;
+      cream?: string;
+      chocolate?: string;
+      lavender?: string;
     };
   }
 }
@@ -476,4 +515,5 @@ export const themeUtils = {
   },
 };
 
+// 🚀 Exportación por defecto del tema
 export default jumpingkidsTheme;
