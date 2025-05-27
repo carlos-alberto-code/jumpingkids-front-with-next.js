@@ -16,7 +16,7 @@ import {
     useTheme,
 } from '@mui/material';
 import React, { memo, useState } from 'react';
-import { Exercise } from './types';
+import { Exercise } from '../../types/exercise';
 
 interface ExerciseCardProps {
     exercise: Exercise;
@@ -71,14 +71,27 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     },
                 },
                 borderRadius: "18px",
-                minWidth: { xs: 320, sm: 400 } // Responsivo: 320px en móvil, 400px en pantallas más grandes
+                minWidth: { xs: 320, sm: 400 }, // Responsivo: 320px en móvil, 400px en pantallas más grandes
+                minHeight: 140,
+                maxHeight: 140,
+                display: 'flex',
+                flexDirection: 'column',
             }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onClick={handleCardClick}
         >
-            <CardContent sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <CardContent sx={{
+                p: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%',
+            }}>
+                <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    height: '100%',
+                }}>
                     {/* Imagen/GIF del ejercicio - Izquierda */}
                     <Box
                         sx={{
@@ -107,7 +120,13 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     </Box>
 
                     {/* Información del ejercicio - Centro */}
-                    <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Box sx={{
+                        flex: 1,
+                        minWidth: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100%',
+                    }}>
                         {/* Título */}
                         <Typography
                             variant="h6"
@@ -208,7 +227,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 overflow: 'hidden',
+                                textOverflow: 'ellipsis',
                                 lineHeight: 1.4,
+                                flex: 1,
+                                mt: 'auto'
                             }}
                         >
                             {exercise.description}

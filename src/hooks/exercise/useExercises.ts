@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ExerciseService } from '../services/ExerciseService';
-import { Exercise } from '../types';
+import { ExerciseService } from '../../services/exercise/ExerciseService';
+import { Exercise } from '../../types/exercise';
 
 export const useExercises = () => {
     const [exercises, setExercises] = useState<Exercise[]>([]);

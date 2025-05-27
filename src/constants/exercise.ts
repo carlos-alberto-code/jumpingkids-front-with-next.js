@@ -1,6 +1,6 @@
 // Constantes para la aplicación de ejercicios
 
-import { FilterState } from './types';
+import { FilterState } from '../types/exercise';
 
 // Valores por defecto para los filtros
 export const DEFAULT_FILTERS: FilterState = {

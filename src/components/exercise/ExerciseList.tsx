@@ -13,8 +13,8 @@ import {
   useTheme
 } from '@mui/material';
 import React from 'react';
+import { Exercise, ExerciseListProps } from '../../types/exercise';
 import ExerciseCard from './ExerciseCard';
-import { Exercise, ExerciseListProps } from './types';
 
 const ExerciseList: React.FC<ExerciseListProps> = ({
   exercises,

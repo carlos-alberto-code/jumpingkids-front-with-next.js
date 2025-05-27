@@ -1,4 +1,4 @@
-import { Exercise } from './types';
+import { Exercise } from '../types/exercise';
 
 // Datos mock más variados para testing
 export const MOCK_EXERCISES: Exercise[] = [

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
-import { DEFAULT_FILTERS } from '../constants';
-import { Exercise, FilterState } from '../types';
+import { DEFAULT_FILTERS } from '../../constants/exercise';
+import { Exercise, FilterState } from '../../types/exercise';
 
 export const useExerciseFilters = (exercises: Exercise[]) => {
     const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);

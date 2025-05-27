@@ -1,10 +1,14 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
-import ExerciseFilter from './ExerciseFilter';
-import ExerciseList from './ExerciseList';
-import { useExerciseFilters } from './hooks/useExerciseFilters';
-import { useExercises } from './hooks/useExercises';
-import { Exercise, ViewMode } from './types';
+import {
+  ExerciseDetailModal,
+  ExerciseFilter,
+  ExerciseList,
+  useExerciseFilters,
+  useExercises,
+  type Exercise,
+  type ViewMode
+} from '../../src/components/exercise';
 
 export default function ExercisePage() {
   const [viewMode, setViewMode] = useState<ViewMode>('double');
@@ -19,11 +23,29 @@ export default function ExercisePage() {
     clearFilters
   } = useExerciseFilters(exercises);
 
-  // Handlers simplificados
+  // Estado para el modal de detalle
+  const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // Handlers
   const handleCardClick = (exercise: Exercise) => {
-    console.log('Clicked on exercise:', exercise.title);
-    // Aquí podrías navegar a una página de detalle del ejercicio
-    // o abrir la pantalla de asignaciones/workout con este ejercicio
+    setSelectedExercise(exercise);
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setSelectedExercise(null);
+  };
+
+  const handleModalToggleFavorite = (exerciseId: number) => {
+    toggleFavorite(exerciseId);
+    // Sincronizar ejercicio seleccionado
+    if (selectedExercise?.id === exerciseId) {
+      setSelectedExercise((prev: Exercise | null) =>
+        prev ? { ...prev, isFavorite: !prev.isFavorite } : null
+      );
+    }
   };
 
   if (error) {
@@ -57,6 +79,14 @@ export default function ExercisePage() {
         onToggleFavorite={toggleFavorite}
         onCardClick={handleCardClick}
         onClearFilters={clearFilters}
+      />
+
+      {/* Modal de detalle */}
+      <ExerciseDetailModal
+        open={modalOpen}
+        exercise={selectedExercise}
+        onClose={handleCloseModal}
+        onToggleFavorite={handleModalToggleFavorite}
       />
     </Box>
   );

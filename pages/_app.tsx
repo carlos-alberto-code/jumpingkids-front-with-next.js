@@ -44,7 +44,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <NextAppProvider navigation={NAVIGATION} branding={BRANDING}>
-        <DashboardLayout>
+        <DashboardLayout 
+          sidebarExpandedWidth={240}
+        >
           <PageContainer>
             <Component {...pageProps} />
           </PageContainer>

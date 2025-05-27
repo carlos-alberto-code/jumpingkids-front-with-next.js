@@ -48,3 +48,11 @@ export interface ExercisePageState {
   loading: boolean;
   error: string | null;
 }
+
+// ✨ Modal de detalle de ejercicios
+export interface ExerciseDetailModalProps {
+  open: boolean;
+  exercise: Exercise | null;
+  onClose: () => void;
+  onToggleFavorite: (exerciseId: number) => void;
+}

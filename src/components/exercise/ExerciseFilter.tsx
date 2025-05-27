@@ -23,8 +23,8 @@ import {
   useTheme
 } from '@mui/material';
 import React, { useEffect, useMemo, useState } from 'react';
-import { DEFAULT_FILTERS, DIFFICULTY_OPTIONS, SEARCH_DEBOUNCE_MS } from './constants';
-import { Exercise, ExerciseFilterProps, FilterState, ViewMode } from './types';
+import { DEFAULT_FILTERS, DIFFICULTY_OPTIONS, SEARCH_DEBOUNCE_MS } from '../../constants/exercise';
+import { Exercise, ExerciseFilterProps, FilterState, ViewMode } from '../../types/exercise';
 
 const ExerciseFilter: React.FC<ExerciseFilterProps> = ({
   onFiltersChange,

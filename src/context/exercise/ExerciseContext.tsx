@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext } from 'react';
-import { useExercises } from '../hooks/useExercises';
+import { useExercises } from '../../hooks/exercise/useExercises';
 
 type ExerciseContextType = ReturnType<typeof useExercises>;
 

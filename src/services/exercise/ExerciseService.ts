@@ -1,6 +1,6 @@
-import { MOCK_LOADING_DELAY_MS } from '../constants';
-import { MOCK_EXERCISES } from '../mocks';
-import { Exercise } from '../types';
+import { MOCK_LOADING_DELAY_MS } from '../../constants/exercise';
+import { MOCK_EXERCISES } from '../../constants/exerciseMocks';
+import { Exercise } from '../../types/exercise';
 
 export class ExerciseService {
     /**
@@ -12,7 +12,7 @@ export class ExerciseService {
             setTimeout(() => {
                 try {
                     // Validar que no hay IDs duplicados
-                    const ids = MOCK_EXERCISES.map(ex => ex.id);
+                    const ids = MOCK_EXERCISES.map((ex: Exercise) => ex.id);
                     const uniqueIds = new Set(ids);
 
                     if (ids.length !== uniqueIds.size) {
