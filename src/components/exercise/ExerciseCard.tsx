@@ -1,9 +1,11 @@
 import {
     AccessTime,
+    Add as AddIcon,
     Favorite,
     FavoriteBorder,
     FitnessCenter,
     LocalFireDepartment,
+    Star as StarIcon,
 } from '@mui/icons-material';
 import {
     Box,
@@ -15,7 +17,9 @@ import {
     useTheme,
 } from '@mui/material';
 import React, { memo, useState } from 'react';
+import { usePermissionCheck } from '../../hooks/auth/useUserPermissions';
 import { Exercise } from '../../types/exercise';
+import PermissionGate from '../auth/PermissionGate';
 
 interface ExerciseCardProps {
     exercise: Exercise;
@@ -30,6 +34,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
 }) => {
     const theme = useTheme();
     const [hovered, setHovered] = useState(false);
+    const { canAccessPremiumFeatures, isPremiumUser } = usePermissionCheck();
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -61,11 +66,29 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                 maxHeight: 165,
                 display: 'flex',
                 flexDirection: 'column',
+                position: 'relative', // Para posicionar el chip de premium
             }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onClick={handleCardClick}
         >
+            {/* Indicador de contenido premium */}
+            {!isPremiumUser && exercise.categories.includes('Premium') && (
+                <Chip
+                    icon={<StarIcon />}
+                    label="Premium"
+                    size="small"
+                    color="warning"
+                    sx={{
+                        position: 'absolute',
+                        top: 8,
+                        right: 8,
+                        zIndex: 1,
+                        fontSize: '0.7rem',
+                        height: 24,
+                    }}
+                />
+            )}
             <CardContent sx={{
                 p: 2,
                 display: 'flex',
@@ -241,8 +264,16 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                         </Box>
                     </Box>
 
-                    {/* Botón de Favorito - Derecha (centrado verticalmente) */}
-                    <Box sx={{ flexShrink: 0, ml: 2 }}>
+                    {/* Botones de acción - Derecha (centrado verticalmente) */}
+                    <Box sx={{
+                        flexShrink: 0,
+                        ml: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: 0.5
+                    }}>
+                        {/* Botón de favoritos */}
                         <IconButton
                             onClick={handleFavoriteClick}
                             sx={[
@@ -251,7 +282,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                     transition: theme.transitions.create(['transform', 'background-color'], {
                                         duration: theme.transitions.duration.short,
                                     }),
-                                    alignSelf: 'flex-start',
                                 },
                                 {
                                     '&:hover': {
@@ -279,6 +309,36 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 />
                             )}
                         </IconButton>
+
+                        {/* Botón crear similar - solo tutores premium */}
+                        <PermissionGate permission="canCreateCustomExercises">
+                            <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Lógica para crear ejercicio similar
+                                    console.log('Crear ejercicio basado en:', exercise.title);
+                                }}
+                                sx={{
+                                    p: 1,
+                                    transition: theme.transitions.create(['transform', 'background-color'], {
+                                        duration: theme.transitions.duration.short,
+                                    }),
+                                    '&:hover': {
+                                        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.primary.main || theme.palette.primary.main} 8%, transparent)`,
+                                        transform: 'scale(1.1)',
+                                    },
+                                }}
+                                aria-label="Crear ejercicio similar"
+                            >
+                                <AddIcon
+                                    sx={{
+                                        color: theme.vars?.palette.primary.main || theme.palette.primary.main,
+                                        fontSize: 20
+                                    }}
+                                />
+                            </IconButton>
+                        </PermissionGate>
                     </Box>
                 </Box>
             </CardContent>

@@ -75,14 +75,15 @@ export interface UserPermissions {
     // Ejercicios
     canAccessPremiumExercises: boolean;
     canCreateCustomExercises: boolean;
-    canAccessExerciseLibrary: boolean;
+    maxExercisesPerDay?: number; // undefined = ilimitado
 
     // Rutinas
     canCreatePersonalRoutines: boolean;
     canAccessPremiumRoutines: boolean;
     canShareRoutines: boolean;
+    maxRoutinesStored?: number; // undefined = ilimitado
 
-    // Entrenamiento
+    // Entrenamiento y seguimiento
     canTrackProgress: boolean;
     canAccessAdvancedMetrics: boolean;
     canExportData: boolean;
@@ -94,8 +95,6 @@ export interface UserPermissions {
 
     // Suscripción
     canUpgradeSubscription: boolean;
-    maxExercisesPerDay?: number;
-    maxRoutinesStored?: number;
 }
 
 /**

@@ -1,10 +1,7 @@
 // pages/_app.tsx
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Box, CircularProgress } from '@mui/material';
 import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
-import type { Authentication, Navigation, Session } from '@toolpad/core/AppProvider';
+import type { Authentication, Session } from '@toolpad/core/AppProvider';
 import { DashboardLayout } from '@toolpad/core/DashboardLayout';
 import { NextAppProvider } from '@toolpad/core/nextjs';
 import { PageContainer } from '@toolpad/core/PageContainer';
@@ -13,28 +10,7 @@ import Head from 'next/head';
 import * as React from 'react';
 import { AuthProvider, useAuthContext } from '../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../src/theme/theme';
-
-const NAVIGATION: Navigation = [
-  {
-    kind: 'header',
-    title: 'Entrenamiento',
-  },
-  {
-    segment: 'exercise',
-    title: 'Ejercicios',
-    icon: <FitnessCenterIcon />,
-  },
-  {
-    segment: 'routine',
-    title: 'Rutinas',
-    icon: <ListAltIcon />,
-  },
-  {
-    segment: 'workout',
-    title: 'Entrenamiento',
-    icon: <DirectionsRunIcon />,
-  },
-];
+import { useDynamicNavigation } from '../src/utils/navigation';
 
 // 🎨 Configuración del branding
 const BRANDING = {
@@ -54,6 +30,7 @@ const BRANDING = {
 // Componente interno que usa el contexto de autenticación
 function AppContent({ Component, pageProps }: AppProps) {
   const { session, signOut, loading } = useAuthContext();
+  const dynamicNavigation = useDynamicNavigation(); // ← Nuevo
 
   // Configurar authentication object para Toolpad
   const authentication: Authentication = React.useMemo(() => ({
@@ -98,7 +75,7 @@ function AppContent({ Component, pageProps }: AppProps) {
 
   return (
     <NextAppProvider
-      navigation={NAVIGATION}
+      navigation={dynamicNavigation} // ← Cambio del NAVIGATION estático
       branding={BRANDING}
       theme={jumpingkidsTheme}
       session={toolpadSession}
