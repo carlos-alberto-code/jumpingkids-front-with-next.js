@@ -1,15 +1,17 @@
 // pages/_app.tsx
-import * as React from 'react';
-import { NextAppProvider } from '@toolpad/core/nextjs';
-import { PageContainer } from '@toolpad/core/PageContainer';
-import { DashboardLayout } from '@toolpad/core/DashboardLayout';
-import Head from 'next/head';
-import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import type { Navigation } from '@toolpad/core/AppProvider';
+import { Box, CircularProgress } from '@mui/material';
+import { AppCacheProvider } from '@mui/material-nextjs/v14-pagesRouter';
+import type { Authentication, Navigation, Session } from '@toolpad/core/AppProvider';
+import { DashboardLayout } from '@toolpad/core/DashboardLayout';
+import { NextAppProvider } from '@toolpad/core/nextjs';
+import { PageContainer } from '@toolpad/core/PageContainer';
 import type { AppProps } from 'next/app';
+import Head from 'next/head';
+import * as React from 'react';
+import { AuthProvider, useAuthContext } from '../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../src/theme/theme';
 
 const NAVIGATION: Navigation = [
@@ -38,31 +40,95 @@ const NAVIGATION: Navigation = [
 const BRANDING = {
   title: 'Jumpingkids',
   logo: (
-    <img 
+    <img
       src="https://webstockreview.net/images/clipart-exercise-animated-gif-13.gif"
       alt="Jumpingkids Logo"
-      style={{ 
+      style={{
         height: 50,
         width: 'auto'
-      }} 
+      }}
     />
   ),
 };
 
-export default function App({ Component, pageProps }: AppProps) {
+// Componente interno que usa el contexto de autenticación
+function AppContent({ Component, pageProps }: AppProps) {
+  const { session, signOut, loading } = useAuthContext();
+
+  // Configurar authentication object para Toolpad
+  const authentication: Authentication = React.useMemo(() => ({
+    signIn: () => {
+      // Redirigir a página de login custom
+      window.location.href = '/auth/login';
+    },
+    signOut: async () => {
+      await signOut();
+    }
+  }), [signOut]);
+
+  // Configurar session object para Toolpad
+  const toolpadSession: Session | null = React.useMemo(() => {
+    if (!session?.isAuthenticated) return null;
+
+    return {
+      user: {
+        id: session.user.id,
+        name: session.user.name,
+        email: session.user.email,
+        image: session.user.avatar || undefined
+      }
+    };
+  }, [session]);
+
+  // Loading spinner durante verificación de sesión
+  if (loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100vh'
+        }}
+      >
+        <CircularProgress size={60} />
+      </Box>
+    );
+  }
+
+  return (
+    <NextAppProvider
+      navigation={NAVIGATION}
+      branding={BRANDING}
+      theme={jumpingkidsTheme}
+      session={toolpadSession}
+      authentication={authentication}
+    >
+      <DashboardLayout
+        sidebarExpandedWidth={240}
+      >
+        <PageContainer>
+          <Component {...pageProps} />
+        </PageContainer>
+      </DashboardLayout>
+    </NextAppProvider>
+  );
+}
+
+export default function App(props: AppProps) {
   // 🔍 Debug del tema en desarrollo
   React.useEffect(() => {
     if (process.env.NODE_ENV === 'development') {
       console.log('🎨 Theme applied:', jumpingkidsTheme);
       console.log('🌓 Color schemes:', (jumpingkidsTheme as any).colorSchemes);
       console.log('🔧 CSS Variables config:', (jumpingkidsTheme as any).cssVariables);
-      
+
       // Verificar después de un momento si aparece el toggle
       setTimeout(() => {
-        const toggleButton = document.querySelector('[aria-label*="toggle"]') || 
-                            document.querySelector('[data-testid*="theme"]') ||
-                            document.querySelector('button[title*="theme"]');
-        
+        const toggleButton = document.querySelector('[aria-label*="toggle"]') ||
+          document.querySelector('[data-testid*="theme"]') ||
+          document.querySelector('button[title*="theme"]');
+
         if (toggleButton) {
           console.log('✅ Theme toggle found!', toggleButton);
         } else {
@@ -79,19 +145,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <title>Jumpingkids - Aplicación de Ejercicios</title>
         <meta name="description" content="Aplicación de ejercicios para mantenerte en forma" />
       </Head>
-      <NextAppProvider 
-        navigation={NAVIGATION} 
-        branding={BRANDING}
-        theme={jumpingkidsTheme}
-      >
-        <DashboardLayout 
-          sidebarExpandedWidth={240}
-        >
-          <PageContainer>
-            <Component {...pageProps} />
-          </PageContainer>
-        </DashboardLayout>
-      </NextAppProvider>
+      <AuthProvider>
+        <AppContent {...props} />
+      </AuthProvider>
     </AppCacheProvider>
   );
 }

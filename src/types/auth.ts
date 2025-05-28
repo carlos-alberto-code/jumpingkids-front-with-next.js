@@ -21,11 +21,12 @@ export interface User {
     id: string;
     name: string;
     email: string;
-    type: UserType;
+    userType: UserType; // Cambiado de 'type' a 'userType' para consistencia
     subscription: SubscriptionType;
     avatar?: string;
     createdAt: string;
     updatedAt?: string;
+    lastLogin?: string;
 }
 
 /**
@@ -62,7 +63,8 @@ export interface RegisterData {
     name: string;
     email: string;
     password: string;
-    type: UserType;
+    confirmPassword?: string; // Para validación en frontend
+    userType: UserType; // Usando userType para consistencia con componentes
     subscription?: SubscriptionType; // Default será 'free'
 }
 

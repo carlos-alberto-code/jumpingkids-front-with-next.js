@@ -44,10 +44,10 @@ export const useUserPermissions = (): UserPermissions => {
             };
         }
 
-        const { type, subscription } = session.user;
+        const { userType, subscription } = session.user;
 
         // NIÑO FREE
-        if (type === 'kid' && subscription === 'free') {
+        if (userType === 'kid' && subscription === 'free') {
             return {
                 // Ejercicios
                 canAccessPremiumExercises: false,
@@ -77,7 +77,7 @@ export const useUserPermissions = (): UserPermissions => {
         }
 
         // NIÑO PREMIUM
-        if (type === 'kid' && subscription === 'premium') {
+        if (userType === 'kid' && subscription === 'premium') {
             return {
                 // Ejercicios
                 canAccessPremiumExercises: true,
@@ -107,7 +107,7 @@ export const useUserPermissions = (): UserPermissions => {
         }
 
         // TUTOR FREE
-        if (type === 'tutor' && subscription === 'free') {
+        if (userType === 'tutor' && subscription === 'free') {
             return {
                 // Ejercicios (incluye todo lo de niño free)
                 canAccessPremiumExercises: false,
@@ -137,7 +137,7 @@ export const useUserPermissions = (): UserPermissions => {
         }
 
         // TUTOR PREMIUM
-        if (type === 'tutor' && subscription === 'premium') {
+        if (userType === 'tutor' && subscription === 'premium') {
             return {
                 // Ejercicios (acceso completo)
                 canAccessPremiumExercises: true,
@@ -199,8 +199,8 @@ export const usePermissionCheck = () => {
     return {
         // Verificaciones rápidas
         isPremiumUser: session?.user.subscription === 'premium',
-        isTutor: session?.user.type === 'tutor',
-        isKid: session?.user.type === 'kid',
+        isTutor: session?.user.userType === 'tutor',
+        isKid: session?.user.userType === 'kid',
         isAuthenticated: !!session?.isAuthenticated,
 
         // Verificaciones de capacidades específicas
