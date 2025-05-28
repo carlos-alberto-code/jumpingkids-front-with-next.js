@@ -82,11 +82,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <NextAppProvider 
         navigation={NAVIGATION} 
         branding={BRANDING}
-        theme={jumpingkidsTheme} // 🎨 Aplicar el tema personalizado
+        theme={jumpingkidsTheme}
       >
         <DashboardLayout 
           sidebarExpandedWidth={240}
-          // 🌓 El toggle debería aparecer automáticamente con colorSchemes definidos
         >
           <PageContainer>
             <Component {...pageProps} />
