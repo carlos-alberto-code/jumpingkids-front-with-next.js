@@ -93,28 +93,6 @@ function AppContent({ Component, pageProps }: AppProps) {
 }
 
 export default function App(props: AppProps) {
-  // 🔍 Debug del tema en desarrollo
-  React.useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('🎨 Theme applied:', jumpingkidsTheme);
-      console.log('🌓 Color schemes:', (jumpingkidsTheme as any).colorSchemes);
-      console.log('🔧 CSS Variables config:', (jumpingkidsTheme as any).cssVariables);
-
-      // Verificar después de un momento si aparece el toggle
-      setTimeout(() => {
-        const toggleButton = document.querySelector('[aria-label*="toggle"]') ||
-          document.querySelector('[data-testid*="theme"]') ||
-          document.querySelector('button[title*="theme"]');
-
-        if (toggleButton) {
-          console.log('✅ Theme toggle found!', toggleButton);
-        } else {
-          console.warn('❌ Theme toggle not found. Check Toolpad Core version and theme config.');
-        }
-      }, 2000);
-    }
-  }, []);
-
   return (
     <AppCacheProvider>
       <Head>

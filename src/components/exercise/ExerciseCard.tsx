@@ -34,7 +34,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
 }) => {
     const theme = useTheme();
     const [hovered, setHovered] = useState(false);
-    const { canAccessPremiumFeatures, isPremiumUser } = usePermissionCheck();
+    const { isPremiumUser } = usePermissionCheck();
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
         e.stopPropagation();

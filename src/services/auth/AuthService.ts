@@ -25,7 +25,7 @@ export class AuthService {
                     // Guardar en localStorage
                     this.saveSession(session);
                     resolve(session);
-                } catch (error) {
+                } catch {
                     reject(new Error('Error en el login'));
                 }
             }, this.MOCK_DELAY_MS);
@@ -63,7 +63,7 @@ export class AuthService {
                     // Guardar en localStorage
                     this.saveSession(session);
                     resolve(session);
-                } catch (error) {
+                } catch {
                     reject(new Error('Error en el registro'));
                 }
             }, this.MOCK_DELAY_MS);

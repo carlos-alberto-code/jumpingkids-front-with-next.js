@@ -7,8 +7,6 @@ import {
     Card,
     CardContent,
     Container,
-    Divider,
-    Stack,
     TextField,
     Typography
 } from '@mui/material';
@@ -16,7 +14,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { MOCK_USERS } from '../../src/constants/authMocks';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../../src/theme/theme';
 
@@ -34,16 +31,7 @@ export default function LoginPage() {
             await signIn(formData.email, formData.password);
             // Redirección será manejada por el contexto/Toolpad
             router.push('/');
-        } catch (err) {
-            // Error será manejado por el contexto
-        }
-    };
-
-    const handleQuickLogin = async (email: string) => {
-        try {
-            await signIn(email, 'demo123');
-            router.push('/');
-        } catch (err) {
+        } catch {
             // Error será manejado por el contexto
         }
     };
@@ -116,48 +104,6 @@ export default function LoginPage() {
                                 >
                                     {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
                                 </Button>
-
-                                <Divider sx={{ my: 2 }}>
-                                    <Typography variant="body2" color="text.secondary">
-                                        O usa los usuarios de prueba
-                                    </Typography>
-                                </Divider>
-
-                                {/* Botones de login rápido */}
-                                <Stack direction="row" spacing={1} flexWrap="wrap">
-                                    {MOCK_USERS.map((user) => (
-                                        <Button
-                                            key={user.id}
-                                            variant="outlined"
-                                            size="small"
-                                            onClick={() => handleQuickLogin(user.email)}
-                                            disabled={loading}
-                                            sx={{
-                                                textTransform: 'none',
-                                                fontSize: '0.75rem',
-                                                py: 1,
-                                                flex: '1 1 45%'
-                                            }}
-                                        >
-                                            <Box sx={{ textAlign: 'center' }}>
-                                                <Typography variant="caption" component="div">
-                                                    {user.name}
-                                                </Typography>
-                                                <Typography variant="caption" color="text.secondary">
-                                                    {user.userType} {user.subscription}
-                                                </Typography>
-                                            </Box>
-                                        </Button>
-                                    ))}
-                                </Stack>
-
-                                {/* Info para testing */}
-                                <Alert severity="info" sx={{ mt: 2 }}>
-                                    <Typography variant="body2">
-                                        <strong>Credenciales de prueba:</strong><br />
-                                        Cualquier email de los usuarios mock con contraseña: <code>demo123</code>
-                                    </Typography>
-                                </Alert>
 
                                 <Box sx={{ mt: 2, textAlign: 'center' }}>
                                     <Typography variant="body2">

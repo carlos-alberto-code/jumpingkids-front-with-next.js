@@ -1,6 +1,5 @@
 // src/theme/theme.ts
-import { createTheme } from '@mui/material/styles';
-import { alpha } from '@mui/material/styles';
+import { alpha, createTheme } from '@mui/material/styles';
 
 // 🎨 Paleta de colores basada en la ilustración del dragón
 // Colores vibrantes y amigables perfectos para aplicación infantil
@@ -23,7 +22,7 @@ const jumpingKidsColors = {
     beginner: '#81C784',     // Verde menta = fácil/natural
     intermediate: '#FF7043', // Naranja coral = moderado
     advanced: '#E91E63',     // Rosa intenso = desafiante
-    
+
     // Categorías con colores de la ilustración
     cardio: '#E91E63',       // Rosa energético del dragón
     strength: '#8D6E63',     // Marrón chocolate para fuerza
@@ -201,7 +200,7 @@ export const jumpingkidsTheme = createTheme({
   // ✍️ Tipografía optimizada para niños y legibilidad
   typography: {
     fontFamily: '"Inter", "Roboto", "Poppins", "Helvetica", "Arial", sans-serif',
-    
+
     // Tamaños más grandes y pesos más suaves para mejor legibilidad infantil
     h1: {
       fontWeight: 700,
@@ -507,7 +506,7 @@ export const themeUtils = {
   }),
 
   // 🎭 Aplicar estilos según el modo (reemplaza theme.palette.mode checks)
-  applyModeStyles: (theme: typeof jumpingkidsTheme, lightStyles: any, darkStyles: any) => {
+  applyModeStyles: (theme: typeof jumpingkidsTheme, lightStyles: Record<string, unknown>, darkStyles: Record<string, unknown>) => {
     return {
       ...lightStyles,
       ...theme.applyStyles('dark', darkStyles),

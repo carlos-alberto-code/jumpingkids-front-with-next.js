@@ -78,7 +78,7 @@ export default function SignupPage() {
         try {
             await signUp(formData);
             router.push('/');
-        } catch (err) {
+        } catch {
             // Error será manejado por el contexto
         }
     };
