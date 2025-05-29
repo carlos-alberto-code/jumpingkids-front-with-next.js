@@ -150,7 +150,7 @@ export default function SignupPage() {
                                     name="email"
                                     autoComplete="email"
                                     value={formData.username}
-                                    onChange={(e) => handleInputChange('email', e.target.value)}
+                                    onChange={(e) => handleInputChange('username', e.target.value)}
                                     error={!!formErrors.email}
                                     helperText={formErrors.email}
                                 />
