@@ -1,5 +1,5 @@
 import { createMockSession, findUserByEmail } from '../../constants/authMocks';
-import { RegisterData, User, UserSession } from '../../types/auth';
+import { SignUpData, User, UserSession } from '../../types/auth';
 
 export class AuthService {
     private static readonly STORAGE_KEY = 'jumpingkids-session';
@@ -35,12 +35,12 @@ export class AuthService {
     /**
      * Simula registro de nuevo usuario
      */
-    static async signUp(userData: RegisterData): Promise<UserSession> {
+    static async signUp(userData: SignUpData): Promise<UserSession> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 try {
                     // Verificar si el email ya existe
-                    const existingUser = findUserByEmail(userData.email);
+                    const existingUser = findUserByEmail(userData.username);
                     if (existingUser) {
                         reject(new Error('El email ya está registrado'));
                         return;
@@ -50,7 +50,7 @@ export class AuthService {
                     const newUser: User = {
                         id: `user-${Date.now()}`,
                         name: userData.name,
-                        email: userData.email,
+                        email: userData.username,
                         userType: userData.userType,
                         subscription: userData.subscription || 'free',
                         avatar: undefined,

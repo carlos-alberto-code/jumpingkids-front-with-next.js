@@ -1,32 +1,20 @@
 
-/**
- * Tipos de usuario en la aplicación Jumpingkids
- */
 export type UserType = 'kid' | 'tutor';
 
-/**
- * Tipos de suscripción disponibles
- */
 export type SubscriptionType = 'free' | 'premium';
 
-/**
- * Estados de autenticación de la aplicación
- */
 export type AuthenticationStatus = 'authenticated' | 'unauthenticated' | 'loading';
 
-/**
- * Interface principal del usuario
- */
 export interface User {
     id: string;
     name: string;
     email: string;
-    userType: UserType; // Cambiado de 'type' a 'userType' para consistencia
+    userType: UserType;
     subscription: SubscriptionType;
     avatar?: string;
-    createdAt: string;
-    updatedAt?: string;
-    lastLogin?: string;
+    // createdAt: string;
+    // updatedAt?: string;
+    // lastLogin?: string;
 }
 
 /**
@@ -52,49 +40,20 @@ export interface AuthState {
  * Credenciales para login
  */
 export interface LoginCredentials {
-    email: string;
+    username: string;
     password: string;
 }
 
 /**
  * Datos para registro de usuario
  */
-export interface RegisterData {
+export interface SignUpData {
     name: string;
-    email: string;
+    username: string;
     password: string;
-    confirmPassword?: string; // Para validación en frontend
-    userType: UserType; // Usando userType para consistencia con componentes
-    subscription?: SubscriptionType; // Default será 'free'
-}
-
-/**
- * Configuración de permisos por combinación de tipo y suscripción
- */
-export interface UserPermissions {
-    // Ejercicios
-    canAccessPremiumExercises: boolean;
-    canCreateCustomExercises: boolean;
-    maxExercisesPerDay?: number; // undefined = ilimitado
-
-    // Rutinas
-    canCreatePersonalRoutines: boolean;
-    canAccessPremiumRoutines: boolean;
-    canShareRoutines: boolean;
-    maxRoutinesStored?: number; // undefined = ilimitado
-
-    // Entrenamiento y seguimiento
-    canTrackProgress: boolean;
-    canAccessAdvancedMetrics: boolean;
-    canExportData: boolean;
-
-    // Gestión (específico para tutores)
-    canManageMultipleKids: boolean;
-    canAccessAnalytics: boolean;
-    canCreateExercisesForKids: boolean;
-
-    // Suscripción
-    canUpgradeSubscription: boolean;
+    confirmPassword: string;
+    userType: UserType;
+    subscription?: SubscriptionType;
 }
 
 /**

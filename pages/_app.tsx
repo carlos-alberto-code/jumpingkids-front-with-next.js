@@ -11,10 +11,11 @@ import * as React from 'react';
 import { AuthProvider, useAuthContext } from '../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../src/theme/theme';
 import { useDynamicNavigation } from '../src/utils/navigation';
+import { title } from 'process';
 
 // 🎨 Configuración del branding
 const BRANDING = {
-  title: 'Jumpingkids',
+  title: 'JumpingKids',
   logo: (
     <img
       src="https://webstockreview.net/images/clipart-exercise-animated-gif-13.gif"
@@ -84,7 +85,10 @@ function AppContent({ Component, pageProps }: AppProps) {
       <DashboardLayout
         sidebarExpandedWidth={240}
       >
-        <PageContainer>
+        <PageContainer
+          title={""}
+          breadcrumbs={[]}
+        >
           <Component {...pageProps} />
         </PageContainer>
       </DashboardLayout>

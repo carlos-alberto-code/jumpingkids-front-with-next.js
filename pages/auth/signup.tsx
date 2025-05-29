@@ -24,15 +24,15 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../../src/theme/theme';
-import { RegisterData, UserType } from '../../src/types/auth';
+import { SignUpData, UserType } from '../../src/types/auth';
 
 export default function SignupPage() {
     const router = useRouter();
     const { signUp, loading, error } = useAuthContext();
 
-    const [formData, setFormData] = useState<RegisterData>({
+    const [formData, setFormData] = useState<SignUpData>({
         name: '',
-        email: '',
+        username: '',
         password: '',
         confirmPassword: '',
         userType: 'kid',
@@ -48,9 +48,9 @@ export default function SignupPage() {
             errors.name = 'El nombre es requerido';
         }
 
-        if (!formData.email.trim()) {
+        if (!formData.username.trim()) {
             errors.email = 'El email es requerido';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+        } else if (!/\S+@\S+\.\S+/.test(formData.username)) {
             errors.email = 'Email inválido';
         }
 
@@ -83,7 +83,7 @@ export default function SignupPage() {
         }
     };
 
-    const handleInputChange = (field: keyof RegisterData, value: string) => {
+    const handleInputChange = (field: keyof SignUpData, value: string) => {
         setFormData(prev => ({ ...prev, [field]: value }));
         // Limpiar error del campo al escribir
         if (formErrors[field]) {
@@ -149,7 +149,7 @@ export default function SignupPage() {
                                     label="Correo Electrónico"
                                     name="email"
                                     autoComplete="email"
-                                    value={formData.email}
+                                    value={formData.username}
                                     onChange={(e) => handleInputChange('email', e.target.value)}
                                     error={!!formErrors.email}
                                     helperText={formErrors.email}

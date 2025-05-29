@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { AuthService } from '../../services/auth/AuthService';
 import {
     AuthState,
-    RegisterData
+    SignUpData
 } from '../../types/auth';
 
 /**
@@ -61,7 +61,7 @@ export const useAuth = () => {
     /**
      * Registrar nuevo usuario
      */
-    const signUp = useCallback(async (userData: RegisterData): Promise<void> => {
+    const signUp = useCallback(async (userData: SignUpData): Promise<void> => {
         setAuthState(prev => ({ ...prev, loading: true, error: null }));
 
         try {
