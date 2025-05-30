@@ -1,3 +1,4 @@
+// src/components/exercise/ExerciseCard.tsx
 import {
     AccessTime,
     Add as AddIcon,
@@ -19,6 +20,7 @@ import {
 import React, { memo, useState } from 'react';
 import { usePermissionCheck } from '../../hooks/auth/useUserPermissions';
 import { Exercise } from '../../types/exercise';
+import { useThemeHelpers } from '../../utils/themeHelpers';
 import PermissionGate from '../auth/PermissionGate';
 
 interface ExerciseCardProps {
@@ -35,6 +37,10 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
     const theme = useTheme();
     const [hovered, setHovered] = useState(false);
     const { isPremiumUser } = usePermissionCheck();
+    const { getDifficultyStyles } = useThemeHelpers(theme);
+
+    // 🔧 Obtener estilos de dificultad usando helper seguro
+    const difficultyStyles = getDifficultyStyles(exercise.difficulty);
 
     const handleFavoriteClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -61,12 +67,12 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     },
                 },
                 borderRadius: "18px",
-                minWidth: { xs: 320, sm: 400 }, // Responsivo: 320px en móvil, 400px en pantallas más grandes
+                minWidth: { xs: 320, sm: 400 },
                 minHeight: 165,
                 maxHeight: 165,
                 display: 'flex',
                 flexDirection: 'column',
-                position: 'relative', // Para posicionar el chip de premium
+                position: 'relative',
             }}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
@@ -89,6 +95,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     }}
                 />
             )}
+            
             <CardContent sx={{
                 p: 2,
                 display: 'flex',
@@ -134,8 +141,8 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100%',
-                        justifyContent: 'flex-start', // 🔄 CAMBIAR de space-between a flex-start
-                        py: 0.5, // ✨ AÑADIR - Padding vertical
+                        justifyContent: 'flex-start',
+                        py: 0.5,
                     }}>
                         {/* Título */}
                         <Typography
@@ -221,7 +228,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 </Typography>
                             </Box>
 
-                            {/* Dificultad */}
+                            {/* Dificultad - CON MANEJO SEGURO */}
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <FitnessCenter
                                     sx={{
@@ -232,39 +239,20 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 <Chip
                                     label={exercise.difficulty}
                                     size="small"
-                                    sx={[
-                                        {
-                                            fontSize: '0.7rem',
-                                            height: 20,
-                                            borderRadius: '6px',
-                                            fontWeight: 500,
-                                        },
-                                        exercise.difficulty === 'Principiante' && {
-                                            backgroundColor: theme.vars?.palette.success.main || theme.palette.success.main,
-                                            color: theme.vars?.palette.success.contrastText || theme.palette.success.contrastText,
-                                        },
-                                        exercise.difficulty === 'Intermedio' && {
-                                            backgroundColor: theme.vars?.palette.warning.main || theme.palette.warning.main,
-                                            color: theme.vars?.palette.warning.contrastText || theme.palette.warning.contrastText,
-                                        },
-                                        exercise.difficulty === 'Avanzado' && {
-                                            backgroundColor: theme.vars?.palette.error.main || theme.palette.error.main,
-                                            color: theme.vars?.palette.error.contrastText || theme.palette.error.contrastText,
-                                        },
-                                        theme.applyStyles('dark', {
-                                            backgroundColor: exercise.difficulty === 'Principiante'
-                                                ? theme.palette.exerciseDifficulty.beginner
-                                                : exercise.difficulty === 'Intermedio'
-                                                    ? theme.palette.exerciseDifficulty.intermediate
-                                                    : theme.palette.exerciseDifficulty.advanced,
-                                        }),
-                                    ]}
+                                    sx={{
+                                        fontSize: '0.7rem',
+                                        height: 20,
+                                        borderRadius: '6px',
+                                        fontWeight: 500,
+                                        backgroundColor: difficultyStyles.backgroundColor,
+                                        color: difficultyStyles.color,
+                                    }}
                                 />
                             </Box>
                         </Box>
                     </Box>
 
-                    {/* Botones de acción - Derecha (centrado verticalmente) */}
+                    {/* Botones de acción - Derecha */}
                     <Box sx={{
                         flexShrink: 0,
                         ml: 2,
@@ -316,7 +304,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 size="small"
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    // Lógica para crear ejercicio similar
                                     console.log('Crear ejercicio basado en:', exercise.title);
                                 }}
                                 sx={{
