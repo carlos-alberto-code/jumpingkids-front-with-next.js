@@ -3,7 +3,7 @@ import { SignUpData, User, UserSession } from '../../types/auth';
 
 export class AuthService {
     private static readonly STORAGE_KEY = 'jumpingkids-session';
-    private static readonly MOCK_DELAY_MS = 1000;
+    private static readonly MOCK_DELAY_MS = 800;
 
     /**
      * Simula login de usuario
@@ -22,10 +22,13 @@ export class AuthService {
 
                     const session: UserSession = createMockSession(user);
 
-                    // Guardar en localStorage
+                    // ✅ GARANTIZAR que se guarde en localStorage
                     this.saveSession(session);
+                    console.log('Sesión guardada:', session); // Debug
+
                     resolve(session);
-                } catch {
+                } catch (error) {
+                    console.error('Error en signIn:', error);
                     reject(new Error('Error en el login'));
                 }
             }, this.MOCK_DELAY_MS);
@@ -54,16 +57,17 @@ export class AuthService {
                         userType: userData.userType,
                         subscription: userData.subscription || 'free',
                         avatar: undefined,
-                        createdAt: new Date().toISOString(),
-                        lastLogin: new Date().toISOString()
                     };
 
                     const session: UserSession = createMockSession(newUser);
 
-                    // Guardar en localStorage
+                    // ✅ GARANTIZAR que se guarde en localStorage
                     this.saveSession(session);
+                    console.log('Nueva sesión creada:', session); // Debug
+
                     resolve(session);
-                } catch {
+                } catch (error) {
+                    console.error('Error en signUp:', error);
                     reject(new Error('Error en el registro'));
                 }
             }, this.MOCK_DELAY_MS);
@@ -77,8 +81,9 @@ export class AuthService {
         return new Promise((resolve) => {
             setTimeout(() => {
                 this.clearSession();
+                console.log('Sesión cerrada'); // Debug
                 resolve();
-            }, 500);
+            }, 300);
         });
     }
 
@@ -87,7 +92,14 @@ export class AuthService {
      */
     static getCurrentSession(): UserSession | null {
         try {
+            // ✅ Verificar que estamos en el browser
+            if (typeof window === 'undefined') {
+                return null;
+            }
+
             const sessionData = localStorage.getItem(this.STORAGE_KEY);
+            console.log('Session data from storage:', sessionData); // Debug
+
             if (!sessionData) {
                 return null;
             }
@@ -96,16 +108,19 @@ export class AuthService {
 
             // Verificar que la sesión no haya expirado
             if (session.expiresAt && new Date(session.expiresAt) < new Date()) {
+                console.log('Sesión expirada'); // Debug
                 this.clearSession();
                 return null;
             }
 
             // Verificar que el token sea válido
             if (!this.validateToken(session.token || '')) {
+                console.log('Token inválido'); // Debug
                 this.clearSession();
                 return null;
             }
 
+            console.log('Sesión válida recuperada:', session); // Debug
             return session;
         } catch (error) {
             console.error('Error al recuperar sesión:', error);
@@ -119,7 +134,15 @@ export class AuthService {
      */
     static saveSession(session: UserSession): void {
         try {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
+            // ✅ Verificar que estamos en el browser
+            if (typeof window === 'undefined') {
+                console.warn('No se puede guardar sesión: no hay localStorage disponible');
+                return;
+            }
+
+            const sessionData = JSON.stringify(session);
+            localStorage.setItem(this.STORAGE_KEY, sessionData);
+            console.log('Sesión guardada en localStorage:', sessionData); // Debug
         } catch (error) {
             console.error('Error al guardar sesión:', error);
         }
@@ -130,7 +153,10 @@ export class AuthService {
      */
     static clearSession(): void {
         try {
-            localStorage.removeItem(this.STORAGE_KEY);
+            if (typeof window !== 'undefined') {
+                localStorage.removeItem(this.STORAGE_KEY);
+                console.log('Sesión eliminada de localStorage'); // Debug
+            }
         } catch (error) {
             console.error('Error al limpiar sesión:', error);
         }
@@ -158,5 +184,29 @@ export class AuthService {
     static getCurrentUser(): User | null {
         const session = this.getCurrentSession();
         return session?.user || null;
+    }
+
+    // ✅ MÉTODOS PARA LOGIN RÁPIDO CON USUARIOS HARDCODEADOS
+    
+    /**
+     * Login rápido con usuarios predefinidos
+     */
+    static async quickLogin(userType: 'kid-free' | 'kid-premium' | 'tutor-free' | 'tutor-premium'): Promise<UserSession> {
+        const emailMap = {
+            'kid-free': 'sofia@ejemplo.com',
+            'kid-premium': 'diego@ejemplo.com', 
+            'tutor-free': 'ana@ejemplo.com',
+            'tutor-premium': 'carlos@ejemplo.com'
+        };
+
+        const email = emailMap[userType];
+        return this.signIn(email, 'demo123');
+    }
+
+    /**
+     * Verificar si es la primera carga de la app
+     */
+    static isFirstLoad(): boolean {
+        return !this.hasValidSession();
     }
 }

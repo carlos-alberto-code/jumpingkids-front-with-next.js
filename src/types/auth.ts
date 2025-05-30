@@ -1,4 +1,3 @@
-
 export type UserType = 'kid' | 'tutor';
 
 export type SubscriptionType = 'free' | 'premium';
@@ -12,9 +11,10 @@ export interface User {
     userType: UserType;
     subscription: SubscriptionType;
     avatar?: string;
-    // createdAt: string;
-    // updatedAt?: string;
-    // lastLogin?: string;
+    // ✅ Campos opcionales para futuro uso
+    createdAt?: string;
+    updatedAt?: string;
+    lastLogin?: string;
 }
 
 /**
@@ -83,4 +83,15 @@ export interface AuthLoadingStates {
     register: boolean;
     checkSession: boolean;
     updateProfile: boolean;
+}
+
+/**
+ * ✅ TIPOS PARA ACCESO RÁPIDO (TESTING)
+ */
+export type QuickAccessUserType = 'kid-free' | 'kid-premium' | 'tutor-free' | 'tutor-premium';
+
+export interface QuickAccessUser {
+    email: string;
+    password: string;
+    description: string;
 }

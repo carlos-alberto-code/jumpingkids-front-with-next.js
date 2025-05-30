@@ -1,75 +1,118 @@
 import { User, UserSession } from '../types/auth';
 
 /**
- * Usuarios mock para desarrollo y testing
- * Cubre los 4 tipos de usuario principales del sistema
+ * 🎯 USUARIOS HARDCODEADOS PARA TESTING RÁPIDO
+ * Todos usan password: "demo123"
  */
 export const MOCK_USERS: User[] = [
-    // Niño FREE
+    // 👧 NIÑO FREE
     {
-        id: '1',
+        id: 'kid-free-001',
         name: 'Sofia García',
         email: 'sofia@ejemplo.com',
         userType: 'kid',
         subscription: 'free',
         avatar: '👧',
-        createdAt: '2024-01-15T10:00:00Z',
-        updatedAt: '2024-01-20T14:30:00Z',
-        lastLogin: '2024-01-20T14:30:00Z'
     },
-    // Niño PREMIUM
+    
+    // 👦 NIÑO PREMIUM  
     {
-        id: '2',
+        id: 'kid-premium-001',
         name: 'Diego Martínez',
         email: 'diego@ejemplo.com',
         userType: 'kid',
         subscription: 'premium',
         avatar: '👦',
-        createdAt: '2024-02-01T08:15:00Z',
-        updatedAt: '2024-02-15T16:45:00Z',
-        lastLogin: '2024-02-15T16:45:00Z'
     },
-    // Tutor FREE
+    
+    // 👩‍🏫 TUTOR FREE
     {
-        id: '3',
+        id: 'tutor-free-001',
         name: 'Ana Rodriguez',
         email: 'ana@ejemplo.com',
         userType: 'tutor',
         subscription: 'free',
         avatar: '👩‍🏫',
-        createdAt: '2024-01-10T09:30:00Z',
-        updatedAt: '2024-01-25T11:20:00Z',
-        lastLogin: '2024-01-25T11:20:00Z'
     },
-    // Tutor PREMIUM
+    
+    // 👨‍🏫 TUTOR PREMIUM
     {
-        id: '4',
+        id: 'tutor-premium-001',
         name: 'Carlos López',
         email: 'carlos@ejemplo.com',
         userType: 'tutor',
         subscription: 'premium',
         avatar: '👨‍🏫',
-        createdAt: '2024-01-05T07:45:00Z',
-        updatedAt: '2024-02-10T13:15:00Z',
-        lastLogin: '2024-02-10T13:15:00Z'
     }
 ];
+
+/**
+ * 🚀 ACCESOS RÁPIDOS PARA TESTING
+ */
+export const QUICK_ACCESS_USERS = {
+    'kid-free': {
+        email: 'sofia@ejemplo.com',
+        password: 'demo123',
+        description: '👧 Niño FREE - Sofia (funciones básicas)'
+    },
+    'kid-premium': {
+        email: 'diego@ejemplo.com', 
+        password: 'demo123',
+        description: '👦 Niño PREMIUM - Diego (tema personalizado + extras)'
+    },
+    'tutor-free': {
+        email: 'ana@ejemplo.com',
+        password: 'demo123', 
+        description: '👩‍🏫 Tutor FREE - Ana (gestión básica)'
+    },
+    'tutor-premium': {
+        email: 'carlos@ejemplo.com',
+        password: 'demo123',
+        description: '👨‍🏫 Tutor PREMIUM - Carlos (crear contenido + analytics)'
+    }
+} as const;
 
 /**
  * Función helper para encontrar usuario por email
  */
 export const findUserByEmail = (email: string): User | null => {
-    return MOCK_USERS.find(user => user.email === email) || null;
+    const user = MOCK_USERS.find(user => user.email === email);
+    console.log(`Buscando usuario por email ${email}:`, user); // Debug
+    return user || null;
 };
 
 /**
  * Función helper para crear sesión mock basada en usuario
  */
 export const createMockSession = (user: User): UserSession => {
-    return {
+    const session = {
         user,
         token: `mock-jwt-token-${user.id}`,
         isAuthenticated: true,
         expiresAt: '2024-12-31T23:59:59Z'
     };
+    
+    console.log('Creando sesión mock:', session); // Debug
+    return session;
+};
+
+/**
+ * 🎯 HELPER PARA OBTENER USUARIO POR TIPO
+ */
+export const getUserByType = (userType: 'kid' | 'tutor', subscription: 'free' | 'premium'): User | null => {
+    return MOCK_USERS.find(user => 
+        user.userType === userType && user.subscription === subscription
+    ) || null;
+};
+
+/**
+ * 📋 LISTA DE TODOS LOS ACCESOS PARA DOCUMENTACIÓN
+ */
+export const getTestingCredentials = () => {
+    return Object.entries(QUICK_ACCESS_USERS).map(([key, user]) => ({
+        key,
+        email: user.email,
+        password: user.password,
+        description: user.description
+    }));
 };
