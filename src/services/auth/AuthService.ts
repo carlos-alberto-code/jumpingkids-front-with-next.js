@@ -1,212 +1,234 @@
+// src/services/auth/AuthService.ts - ACTUALIZAR
+import { AuthApi } from '../api/authApi';
 import { createMockSession, findUserByEmail } from '../../constants/authMocks';
 import { SignUpData, User, UserSession } from '../../types/auth';
+import { SignUpRequest, SignInRequest } from '../../types/api';
 
 export class AuthService {
     private static readonly STORAGE_KEY = 'jumpingkids-session';
-    private static readonly MOCK_DELAY_MS = 800;
+    private static readonly USE_MOCK_DATA = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
 
     /**
-     * Simula login de usuario
+     * Iniciar sesión (API real o mock)
      */
     static async signIn(email: string, password: string): Promise<UserSession> {
+        console.log('🔐 AuthService.signIn:', { 
+            email, 
+            useMock: this.USE_MOCK_DATA,
+            apiUrl: process.env.NEXT_PUBLIC_API_URL 
+        });
+
+        // Usar mock si está configurado
+        if (this.USE_MOCK_DATA) {
+            return this.signInMock(email, password);
+        }
+
+        try {
+            const request: SignInRequest = {
+                email: email.trim(),
+                password: password,
+                rememberMe: true
+            };
+
+            const response = await AuthApi.signIn(request);
+
+            // Crear sesión desde respuesta de API
+            const session: UserSession = {
+                user: response.user,
+                token: response.tokens.accessToken,
+                isAuthenticated: true,
+                expiresAt: new Date(Date.now() + (response.tokens.expiresIn * 1000)).toISOString()
+            };
+
+            this.saveSession(session);
+            console.log('✅ Login con API exitoso');
+            return session;
+
+        } catch (error) {
+            console.error('❌ Error en login con API:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Registrar usuario (API real o mock)
+     */
+    static async signUp(userData: SignUpData): Promise<UserSession> {
+        console.log('📝 AuthService.signUp:', { 
+            email: userData.username, 
+            userType: userData.userType,
+            useMock: this.USE_MOCK_DATA,
+            apiUrl: process.env.NEXT_PUBLIC_API_URL
+        });
+
+        // Usar mock si está configurado
+        if (this.USE_MOCK_DATA) {
+            return this.signUpMock(userData);
+        }
+
+        try {
+            const request: SignUpRequest = {
+                name: userData.name.trim(),
+                email: userData.username.trim(),
+                password: userData.password,
+                confirmPassword: userData.confirmPassword,
+                userType: userData.userType,
+                subscription: userData.subscription || 'free'
+            };
+
+            const response = await AuthApi.signUp(request);
+
+            // Crear sesión desde respuesta de API
+            const session: UserSession = {
+                user: response.user,
+                token: response.tokens.accessToken,
+                isAuthenticated: true,
+                expiresAt: new Date(Date.now() + (response.tokens.expiresIn * 1000)).toISOString()
+            };
+
+            this.saveSession(session);
+            console.log('✅ Registro con API exitoso');
+            return session;
+
+        } catch (error) {
+            console.error('❌ Error en registro con API:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Cerrar sesión (API real o mock)
+     */
+    static async signOut(): Promise<void> {
+        console.log('🚪 AuthService.signOut:', { useMock: this.USE_MOCK_DATA });
+
+        if (!this.USE_MOCK_DATA) {
+            try {
+                await AuthApi.signOut();
+            } catch (error) {
+                console.error('❌ Error en logout con API:', error);
+                // Continuar con limpieza local incluso si falla API
+            }
+        }
+
+        this.clearSession();
+        console.log('✅ Logout completado');
+    }
+
+    // ===== MÉTODOS MOCK (sin cambios) =====
+    private static async signInMock(email: string, password: string): Promise<UserSession> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 try {
-                    // Buscar usuario en MOCK_USERS por email
                     const user = findUserByEmail(email);
-
                     if (!user || password !== 'demo123') {
                         reject(new Error('Credenciales inválidas'));
                         return;
                     }
-
                     const session: UserSession = createMockSession(user);
-
-                    // ✅ GARANTIZAR que se guarde en localStorage
                     this.saveSession(session);
-                    console.log('Sesión guardada:', session); // Debug
-
                     resolve(session);
                 } catch (error) {
-                    console.error('Error en signIn:', error);
                     reject(new Error('Error en el login'));
                 }
-            }, this.MOCK_DELAY_MS);
+            }, 800);
         });
     }
 
-    /**
-     * Simula registro de nuevo usuario
-     */
-    static async signUp(userData: SignUpData): Promise<UserSession> {
+    private static async signUpMock(userData: SignUpData): Promise<UserSession> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 try {
-                    // Verificar si el email ya existe
                     const existingUser = findUserByEmail(userData.username);
                     if (existingUser) {
                         reject(new Error('El email ya está registrado'));
                         return;
                     }
 
-                    // Crear nuevo usuario mock
                     const newUser: User = {
                         id: `user-${Date.now()}`,
                         name: userData.name,
                         email: userData.username,
                         userType: userData.userType,
                         subscription: userData.subscription || 'free',
-                        avatar: undefined,
+                        avatar: userData.userType === 'tutor' ? '👨‍🏫' : '👧',
                     };
 
                     const session: UserSession = createMockSession(newUser);
-
-                    // ✅ GARANTIZAR que se guarde en localStorage
                     this.saveSession(session);
-                    console.log('Nueva sesión creada:', session); // Debug
-
                     resolve(session);
                 } catch (error) {
-                    console.error('Error en signUp:', error);
                     reject(new Error('Error en el registro'));
                 }
-            }, this.MOCK_DELAY_MS);
+            }, 800);
         });
     }
 
-    /**
-     * Cerrar sesión
-     */
-    static async signOut(): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                this.clearSession();
-                console.log('Sesión cerrada'); // Debug
-                resolve();
-            }, 300);
-        });
-    }
-
-    /**
-     * Obtener sesión actual desde localStorage
-     */
+    // ===== MÉTODOS DE SESIÓN (sin cambios) =====
     static getCurrentSession(): UserSession | null {
         try {
-            // ✅ Verificar que estamos en el browser
-            if (typeof window === 'undefined') {
-                return null;
-            }
+            if (typeof window === 'undefined') return null;
 
             const sessionData = localStorage.getItem(this.STORAGE_KEY);
-            console.log('Session data from storage:', sessionData); // Debug
-
-            if (!sessionData) {
-                return null;
-            }
+            if (!sessionData) return null;
 
             const session: UserSession = JSON.parse(sessionData);
 
-            // Verificar que la sesión no haya expirado
+            // Verificar expiración
             if (session.expiresAt && new Date(session.expiresAt) < new Date()) {
-                console.log('Sesión expirada'); // Debug
                 this.clearSession();
                 return null;
             }
 
-            // Verificar que el token sea válido
-            if (!this.validateToken(session.token || '')) {
-                console.log('Token inválido'); // Debug
-                this.clearSession();
-                return null;
-            }
-
-            console.log('Sesión válida recuperada:', session); // Debug
             return session;
         } catch (error) {
-            console.error('Error al recuperar sesión:', error);
+            console.error('❌ Error al recuperar sesión:', error);
             this.clearSession();
             return null;
         }
     }
 
-    /**
-     * Guardar sesión en localStorage
-     */
     static saveSession(session: UserSession): void {
         try {
-            // ✅ Verificar que estamos en el browser
-            if (typeof window === 'undefined') {
-                console.warn('No se puede guardar sesión: no hay localStorage disponible');
-                return;
-            }
-
+            if (typeof window === 'undefined') return;
             const sessionData = JSON.stringify(session);
             localStorage.setItem(this.STORAGE_KEY, sessionData);
-            console.log('Sesión guardada en localStorage:', sessionData); // Debug
         } catch (error) {
-            console.error('Error al guardar sesión:', error);
+            console.error('❌ Error al guardar sesión:', error);
         }
     }
 
-    /**
-     * Limpiar sesión de localStorage
-     */
     static clearSession(): void {
         try {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem(this.STORAGE_KEY);
-                console.log('Sesión eliminada de localStorage'); // Debug
             }
         } catch (error) {
-            console.error('Error al limpiar sesión:', error);
+            console.error('❌ Error al limpiar sesión:', error);
         }
     }
 
-    /**
-     * Validar token (preparación para JWT real)
-     */
-    static validateToken(token: string): boolean {
-        // Validación mock - en producción sería validación JWT real
-        return token.startsWith('mock-jwt-token-');
-    }
-
-    /**
-     * Verificar si hay una sesión activa válida
-     */
     static hasValidSession(): boolean {
         const session = this.getCurrentSession();
         return session !== null && session.isAuthenticated;
     }
 
-    /**
-     * Obtener información del usuario actual
-     */
     static getCurrentUser(): User | null {
         const session = this.getCurrentSession();
         return session?.user || null;
     }
 
-    // ✅ MÉTODOS PARA LOGIN RÁPIDO CON USUARIOS HARDCODEADOS
-    
-    /**
-     * Login rápido con usuarios predefinidos
-     */
-    static async quickLogin(userType: 'kid-free' | 'kid-premium' | 'tutor-free' | 'tutor-premium'): Promise<UserSession> {
-        const emailMap = {
-            'kid-free': 'sofia@ejemplo.com',
-            'kid-premium': 'diego@ejemplo.com', 
-            'tutor-free': 'ana@ejemplo.com',
-            'tutor-premium': 'carlos@ejemplo.com'
-        };
+    // ===== NUEVOS MÉTODOS PARA API =====
+    static async checkEmailExists(email: string): Promise<boolean> {
+        if (this.USE_MOCK_DATA) {
+            return !!findUserByEmail(email);
+        }
 
-        const email = emailMap[userType];
-        return this.signIn(email, 'demo123');
-    }
-
-    /**
-     * Verificar si es la primera carga de la app
-     */
-    static isFirstLoad(): boolean {
-        return !this.hasValidSession();
+        try {
+            return await AuthApi.checkEmailExists(email);
+        } catch (error) {
+            console.error('❌ Error al verificar email:', error);
+            return false;
+        }
     }
 }

@@ -76,10 +76,20 @@ export default function SignupPage() {
         }
 
         try {
+            console.log('📝 Iniciando registro...'); // Debug
             await signUp(formData);
-            router.push('/');
-        } catch {
-            // Error será manejado por el contexto
+
+            // Redirigir según tipo de usuario
+            if (formData.userType === 'tutor') {
+                console.log('👨‍🏫 Tutor registrado - redirigir a verificación');
+                router.push('/auth/verify');
+            } else {
+                console.log('👧 Niño registrado - ir al dashboard');
+                router.push('/');
+            }
+        } catch (error) {
+            console.error('❌ Error en registro:', error);
+            // Error será mostrado automáticamente por useAuthContext
         }
     };
 
@@ -125,6 +135,10 @@ export default function SignupPage() {
                             )}
 
                             <Box component="form" onSubmit={handleSubmit}>
+                                {/* Instrucciones generales */}
+                                <Typography variant="body1" sx={{ mb: 2, textAlign: 'center', color: 'warning.main' }}>
+                                    Este es un formulario exclusivo para tutores. Si eres un niño, por favor contacta a tu tutor para que te registre.
+                                </Typography>
                                 {/* Información básica */}
                                 <TextField
                                     margin="normal"
@@ -145,10 +159,10 @@ export default function SignupPage() {
                                     margin="normal"
                                     required
                                     fullWidth
-                                    id="email"
-                                    label="Correo Electrónico"
-                                    name="email"
-                                    autoComplete="email"
+                                    id="username"
+                                    label="Nombre de Usuario"
+                                    name="username"
+                                    autoComplete="username"
                                     value={formData.username}
                                     onChange={(e) => handleInputChange('username', e.target.value)}
                                     error={!!formErrors.email}
@@ -197,18 +211,6 @@ export default function SignupPage() {
                                         onChange={(e) => handleInputChange('userType', e.target.value as UserType)}
                                     >
                                         <FormControlLabel
-                                            value="kid"
-                                            control={<Radio />}
-                                            label={
-                                                <Box>
-                                                    <Typography variant="body1">Niño/a</Typography>
-                                                    <Typography variant="caption" color="text.secondary">
-                                                        Cuenta para realizar ejercicios
-                                                    </Typography>
-                                                </Box>
-                                            }
-                                        />
-                                        <FormControlLabel
                                             value="tutor"
                                             control={<Radio />}
                                             label={
@@ -246,11 +248,12 @@ export default function SignupPage() {
                                                     size="small"
                                                     sx={{ mb: 1 }}
                                                 />
-                                                <Typography variant="h6">Plan Básico</Typography>
-                                                <Typography variant="body2" color="text.secondary">
+                                                <Typography variant="h6">Plan Gratuito</Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+                                                    • Número limitado de rutinas<br />
                                                     • Ejercicios básicos<br />
-                                                    • {formData.userType === 'kid' ? '5 ejercicios/día' : 'Seguimiento básico'}<br />
-                                                    • {formData.userType === 'kid' ? '1 rutina guardada' : '3 rutinas guardadas'}
+                                                    • Seguimiento básico<br />
+                                                    • Un niño
                                                 </Typography>
                                             </Box>
                                         </Paper>
@@ -273,10 +276,11 @@ export default function SignupPage() {
                                                     sx={{ mb: 1 }}
                                                 />
                                                 <Typography variant="h6">Plan Premium</Typography>
-                                                <Typography variant="body2" color="text.secondary">
+                                                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+                                                    • Gestión múltiples niños<br />
+                                                    • Seguimiento avanzado<br />
+                                                    • Creación de ejercicios<br />
                                                     • Ejercicios premium<br />
-                                                    • {formData.userType === 'kid' ? 'Rutinas personales' : 'Crear ejercicios'}<br />
-                                                    • {formData.userType === 'kid' ? 'Seguimiento progreso' : 'Gestión múltiples niños'}
                                                 </Typography>
                                             </Box>
                                         </Paper>
