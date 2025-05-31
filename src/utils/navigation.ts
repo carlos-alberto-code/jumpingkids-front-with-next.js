@@ -33,7 +33,7 @@ export function getDynamicNavigation(user: User | null): Navigation {
     // Rutinas - visible según permisos
     if (!user || permissions.canCreatePersonalRoutines || permissions.canAccessPremiumRoutines) {
         navigation.push({
-            segment: 'routine',
+            segment: 'routines',
             title: 'Rutinas',
             icon: React.createElement(ListAltIcon),
         });
@@ -42,7 +42,7 @@ export function getDynamicNavigation(user: User | null): Navigation {
     // Entrenamiento - visible si puede hacer seguimiento
     if (permissions.canTrackProgress) {
         navigation.push({
-            segment: 'workout',
+            segment: 'training',
             title: 'Entrenamiento',
             icon: React.createElement(DirectionsRunIcon),
         });
@@ -57,7 +57,7 @@ export function getDynamicNavigation(user: User | null): Navigation {
 
         if (permissions.canCreateCustomExercises) {
             navigation.push({
-                segment: 'exercise/create',
+                segment: 'create_exercise',
                 title: 'Crear Ejercicio',
                 icon: React.createElement(AddIcon),
             });
@@ -65,9 +65,9 @@ export function getDynamicNavigation(user: User | null): Navigation {
 
         if (permissions.canCreateExercisesForKids) {
             navigation.push({
-                segment: 'exercise/manage',
-                title: 'Gestionar Ejercicios',
-                icon: React.createElement(SupervisorAccountIcon),
+                segment: 'create_routine',
+                title: 'Crear Rutina',
+                icon: React.createElement(AddIcon),
             });
         }
     }
@@ -89,9 +89,18 @@ export function getDynamicNavigation(user: User | null): Navigation {
 
         if (permissions.canManageMultipleKids) {
             navigation.push({
-                segment: 'kids/manage',
-                title: 'Gestionar Niños',
+                segment: 'my_kids',
+                title: 'Mis Niños',
                 icon: React.createElement(SupervisorAccountIcon),
+            });
+        }
+
+        // Agregar asignar rutinas para tutores
+        if (user?.userType === 'tutor') {
+            navigation.push({
+                segment: 'assign_routine',
+                title: 'Asignar Rutinas',
+                icon: React.createElement(ListAltIcon),
             });
         }
     }

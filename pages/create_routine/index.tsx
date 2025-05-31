@@ -1,7 +1,7 @@
-import PermissionGate from '../../src/components/auth/PermissionGate';
 import { Add as CreateIcon, Star as PremiumIcon } from '@mui/icons-material';
+import { Alert, Box, Card, CardContent, Chip, Container, Typography } from '@mui/material';
+import PermissionGate from '../../src/components/auth/PermissionGate';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
-import { Box, Container, Typography, Card, CardContent, Chip, Alert } from '@mui/material';
 
 
 export default function CreateRoutinePage() {
@@ -10,11 +10,11 @@ export default function CreateRoutinePage() {
 
     return (
         <PermissionGate
-            permission="canCreateCustomExercises"
+            permission="canCreateExercisesForKids"
             fallback={
                 <Container maxWidth="lg" sx={{ py: 4 }}>
                     <Alert severity="warning" sx={{ mb: 3 }}>
-                        Esta funcionalidad requiere suscripción Premium.
+                        Esta funcionalidad requiere suscripción Premium y permisos de tutor.
                     </Alert>
                 </Container>
             }
