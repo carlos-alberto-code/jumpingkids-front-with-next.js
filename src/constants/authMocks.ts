@@ -14,7 +14,7 @@ export const MOCK_USERS: User[] = [
         subscription: 'free',
         avatar: '👧',
     },
-    
+
     // 👦 NIÑO PREMIUM  
     {
         id: 'kid-premium-001',
@@ -24,7 +24,7 @@ export const MOCK_USERS: User[] = [
         subscription: 'premium',
         avatar: '👦',
     },
-    
+
     // 👩‍🏫 TUTOR FREE
     {
         id: 'tutor-free-001',
@@ -34,7 +34,7 @@ export const MOCK_USERS: User[] = [
         subscription: 'free',
         avatar: '👩‍🏫',
     },
-    
+
     // 👨‍🏫 TUTOR PREMIUM
     {
         id: 'tutor-premium-001',
@@ -51,22 +51,22 @@ export const MOCK_USERS: User[] = [
  */
 export const QUICK_ACCESS_USERS = {
     'kid-free': {
-        email: 'sofia@ejemplo.com',
+        username: 'sofia',
         password: 'demo123',
         description: '👧 Niño FREE - Sofia (funciones básicas)'
     },
     'kid-premium': {
-        email: 'diego@ejemplo.com', 
+        username: 'diego',
         password: 'demo123',
         description: '👦 Niño PREMIUM - Diego (tema personalizado + extras)'
     },
     'tutor-free': {
-        email: 'ana@ejemplo.com',
-        password: 'demo123', 
+        username: 'ana',
+        password: 'demo123',
         description: '👩‍🏫 Tutor FREE - Ana (gestión básica)'
     },
     'tutor-premium': {
-        email: 'carlos@ejemplo.com',
+        username: 'carlos',
         password: 'demo123',
         description: '👨‍🏫 Tutor PREMIUM - Carlos (crear contenido + analytics)'
     }
@@ -82,6 +82,34 @@ export const findUserByEmail = (email: string): User | null => {
 };
 
 /**
+ * Función helper para encontrar usuario por email O username
+ * Esta función permite login tanto con email como con username
+ */
+export const findUserByEmailOrUsername = (identifier: string): User | null => {
+    // Primero buscar por email
+    let user = MOCK_USERS.find(user => user.email === identifier);
+
+    // Si no encuentra por email, buscar por username (extraer nombre del email)
+    if (!user) {
+        // Mapear usernames a emails para búsqueda
+        const usernameToEmail: Record<string, string> = {
+            'sofia': 'sofia@ejemplo.com',
+            'diego': 'diego@ejemplo.com',
+            'ana': 'ana@ejemplo.com',
+            'carlos': 'carlos@ejemplo.com'
+        };
+
+        const email = usernameToEmail[identifier.toLowerCase()];
+        if (email) {
+            user = MOCK_USERS.find(user => user.email === email);
+        }
+    }
+
+    console.log(`Buscando usuario por email/username ${identifier}:`, user); // Debug
+    return user || null;
+};
+
+/**
  * Función helper para crear sesión mock basada en usuario
  */
 export const createMockSession = (user: User): UserSession => {
@@ -91,7 +119,7 @@ export const createMockSession = (user: User): UserSession => {
         isAuthenticated: true,
         expiresAt: '2024-12-31T23:59:59Z'
     };
-    
+
     console.log('Creando sesión mock:', session); // Debug
     return session;
 };
@@ -100,7 +128,7 @@ export const createMockSession = (user: User): UserSession => {
  * 🎯 HELPER PARA OBTENER USUARIO POR TIPO
  */
 export const getUserByType = (userType: 'kid' | 'tutor', subscription: 'free' | 'premium'): User | null => {
-    return MOCK_USERS.find(user => 
+    return MOCK_USERS.find(user =>
         user.userType === userType && user.subscription === subscription
     ) || null;
 };
@@ -111,7 +139,7 @@ export const getUserByType = (userType: 'kid' | 'tutor', subscription: 'free' | 
 export const getTestingCredentials = () => {
     return Object.entries(QUICK_ACCESS_USERS).map(([key, user]) => ({
         key,
-        email: user.email,
+        username: user.username,
         password: user.password,
         description: user.description
     }));

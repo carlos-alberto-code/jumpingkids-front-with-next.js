@@ -21,10 +21,10 @@ export const useAuth = () => {
      */
     const checkSession = useCallback(() => {
         console.log('🔍 Verificando sesión existente...');
-        
+
         try {
             const savedSession = AuthService.getCurrentSession();
-            
+
             if (savedSession) {
                 console.log('✅ Sesión encontrada:', savedSession);
                 setAuthState({
@@ -34,16 +34,16 @@ export const useAuth = () => {
                 });
             } else {
                 console.log('❌ No hay sesión guardada');
-                setAuthState(prev => ({ 
-                    ...prev, 
+                setAuthState(prev => ({
+                    ...prev,
                     session: null,
-                    loading: false 
+                    loading: false
                 }));
             }
         } catch (error) {
             console.error('❌ Error al verificar sesión:', error);
-            setAuthState(prev => ({ 
-                ...prev, 
+            setAuthState(prev => ({
+                ...prev,
                 session: null,
                 loading: false,
                 error: 'Error al verificar sesión'
@@ -64,7 +64,7 @@ export const useAuth = () => {
         try {
             const session = await AuthService.signIn(email, password);
             console.log('✅ Login exitoso:', session);
-            
+
             setAuthState({
                 session,
                 loading: false,
@@ -73,7 +73,7 @@ export const useAuth = () => {
         } catch (error) {
             console.error('❌ Error en login:', error);
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            
+
             setAuthState(prev => ({
                 ...prev,
                 loading: false,
@@ -93,7 +93,7 @@ export const useAuth = () => {
         try {
             const session = await AuthService.signUp(userData);
             console.log('✅ Registro exitoso:', session);
-            
+
             setAuthState({
                 session,
                 loading: false,
@@ -102,7 +102,7 @@ export const useAuth = () => {
         } catch (error) {
             console.error('❌ Error en registro:', error);
             const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
-            
+
             setAuthState(prev => ({
                 ...prev,
                 loading: false,
@@ -122,7 +122,7 @@ export const useAuth = () => {
         try {
             await AuthService.signOut();
             console.log('✅ Sesión cerrada');
-            
+
             setAuthState({
                 session: null,
                 loading: false,
@@ -131,7 +131,7 @@ export const useAuth = () => {
         } catch (error) {
             console.error('❌ Error al cerrar sesión:', error);
             const errorMessage = error instanceof Error ? error.message : 'Error al cerrar sesión';
-            
+
             setAuthState(prev => ({
                 ...prev,
                 loading: false,

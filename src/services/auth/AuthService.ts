@@ -1,8 +1,8 @@
 // src/services/auth/AuthService.ts - ACTUALIZAR
-import { AuthApi } from '../api/authApi';
-import { createMockSession, findUserByEmail } from '../../constants/authMocks';
+import { createMockSession, findUserByEmail, findUserByEmailOrUsername } from '../../constants/authMocks';
+import { SignInRequest, SignUpRequest } from '../../types/api';
 import { SignUpData, User, UserSession } from '../../types/auth';
-import { SignUpRequest, SignInRequest } from '../../types/api';
+import { AuthApi } from '../api/authApi';
 
 export class AuthService {
     private static readonly STORAGE_KEY = 'jumpingkids-session';
@@ -11,21 +11,21 @@ export class AuthService {
     /**
      * Iniciar sesión (API real o mock)
      */
-    static async signIn(email: string, password: string): Promise<UserSession> {
-        console.log('🔐 AuthService.signIn:', { 
-            email, 
+    static async signIn(username: string, password: string): Promise<UserSession> {
+        console.log('🔐 AuthService.signIn:', {
+            username: username,
             useMock: this.USE_MOCK_DATA,
-            apiUrl: process.env.NEXT_PUBLIC_API_URL 
+            apiUrl: process.env.NEXT_PUBLIC_API_URL
         });
 
         // Usar mock si está configurado
         if (this.USE_MOCK_DATA) {
-            return this.signInMock(email, password);
+            return this.signInMock(username, password);
         }
 
         try {
             const request: SignInRequest = {
-                email: email.trim(),
+                email: username.trim(),
                 password: password,
                 rememberMe: true
             };
@@ -54,8 +54,8 @@ export class AuthService {
      * Registrar usuario (API real o mock)
      */
     static async signUp(userData: SignUpData): Promise<UserSession> {
-        console.log('📝 AuthService.signUp:', { 
-            email: userData.username, 
+        console.log('📝 AuthService.signUp:', {
+            email: userData.username,
             userType: userData.userType,
             useMock: this.USE_MOCK_DATA,
             apiUrl: process.env.NEXT_PUBLIC_API_URL
@@ -116,11 +116,11 @@ export class AuthService {
     }
 
     // ===== MÉTODOS MOCK (sin cambios) =====
-    private static async signInMock(email: string, password: string): Promise<UserSession> {
+    private static async signInMock(emailOrUsername: string, password: string): Promise<UserSession> {
         return new Promise((resolve, reject) => {
             setTimeout(() => {
                 try {
-                    const user = findUserByEmail(email);
+                    const user = findUserByEmailOrUsername(emailOrUsername);
                     if (!user || password !== 'demo123') {
                         reject(new Error('Credenciales inválidas'));
                         return;

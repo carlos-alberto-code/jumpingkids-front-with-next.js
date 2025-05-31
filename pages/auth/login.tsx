@@ -26,14 +26,14 @@ export default function LoginPage() {
     const router = useRouter();
     const { signIn, loading, error } = useAuthContext();
     const [formData, setFormData] = useState({
-        email: '',
+        username: '',
         password: ''
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await signIn(formData.email, formData.password);
+            await signIn(formData.username, formData.password);
             // Redirección será manejada por el contexto
             router.push('/');
         } catch {
@@ -45,7 +45,7 @@ export default function LoginPage() {
     const handleQuickLogin = async (userKey: keyof typeof QUICK_ACCESS_USERS) => {
         const user = QUICK_ACCESS_USERS[userKey];
         try {
-            await signIn(user.email, user.password);
+            await signIn(user.username, user.password);
             router.push('/');
         } catch {
             // Error será manejado por el contexto
@@ -97,13 +97,13 @@ export default function LoginPage() {
                                             margin="normal"
                                             required
                                             fullWidth
-                                            id="email"
-                                            label="Correo Electrónico"
-                                            name="email"
-                                            autoComplete="email"
+                                            id="username"
+                                            label="Nombre de usuario"
+                                            name="username"
+                                            autoComplete="username"
                                             autoFocus
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            value={formData.username}
+                                            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                                         />
 
                                         <TextField
@@ -169,7 +169,7 @@ export default function LoginPage() {
                                             onClick={() => handleQuickLogin('kid-free')}
                                             disabled={loading}
                                             startIcon={<span>👧</span>}
-                                            sx={{ 
+                                            sx={{
                                                 justifyContent: 'flex-start',
                                                 textAlign: 'left',
                                                 px: 2
@@ -193,7 +193,7 @@ export default function LoginPage() {
                                             onClick={() => handleQuickLogin('kid-premium')}
                                             disabled={loading}
                                             startIcon={<span>👦</span>}
-                                            sx={{ 
+                                            sx={{
                                                 justifyContent: 'flex-start',
                                                 textAlign: 'left',
                                                 px: 2
@@ -219,7 +219,7 @@ export default function LoginPage() {
                                             onClick={() => handleQuickLogin('tutor-free')}
                                             disabled={loading}
                                             startIcon={<span>👩‍🏫</span>}
-                                            sx={{ 
+                                            sx={{
                                                 justifyContent: 'flex-start',
                                                 textAlign: 'left',
                                                 px: 2
@@ -243,7 +243,7 @@ export default function LoginPage() {
                                             onClick={() => handleQuickLogin('tutor-premium')}
                                             disabled={loading}
                                             startIcon={<span>👨‍🏫</span>}
-                                            sx={{ 
+                                            sx={{
                                                 justifyContent: 'flex-start',
                                                 textAlign: 'left',
                                                 px: 2
