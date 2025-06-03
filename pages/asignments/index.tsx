@@ -1,4 +1,4 @@
-// pages/assignments/index.tsx - Versión completa
+// pages/asignments/index.tsx - Corregida para niños
 import {
     CalendarMonth as CalendarIcon,
     CheckCircle as CompletedIcon,
@@ -7,6 +7,7 @@ import {
     Schedule as PendingIcon
 } from '@mui/icons-material';
 import {
+    Alert,
     Box,
     Card,
     CardContent,
@@ -36,7 +37,7 @@ interface CalendarDay {
 
 export default function AssignmentsPage() {
     const { session } = useAuthContext();
-    const { isPremiumUser } = usePermissionCheck();
+    const { isPremiumUser, isKid } = usePermissionCheck();
     const theme = useTheme();
     
     const [assignments, setAssignments] = useState<RoutineAssignment[]>([]);
@@ -46,15 +47,31 @@ export default function AssignmentsPage() {
     const [selectedAssignment, setSelectedAssignment] = useState<RoutineAssignment | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
 
+    // ✅ VERIFICACIÓN: Solo niños pueden acceder
+    if (!isKid) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                <Alert severity="warning" sx={{ mb: 3 }}>
+                    Esta página es solo para niños. Los tutores deben usar "Asignar Rutinas".
+                </Alert>
+            </Container>
+        );
+    }
+
     // Cargar asignaciones del mes actual
     useEffect(() => {
         const loadAssignments = async () => {
-            if (!session?.user?.id) return;
+            if (!session?.user?.id) {
+                console.log('❌ No hay usuario autenticado para cargar asignaciones');
+                return;
+            }
 
             setLoading(true);
             setError(null);
 
             try {
+                console.log('📅 Cargando asignaciones para kidId:', session.user.id);
+                
                 const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
                 const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
                 
@@ -64,10 +81,11 @@ export default function AssignmentsPage() {
                     endOfMonth.toISOString().split('T')[0]
                 );
                 
+                console.log('✅ Asignaciones cargadas:', monthAssignments);
                 setAssignments(monthAssignments);
             } catch (err) {
+                console.error('❌ Error cargando asignaciones:', err);
                 setError('Error al cargar asignaciones');
-                console.error('Error loading assignments:', err);
             } finally {
                 setLoading(false);
             }
@@ -154,6 +172,14 @@ export default function AssignmentsPage() {
     ];
     const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
+    if (loading) {
+        return (
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                <Typography>Cargando tus asignaciones...</Typography>
+            </Container>
+        );
+    }
+
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
             {/* Header */}
@@ -169,7 +195,7 @@ export default function AssignmentsPage() {
                         Mis Asignaciones
                     </Typography>
                     <Typography variant="subtitle1" color="text.secondary">
-                        Calendario de rutinas programadas
+                        ¡Aquí están tus rutinas programadas, {session?.user?.name}! 📅
                     </Typography>
                 </Box>
                 {isPremiumUser && (
@@ -181,6 +207,18 @@ export default function AssignmentsPage() {
                     />
                 )}
             </Box>
+
+            {/* Información para el niño */}
+            <Alert severity="info" sx={{ mb: 3 }}>
+                💡 <strong>¿Cómo funciona?</strong> Tu tutor programa rutinas para ti cada día. 
+                Puedes ver qué rutina tienes hoy y qué viene después.
+            </Alert>
+
+            {error && (
+                <Alert severity="error" sx={{ mb: 3 }}>
+                    {error}
+                </Alert>
+            )}
 
             {/* Calendario */}
             <Card sx={{ mb: 3 }}>
@@ -297,24 +335,24 @@ export default function AssignmentsPage() {
             <Card>
                 <CardContent>
                     <Typography variant="h6" gutterBottom>
-                        Leyenda
+                        🔍 ¿Qué significan los colores?
                     </Typography>
                     <Stack direction="row" spacing={3} flexWrap="wrap">
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <CompletedIcon sx={{ color: theme.palette.success.main }} />
-                            <Typography variant="body2">Completada</Typography>
+                            <Typography variant="body2">¡Ya la hiciste! 🎉</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <PendingIcon sx={{ color: theme.palette.primary.main }} />
-                            <Typography variant="body2">Hoy</Typography>
+                            <Typography variant="body2">¡Hoy toca entrenar! 💪</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <PendingIcon sx={{ color: theme.palette.info.main }} />
-                            <Typography variant="body2">Programada</Typography>
+                            <Typography variant="body2">Viene después 📅</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <MissedIcon sx={{ color: theme.palette.error.main }} />
-                            <Typography variant="body2">Perdida</Typography>
+                            <Typography variant="body2">Se te pasó 😔</Typography>
                         </Box>
                     </Stack>
                 </CardContent>
@@ -360,19 +398,25 @@ export default function AssignmentsPage() {
                                 </Stack>
 
                                 <Typography variant="body2" color="text.secondary">
-                                    Fecha: {new Date(selectedAssignment.assignedDate).toLocaleDateString()}
+                                    📅 Fecha: {new Date(selectedAssignment.assignedDate).toLocaleDateString()}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    Estado: {selectedAssignment.status === 'completed' ? 'Completada' : 
-                                            selectedAssignment.status === 'pending' ? 'Pendiente' : 
+                                    📊 Estado: {selectedAssignment.status === 'completed' ? '✅ Completada' : 
+                                            selectedAssignment.status === 'pending' ? '⏳ Pendiente' : 
                                             selectedAssignment.status}
                                 </Typography>
                                 
                                 {selectedAssignment.completedAt && (
                                     <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
-                                        ✅ Completada el {new Date(selectedAssignment.completedAt).toLocaleString()}
+                                        🎉 ¡Completada el {new Date(selectedAssignment.completedAt).toLocaleString()}!
                                     </Typography>
                                 )}
+
+                                <Box sx={{ mt: 2, p: 2, bgcolor: 'background.default', borderRadius: 2 }}>
+                                    <Typography variant="caption" color="text.secondary">
+                                        💡 <strong>Tip:</strong> Ve a "Entrenamiento" para hacer esta rutina cuando sea el día indicado.
+                                    </Typography>
+                                </Box>
                             </>
                         )}
                     </CardContent>

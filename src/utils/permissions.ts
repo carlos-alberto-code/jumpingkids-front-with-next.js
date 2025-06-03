@@ -1,38 +1,53 @@
 import { User } from '../types/auth';
 
 export interface UserPermissions {
-    // Ejercicios
+    // ✅ NAVEGACIÓN BÁSICA - Todos los usuarios autenticados
+    canAccessExercises: boolean;
+    canAccessOwnTraining: boolean;      // Niños pueden ver SU entrenamiento
+    canAccessOwnAssignments: boolean;   // Niños pueden ver SUS asignaciones
+    canAccessOwnProgress: boolean;      // Niños pueden ver SU progreso
+    
+    // 🎯 EJERCICIOS
     canAccessPremiumExercises: boolean;
     canCreateCustomExercises: boolean;
     maxExercisesPerDay?: number; // undefined = ilimitado
 
-    // Rutinas
+    // 📋 RUTINAS
     canCreatePersonalRoutines: boolean;
     canAccessPremiumRoutines: boolean;
     canShareRoutines: boolean;
     maxRoutinesStored?: number; // undefined = ilimitado
 
-    // Entrenamiento y seguimiento
+    // 📊 ENTRENAMIENTO Y SEGUIMIENTO
     canTrackProgress: boolean;
     canAccessAdvancedMetrics: boolean;
     canExportData: boolean;
 
-    // Gestión (específico para tutores)
-    canManageMultipleKids: boolean;
+    // 👨‍👩‍👧‍👦 GESTIÓN (específico para tutores)
+    canManageKids: boolean;              // Cualquier tutor puede gestionar
+    canManageMultipleKids: boolean;      // Solo premium: múltiples hijos
     canAccessAnalytics: boolean;
     canCreateExercisesForKids: boolean;
+    canAssignRoutines: boolean;          // Cualquier tutor puede asignar
 
-    // Suscripción
+    // 💳 SUSCRIPCIÓN
     canUpgradeSubscription: boolean;
 }
 
 /**
- * Obtiene todos los permisos para un usuario específico
+ * 🎯 NUEVA FILOSOFÍA: "Acceso amplio, funcionalidades limitadas"
+ * - Los niños pueden ver SUS datos (training, assignments, progress)
+ * - Los tutores pueden gestionar (con limitaciones según suscripción)
+ * - Solo restringimos funcionalidades avanzadas, no navegación básica
  */
 export function getUserPermissions(user: User | null): UserPermissions {
-    // Usuario no autenticado - permisos mínimos
+    // Usuario no autenticado - solo navegación anónima
     if (!user) {
         return {
+            canAccessExercises: true,                // ✅ Navegación anónima permitida
+            canAccessOwnTraining: false,
+            canAccessOwnAssignments: false,
+            canAccessOwnProgress: false,
             canAccessPremiumExercises: false,
             canCreateCustomExercises: false,
             maxExercisesPerDay: 3,
@@ -43,58 +58,76 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canTrackProgress: false,
             canAccessAdvancedMetrics: false,
             canExportData: false,
+            canManageKids: false,
             canManageMultipleKids: false,
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
+            canAssignRoutines: false,
             canUpgradeSubscription: true
         };
     }
 
     const { userType: type, subscription } = user;
 
-    // NIÑO FREE
+    // 👧 NIÑO FREE
     if (type === 'kid' && subscription === 'free') {
         return {
-            canAccessPremiumExercises: false,
+            canAccessExercises: true,               // ✅ Puede ver ejercicios
+            canAccessOwnTraining: true,             // ✅ Puede entrenar
+            canAccessOwnAssignments: true,          // ✅ Puede ver sus asignaciones
+            canAccessOwnProgress: true,             // ✅ Puede ver su progreso
+            canAccessPremiumExercises: false,       // ❌ Sin ejercicios premium
             canCreateCustomExercises: false,
             maxExercisesPerDay: 5,
             canCreatePersonalRoutines: false,
             canAccessPremiumRoutines: false,
             canShareRoutines: false,
             maxRoutinesStored: 1,
-            canTrackProgress: false,
-            canAccessAdvancedMetrics: false,
+            canTrackProgress: true,                 // ✅ Seguimiento básico
+            canAccessAdvancedMetrics: false,       // ❌ Sin métricas avanzadas
             canExportData: false,
+            canManageKids: false,
             canManageMultipleKids: false,
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
+            canAssignRoutines: false,
             canUpgradeSubscription: true
         };
     }
 
-    // NIÑO PREMIUM
+    // 👦 NIÑO PREMIUM
     if (type === 'kid' && subscription === 'premium') {
         return {
-            canAccessPremiumExercises: true,
-            canCreateCustomExercises: false, // Solo tutores
-            maxExercisesPerDay: undefined, // Ilimitado
+            canAccessExercises: true,               // ✅ Puede ver ejercicios
+            canAccessOwnTraining: true,             // ✅ Puede entrenar
+            canAccessOwnAssignments: true,          // ✅ Puede ver sus asignaciones
+            canAccessOwnProgress: true,             // ✅ Puede ver su progreso
+            canAccessPremiumExercises: true,        // ✅ Ejercicios premium
+            canCreateCustomExercises: false,        // Solo tutores
+            maxExercisesPerDay: undefined,          // Ilimitado
             canCreatePersonalRoutines: true,
             canAccessPremiumRoutines: true,
-            canShareRoutines: false, // Solo tutores
+            canShareRoutines: false,                // Solo tutores
             maxRoutinesStored: 10,
             canTrackProgress: true,
-            canAccessAdvancedMetrics: true,
-            canExportData: false, // Solo tutores
+            canAccessAdvancedMetrics: true,         // ✅ Métricas avanzadas
+            canExportData: false,                   // Solo tutores
+            canManageKids: false,
             canManageMultipleKids: false,
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
-            canUpgradeSubscription: false // Ya es premium
+            canAssignRoutines: false,
+            canUpgradeSubscription: false           // Ya es premium
         };
     }
 
-    // TUTOR FREE
+    // 👩‍🏫 TUTOR FREE
     if (type === 'tutor' && subscription === 'free') {
         return {
+            canAccessExercises: true,               // ✅ Puede ver ejercicios
+            canAccessOwnTraining: false,            // Los tutores no entrenan
+            canAccessOwnAssignments: false,         // Los tutores no tienen asignaciones
+            canAccessOwnProgress: false,            // Los tutores no tienen progreso personal
             canAccessPremiumExercises: false,
             canCreateCustomExercises: false,
             maxExercisesPerDay: 5,
@@ -102,33 +135,41 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessPremiumRoutines: false,
             canShareRoutines: false,
             maxRoutinesStored: 3,
-            canTrackProgress: true, // Básico para supervisión
+            canTrackProgress: true,                 // ✅ Puede ver progreso de hijos
             canAccessAdvancedMetrics: false,
             canExportData: false,
-            canManageMultipleKids: false, // Solo 1 niño
+            canManageKids: true,                    // ✅ Puede gestionar hijos
+            canManageMultipleKids: false,           // ❌ Solo 1 hijo
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
+            canAssignRoutines: true,                // ✅ Puede asignar rutinas
             canUpgradeSubscription: true
         };
     }
 
-    // TUTOR PREMIUM
+    // 👨‍🏫 TUTOR PREMIUM
     if (type === 'tutor' && subscription === 'premium') {
         return {
+            canAccessExercises: true,               // ✅ Puede ver ejercicios
+            canAccessOwnTraining: false,            // Los tutores no entrenan
+            canAccessOwnAssignments: false,         // Los tutores no tienen asignaciones
+            canAccessOwnProgress: false,            // Los tutores no tienen progreso personal
             canAccessPremiumExercises: true,
             canCreateCustomExercises: true,
-            maxExercisesPerDay: undefined, // Ilimitado
+            maxExercisesPerDay: undefined,          // Ilimitado
             canCreatePersonalRoutines: true,
             canAccessPremiumRoutines: true,
             canShareRoutines: true,
-            maxRoutinesStored: undefined, // Ilimitado
+            maxRoutinesStored: undefined,           // Ilimitado
             canTrackProgress: true,
             canAccessAdvancedMetrics: true,
             canExportData: true,
-            canManageMultipleKids: true,
+            canManageKids: true,                    // ✅ Puede gestionar hijos
+            canManageMultipleKids: true,            // ✅ Hasta 3 hijos
             canAccessAnalytics: true,
             canCreateExercisesForKids: true,
-            canUpgradeSubscription: false // Ya es premium
+            canAssignRoutines: true,                // ✅ Puede asignar rutinas
+            canUpgradeSubscription: false           // Ya es premium
         };
     }
 
@@ -137,7 +178,7 @@ export function getUserPermissions(user: User | null): UserPermissions {
 }
 
 /**
- * Funciones helper para verificaciones específicas
+ * ✅ FUNCIONES HELPER ACTUALIZADAS
  */
 export const checkPermissions = {
     canCreateContent: (user: User | null): boolean => {
@@ -153,6 +194,10 @@ export const checkPermissions = {
         return user?.userType === 'tutor';
     },
 
+    isKid: (user: User | null): boolean => {
+        return user?.userType === 'kid';
+    },
+
     needsUpgrade: (user: User | null): boolean => {
         return getUserPermissions(user).canUpgradeSubscription;
     },
@@ -160,5 +205,18 @@ export const checkPermissions = {
     canAccessFeature: (user: User | null, feature: keyof UserPermissions): boolean => {
         const perms = getUserPermissions(user);
         return Boolean(perms[feature]);
+    },
+
+    // ✅ NUEVA: Verificar si puede ver contenido específico de niños
+    canViewOwnContent: (user: User | null): boolean => {
+        if (!user) return false;
+        const perms = getUserPermissions(user);
+        return perms.canAccessOwnTraining || perms.canAccessOwnAssignments || perms.canAccessOwnProgress;
+    },
+
+    // ✅ NUEVA: Verificar si puede gestionar otros usuarios
+    canManageOthers: (user: User | null): boolean => {
+        const perms = getUserPermissions(user);
+        return perms.canManageKids;
     }
 };
