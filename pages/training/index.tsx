@@ -1,9 +1,7 @@
-// Reemplazar el contenido completo de pages/training/index.tsx
-
 import {
     Celebration as CelebrationIcon,
-    DirectionsRun as RunIcon,
-    RestaurantMenu as RestIcon
+    RestaurantMenu as RestIcon,
+    DirectionsRun as RunIcon
 } from '@mui/icons-material';
 import {
     Alert,
@@ -21,7 +19,7 @@ import {
     Stack,
     Typography
 } from '@mui/material';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ExerciseTimer from '../../src/components/training/ExerciseTimer';
 import RoutineProgress from '../../src/components/training/RoutineProgress';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
@@ -31,7 +29,7 @@ import { useTraining } from '@/hooks/training/useTrainig';
 export default function TrainingPage() {
     const { session } = useAuthContext();
     const { isPremiumUser } = usePermissionCheck();
-    
+
     const {
         todayRoutine,
         currentSession,
@@ -54,7 +52,7 @@ export default function TrainingPage() {
     // Handlers
     const handleStartTraining = async () => {
         if (!todayRoutine) return;
-        
+
         try {
             await startTraining(todayRoutine.id);
         } catch (error) {
@@ -67,7 +65,7 @@ export default function TrainingPage() {
 
         try {
             const updatedSession = await completeExercise(currentExercise.id, timeSpent);
-            
+
             // Si completamos todos los ejercicios, mostrar celebración
             if (updatedSession.isCompleted) {
                 setShowCelebration(true);
@@ -82,7 +80,7 @@ export default function TrainingPage() {
 
         try {
             const updatedSession = await completeExercise(currentExercise.id, 0, true);
-            
+
             if (updatedSession.isCompleted) {
                 setShowCelebration(true);
             }
@@ -146,8 +144,8 @@ export default function TrainingPage() {
 
             {/* Error handling */}
             {error && (
-                <Alert 
-                    severity="error" 
+                <Alert
+                    severity="error"
                     sx={{ mb: 3 }}
                     onClose={clearError}
                 >
@@ -160,7 +158,7 @@ export default function TrainingPage() {
                 {currentSession && (
                     <Grid size={{ xs: 12, md: 4 }}>
                         <RoutineProgress session={currentSession} />
-                        
+
                         {/* Controles adicionales */}
                         <Card>
                             <CardContent>
@@ -176,7 +174,7 @@ export default function TrainingPage() {
                                     >
                                         Pausar entrenamiento
                                     </Button>
-                                    
+
                                     {isPremiumUser && (
                                         <Typography variant="caption" color="secondary.main">
                                             ✨ Estadísticas detalladas disponibles al finalizar
@@ -194,10 +192,10 @@ export default function TrainingPage() {
                     {!hasRoutineToday && !isTraining && (
                         <Card sx={{ textAlign: 'center', py: 6 }}>
                             <CardContent>
-                                <RestIcon sx={{ 
-                                    fontSize: 80, 
+                                <RestIcon sx={{
+                                    fontSize: 80,
                                     color: 'primary.main',
-                                    mb: 2 
+                                    mb: 2
                                 }} />
                                 <Typography variant="h5" gutterBottom>
                                     ¡Hoy descansas! 🎉
@@ -219,7 +217,7 @@ export default function TrainingPage() {
                                 <Typography variant="h5" gutterBottom>
                                     ¡Tu rutina de hoy está lista! 💪
                                 </Typography>
-                                
+
                                 <Box sx={{ my: 3 }}>
                                     <Typography variant="h6" color="primary.main">
                                         {todayRoutine?.routine.title}
@@ -227,19 +225,19 @@ export default function TrainingPage() {
                                     <Typography variant="body1" color="text.secondary" paragraph>
                                         {todayRoutine?.routine.description}
                                     </Typography>
-                                    
+
                                     <Stack direction="row" spacing={2} justifyContent="center" sx={{ mb: 3 }}>
-                                        <Chip 
+                                        <Chip
                                             label={`${todayRoutine?.routine.exercises.length} ejercicios`}
                                             color="primary"
                                             variant="outlined"
                                         />
-                                        <Chip 
+                                        <Chip
                                             label={`~${todayRoutine?.routine.totalDuration} min`}
                                             color="secondary"
                                             variant="outlined"
                                         />
-                                        <Chip 
+                                        <Chip
                                             label={todayRoutine?.routine.difficulty}
                                             color="default"
                                             variant="outlined"
@@ -282,7 +280,7 @@ export default function TrainingPage() {
                                                     {currentSession.routine.title}
                                                 </Typography>
                                             </Box>
-                                            <Chip 
+                                            <Chip
                                                 label={`${progress?.percentage}%`}
                                                 size="small"
                                                 color="primary"
@@ -333,10 +331,10 @@ export default function TrainingPage() {
                 fullWidth
             >
                 <DialogContent sx={{ textAlign: 'center', py: 4 }}>
-                    <CelebrationIcon sx={{ 
-                        fontSize: 80, 
+                    <CelebrationIcon sx={{
+                        fontSize: 80,
                         color: 'success.main',
-                        mb: 2 
+                        mb: 2
                     }} />
                     <Typography variant="h4" gutterBottom>
                         ¡Felicidades! 🎉
@@ -344,25 +342,25 @@ export default function TrainingPage() {
                     <Typography variant="h6" color="primary.main" gutterBottom>
                         ¡Completaste tu rutina de hoy!
                     </Typography>
-                    
+
                     {currentSession && (
                         <Box sx={{ my: 3 }}>
                             <Typography variant="body1" paragraph>
                                 <strong>{currentSession.routine.title}</strong>
                             </Typography>
                             <Stack direction="row" spacing={2} justifyContent="center">
-                                <Chip 
+                                <Chip
                                     label={`${currentSession.exerciseResults.length} ejercicios`}
                                     color="success"
                                 />
-                                <Chip 
+                                <Chip
                                     label={`${Math.floor(currentSession.exerciseResults.reduce((total, result) => total + result.timeSpent, 0) / 60)} min`}
                                     color="primary"
                                 />
                             </Stack>
                         </Box>
                     )}
-                    
+
                     <Typography variant="body1" color="text.secondary" paragraph>
                         ¡Excelente trabajo! Has completado todos los ejercicios.
                         Tu progreso ha sido guardado automáticamente.

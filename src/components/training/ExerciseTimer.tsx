@@ -4,11 +4,11 @@ import {
     PlayArrow as PlayIcon,
     Stop as StopIcon
 } from '@mui/icons-material';
-
-import { useThemeHelpers } from '../../utils/themeHelpers';
 import { Box, Button, Card, CardContent, Chip, IconButton, LinearProgress, Stack, Typography, useTheme } from '@mui/material';
+import React from 'react';
+import { Exercise } from '../../types/exercise';
+import { useThemeHelpers } from '../../utils/themeHelpers';
 import { useTimer } from '@/hooks/training/useTrainig';
-import { Exercise } from '../exercise';
 
 interface ExerciseTimerProps {
     exercise: Exercise;

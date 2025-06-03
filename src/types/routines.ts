@@ -1,4 +1,6 @@
-// src/types/routine.ts
+// src/types/routines.ts
+import { Exercise } from './exercise';
+
 export interface Routine {
     id: string;
     title: string;
@@ -11,18 +13,6 @@ export interface Routine {
     isPublic: boolean; // true = predefinida del sistema, false = personalizada
     createdAt: string;
     updatedAt: string;
-}
-
-export interface Exercise {
-    id: number;
-    title: string;
-    description: string;
-    duration: number;
-    calories: number;
-    difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
-    isFavorite: boolean;
-    categories: string[];
-    gifUrl: string;
 }
 
 // Estados de una rutina asignada

@@ -7,25 +7,20 @@ import {
 } from '@mui/icons-material';
 import {
     Box,
-    Button,
     Card,
     CardContent,
     Chip,
-    IconButton,
     LinearProgress,
-    Stack,
     Step,
     StepContent,
-    StepIcon,
     StepLabel,
     Stepper,
     Typography,
     useTheme
 } from '@mui/material';
 import React from 'react';
-import { Exercise } from '../exercise';
-import { useTimer } from '@/hooks/training/useTrainig';
-import { TrainingSession } from '@/types/routines';
+import { Exercise } from '../../types/exercise';
+import { TrainingSession } from '../../types/routines';
 
 interface RoutineProgressProps {
     session: TrainingSession;

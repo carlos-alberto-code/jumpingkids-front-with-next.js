@@ -1,5 +1,6 @@
 // src/hooks/training/useTraining.ts
-import { RoutineAssignment, TrainingSession } from '@/types/routines';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { RoutineAssignment, TrainingSession } from '../../types/routines';
 import { RoutineService } from '../../services/routine/RoutineService';
 
 export const useTraining = (kidId: string) => {
@@ -175,9 +176,7 @@ export const useTraining = (kidId: string) => {
     };
 };
 
-// src/hooks/training/useTimer.ts
-import { useCallback, useEffect, useRef, useState } from 'react';
-
+// Hook useTimer separado
 export const useTimer = (initialTime = 0, autoStart = false) => {
     const [time, setTime] = useState(initialTime);
     const [isRunning, setIsRunning] = useState(autoStart);
