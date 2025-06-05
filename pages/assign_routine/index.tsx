@@ -10,7 +10,7 @@ export default function AssignRoutinePage() {
 
     return (
         <PermissionGate
-            permission="canManageMultipleKids"
+            permission="canManageKids"
             fallback={
                 <Container maxWidth="lg" sx={{ py: 4 }}>
                     <Alert severity="warning" sx={{ mb: 3 }}>
