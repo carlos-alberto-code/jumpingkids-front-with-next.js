@@ -6,7 +6,12 @@ export interface UserPermissions {
     canAccessOwnTraining: boolean;      // Niños pueden ver SU entrenamiento
     canAccessOwnAssignments: boolean;   // Niños pueden ver SUS asignaciones
     canAccessOwnProgress: boolean;      // Niños pueden ver SU progreso
-    
+
+    // 🏆 GAMIFICACIÓN Y RECOMPENSAS
+    canAccessBasicRewards: boolean;        // Logros básicos para todos los niños
+    canAccessPremiumRewards: boolean;      // Logros premium adicionales
+    canAccessChallenges: boolean;          // Desafíos semanales (solo premium)
+
     // 🎯 EJERCICIOS
     canAccessPremiumExercises: boolean;
     canCreateCustomExercises: boolean;
@@ -32,6 +37,12 @@ export interface UserPermissions {
 
     // 💳 SUSCRIPCIÓN
     canUpgradeSubscription: boolean;
+
+    // 📊 REPORTES Y CONFIGURACIONES
+    canAccessBasicReports: boolean;        // Reportes básicos para todos los tutores
+    canAccessAdvancedReports: boolean;     // Reportes avanzados con gráficos y comparativas
+    canExportReports: boolean;             // Exportar reportes a PDF
+    canAccessAdvancedSettings: boolean;    // Configuraciones avanzadas de la aplicación
 }
 
 /**
@@ -48,6 +59,9 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessOwnTraining: false,
             canAccessOwnAssignments: false,
             canAccessOwnProgress: false,
+            canAccessBasicRewards: false,
+            canAccessPremiumRewards: false,
+            canAccessChallenges: false,
             canAccessPremiumExercises: false,
             canCreateCustomExercises: false,
             maxExercisesPerDay: 3,
@@ -63,7 +77,11 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
             canAssignRoutines: false,
-            canUpgradeSubscription: true
+            canUpgradeSubscription: true,
+            canAccessBasicReports: false,          // Niños no tienen reportes
+            canAccessAdvancedReports: false,       // Niños no tienen reportes
+            canExportReports: false,               // Niños no exportan
+            canAccessAdvancedSettings: false       // Niños no configuran
         };
     }
 
@@ -76,6 +94,9 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessOwnTraining: true,             // ✅ Puede entrenar
             canAccessOwnAssignments: true,          // ✅ Puede ver sus asignaciones
             canAccessOwnProgress: true,             // ✅ Puede ver su progreso
+            canAccessBasicRewards: true,            // ✅ Recompensas básicas
+            canAccessPremiumRewards: false,         // ❌ Sin recompensas premium
+            canAccessChallenges: false,             // ❌ Sin desafíos
             canAccessPremiumExercises: false,       // ❌ Sin ejercicios premium
             canCreateCustomExercises: false,
             maxExercisesPerDay: 5,
@@ -91,7 +112,11 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
             canAssignRoutines: false,
-            canUpgradeSubscription: true
+            canUpgradeSubscription: true,
+            canAccessBasicReports: false,          // Niños no tienen reportes
+            canAccessAdvancedReports: false,       // Niños no tienen reportes
+            canExportReports: false,               // Niños no exportan
+            canAccessAdvancedSettings: false       // Niños no configuran
         };
     }
 
@@ -102,6 +127,9 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessOwnTraining: true,             // ✅ Puede entrenar
             canAccessOwnAssignments: true,          // ✅ Puede ver sus asignaciones
             canAccessOwnProgress: true,             // ✅ Puede ver su progreso
+            canAccessBasicRewards: true,            // ✅ Recompensas básicas
+            canAccessPremiumRewards: true,          // ✅ Recompensas premium
+            canAccessChallenges: true,              // ✅ Desafíos semanales
             canAccessPremiumExercises: true,        // ✅ Ejercicios premium
             canCreateCustomExercises: false,        // Solo tutores
             maxExercisesPerDay: undefined,          // Ilimitado
@@ -117,7 +145,11 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
             canAssignRoutines: false,
-            canUpgradeSubscription: false           // Ya es premium
+            canUpgradeSubscription: false,          // Ya es premium
+            canAccessBasicReports: false,          // Niños no tienen reportes
+            canAccessAdvancedReports: false,       // Niños no tienen reportes
+            canExportReports: false,               // Niños no exportan
+            canAccessAdvancedSettings: false       // Niños no configuran
         };
     }
 
@@ -128,6 +160,9 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessOwnTraining: false,            // Los tutores no entrenan
             canAccessOwnAssignments: false,         // Los tutores no tienen asignaciones
             canAccessOwnProgress: false,            // Los tutores no tienen progreso personal
+            canAccessBasicRewards: false,           // Tutores no tienen gamificación
+            canAccessPremiumRewards: false,         // Tutores no tienen gamificación
+            canAccessChallenges: false,             // Tutores no tienen gamificación
             canAccessPremiumExercises: false,
             canCreateCustomExercises: false,
             maxExercisesPerDay: 5,
@@ -143,7 +178,11 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessAnalytics: false,
             canCreateExercisesForKids: false,
             canAssignRoutines: true,                // ✅ Puede asignar rutinas
-            canUpgradeSubscription: true
+            canUpgradeSubscription: true,
+            canAccessBasicReports: true,           // ✅ Reportes básicos
+            canAccessAdvancedReports: false,       // ❌ Sin reportes avanzados
+            canExportReports: false,               // ❌ Sin exportación
+            canAccessAdvancedSettings: false       // ❌ Solo configuraciones básicas
         };
     }
 
@@ -154,6 +193,9 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessOwnTraining: false,            // Los tutores no entrenan
             canAccessOwnAssignments: false,         // Los tutores no tienen asignaciones
             canAccessOwnProgress: false,            // Los tutores no tienen progreso personal
+            canAccessBasicRewards: false,           // Tutores no tienen gamificación
+            canAccessPremiumRewards: false,         // Tutores no tienen gamificación
+            canAccessChallenges: false,             // Tutores no tienen gamificación
             canAccessPremiumExercises: true,
             canCreateCustomExercises: true,
             maxExercisesPerDay: undefined,          // Ilimitado
@@ -169,7 +211,11 @@ export function getUserPermissions(user: User | null): UserPermissions {
             canAccessAnalytics: true,
             canCreateExercisesForKids: true,
             canAssignRoutines: true,                // ✅ Puede asignar rutinas
-            canUpgradeSubscription: false           // Ya es premium
+            canUpgradeSubscription: false,          // Ya es premium
+            canAccessBasicReports: true,           // ✅ Reportes básicos
+            canAccessAdvancedReports: true,        // ✅ Reportes avanzados
+            canExportReports: true,                // ✅ Exportación completa
+            canAccessAdvancedSettings: true        // ✅ Configuraciones avanzadas
         };
     }
 

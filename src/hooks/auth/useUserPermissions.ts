@@ -32,7 +32,6 @@ export const usePermissionCheck = () => {
 
         // Verificaciones de capacidades específicas
         canCreateContent: checkPermissions.canCreateContent(session?.user || null),
-        canAccessPremiumFeatures: permissions.canAccessPremiumExercises && permissions.canAccessPremiumRoutines,
         canManageOthers: permissions.canManageMultipleKids,
         needsUpgrade: checkPermissions.needsUpgrade(session?.user || null),
 

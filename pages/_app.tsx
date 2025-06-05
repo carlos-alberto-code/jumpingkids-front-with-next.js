@@ -83,6 +83,12 @@ function AppContent({ Component, pageProps }: AppProps) {
     }
   }, [loading, isAuthenticated, router, isAuthRoute]);
 
+  React.useEffect(() => {
+    if (!loading && isAuthenticated && session?.user?.userType === 'kid' && router.pathname === '/') {
+      router.push('/asignments');
+    }
+  }, [loading, isAuthenticated, router, session?.user]);
+
   // Loading spinner durante verificación de sesión
   if (loading) {
     console.log('⏳ Mostrando loading...');
@@ -157,7 +163,7 @@ function AppContent({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </PageContainer>
       </DashboardLayout>
-      
+
       {/* 🔍 Debug component */}
       <AuthDebug />
     </NextAppProvider>

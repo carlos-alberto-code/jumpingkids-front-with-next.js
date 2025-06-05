@@ -1,11 +1,15 @@
 import AddIcon from '@mui/icons-material/Add';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import SettingsIcon from '@mui/icons-material/Settings';
+import SportsMmaIcon from '@mui/icons-material/SportsMma';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import type { Navigation } from '@toolpad/core/AppProvider';
@@ -55,21 +59,32 @@ export function getDynamicNavigation(user: User | null): Navigation {
             icon: React.createElement(TrendingUpIcon),
         });
 
-        // Divider
-        navigation.push({ kind: 'divider' });
-
-        // Header explorar
+        // Header de gamificación
         navigation.push({
             kind: 'header',
-            title: '🔍 Explorar'
+            title: '🎮 Gamificación'
         });
 
-        // Ejercicios - SIEMPRE visible
-        navigation.push({
-            segment: 'exercise',
-            title: 'Ejercicios',
-            icon: React.createElement(FitnessCenterIcon),
-        });
+        // Rewards - Accesible para todos los niños (básicas) o premium
+        if (permissions.canAccessBasicRewards) {
+            navigation.push({
+                segment: 'rewards',
+                title: permissions.canAccessPremiumRewards ? 'Recompensas' : 'Recompensas Básicas',
+                icon: React.createElement(EmojiEventsIcon),
+            });
+        }
+
+        // Challenges - Solo para niños premium
+        if (permissions.canAccessChallenges) {
+            navigation.push({
+                segment: 'challenges',
+                title: 'Desafíos',
+                icon: React.createElement(SportsMmaIcon),
+            });
+        }
+
+        // Divider
+        navigation.push({ kind: 'divider' });
 
         return navigation;
     }
@@ -124,6 +139,13 @@ export function getDynamicNavigation(user: User | null): Navigation {
             });
         }
 
+        // Reports - SIEMPRE visible para tutores
+        navigation.push({
+            segment: 'reports',
+            title: 'Reportes',
+            icon: React.createElement(AssessmentIcon),
+        });
+
         // Header contenido
         navigation.push({
             kind: 'header',
@@ -166,6 +188,20 @@ export function getDynamicNavigation(user: User | null): Navigation {
                     icon: React.createElement(AddIcon),
                 });
             }
+        }
+
+        // Header configuraciones - Solo premium
+        if (permissions.canAccessAdvancedSettings) {
+            navigation.push({
+                kind: 'header',
+                title: '⚙️ Configuración Avanzada (Premium)'
+            });
+
+            navigation.push({
+                segment: 'settings',
+                title: 'Configuraciones',
+                icon: React.createElement(SettingsIcon),
+            });
         }
 
         return navigation;
@@ -219,12 +255,24 @@ export function canAccessRoute(user: User | null, route: string): boolean {
 
     // Ejercicios - siempre accesibles
     if (route === '/exercise') {
-        return true;
+        return user?.userType === 'tutor';
     }
 
     // Rutas específicas de niños
     if (user?.userType === 'kid') {
+        if (route === '/') {
+            return false;
+        }
         const kidRoutes = ['/training', '/asignments', '/progress'];  // ✅ Corregido
+
+        // Agregar rutas de gamificación según permisos
+        if (permissions.canAccessBasicRewards && route === '/rewards') {
+            return true;
+        }
+        if (permissions.canAccessChallenges && route === '/challenges') {
+            return true;
+        }
+
         return kidRoutes.includes(route);
     }
 
@@ -246,6 +294,16 @@ export function canAccessRoute(user: User | null, route: string): boolean {
         if (route === '/create_routine') {
             return permissions.canCreateExercisesForKids;
         }
+
+        // Reports - disponible para todos los tutores
+        if (route === '/reports') {
+            return permissions.canAccessBasicReports;
+        }
+
+        // Settings - solo premium
+        if (route === '/settings') {
+            return permissions.canAccessAdvancedSettings;
+        }
     }
 
     // Por defecto, denegar acceso
@@ -257,16 +315,16 @@ export function canAccessRoute(user: User | null, route: string): boolean {
  */
 export function getDefaultRoute(user: User | null): string {
     if (!user) {
-        return '/exercise'; // Usuarios anónimos van a ejercicios
+        return '/auth/login'; // Usuarios anónimos van a ejercicios
     }
 
     if (user.userType === 'kid') {
-        return '/training'; // Niños van a entrenamiento
+        return '/asignments'; // Niños van a asignaciones
     }
 
     if (user.userType === 'tutor') {
         return '/'; // Tutores van al dashboard
     }
 
-    return '/exercise'; // Fallback
+    return '/auth/login'; // Fallback
 }
