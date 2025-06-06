@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:public": "npm run dev & sleep 3 && ./cloudflared tunnel --url http://localhost:3000",
+    "tunnel": "./cloudflared tunnel --url http://localhost:3000",
+    "setup-tunnel": "curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared && chmod +x cloudflared",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
