@@ -1,8 +1,9 @@
 import {
-    Box,
-    Container
+    Container,
+    Grid2 as Grid
 } from '@mui/material';
 import { useState } from 'react';
+import PermissionGate from '../../src/components/auth/PermissionGate';
 import {
     DEFAULT_FILTERS,
     filterRoutines,
@@ -13,7 +14,6 @@ import {
     RoutinePreview,
     RoutinesGrid
 } from '../../src/components/routines';
-import type { RoutineFilters as IRoutineFilters } from '../../src/components/routines/routinesUtils';
 import { MOCK_ROUTINES } from '../../src/constants/routinesMocks';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
 import { Routine } from '../../src/types/routines';
@@ -37,7 +37,7 @@ export default function RoutinesPage() {
 
     // Handlers
     const handleFilterChange = (filterKey: keyof IRoutineFilters, value: string) => {
-        setFilters((prev: IRoutineFilters) => ({ ...prev, [filterKey]: value }));
+        setFilters(prev => ({ ...prev, [filterKey]: value }));
     };
 
     const handleClearFilters = () => {
@@ -77,48 +77,48 @@ export default function RoutinesPage() {
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
-            <RoutineCreator
-                isPremiumUser={isPremiumUser}
-                onCreateRoutine={handleCreateRoutine}
-                onUpgradePremium={handleUpgradePremium}
-                totalRoutines={allRoutines.length}
-                filteredRoutines={filteredRoutines.length}
-            />
+            <PermissionGate requiredPermissions={['READ_ROUTINES']}>
+                <RoutineCreator
+                    isPremiumUser={isPremiumUser}
+                    onCreateRoutine={handleCreateRoutine}
+                    onUpgradePremium={handleUpgradePremium}
+                />
 
-            <Box sx={{ display: 'flex', gap: 3 }}>
-                {/* Panel de filtros */}
-                <Box sx={{ width: '300px', flexShrink: 0 }}>
-                    <RoutineFilters
-                        filters={filters}
-                        availableCategories={availableCategories}
-                        isPremiumUser={isPremiumUser}
-                        totalRoutines={allRoutines.length}
-                        filteredCount={filteredRoutines.length}
-                        onFilterChange={handleFilterChange}
-                        onClearFilters={handleClearFilters}
-                    />
-                </Box>
+                <Grid container spacing={3}>
+                    {/* Panel de filtros */}
+                    <Grid size={{ xs: 12, md: 3 }}>
+                        <RoutineFilters
+                            filters={filters}
+                            availableCategories={availableCategories}
+                            isPremiumUser={isPremiumUser}
+                            totalRoutines={allRoutines.length}
+                            filteredCount={filteredRoutines.length}
+                            onFilterChange={handleFilterChange}
+                            onClearFilters={handleClearFilters}
+                        />
+                    </Grid>
 
-                {/* Lista de rutinas */}
-                <Box sx={{ flex: 1 }}>
-                    <RoutinesGrid
-                        routines={filteredRoutines}
-                        isPremiumUser={isPremiumUser}
-                        onPreviewRoutine={handlePreviewRoutine}
-                        onDuplicateRoutine={handleDuplicateRoutine}
-                    />
-                </Box>
-            </Box>
+                    {/* Lista de rutinas */}
+                    <Grid size={{ xs: 12, md: 9 }}>
+                        <RoutinesGrid
+                            routines={filteredRoutines}
+                            isPremiumUser={isPremiumUser}
+                            onPreviewRoutine={handlePreviewRoutine}
+                            onDuplicateRoutine={handleDuplicateRoutine}
+                        />
+                    </Grid>
+                </Grid>
 
-            {/* Modal de preview */}
-            <RoutinePreview
-                routine={selectedRoutine}
-                open={previewModalOpen}
-                isPremiumUser={isPremiumUser}
-                onClose={handleClosePreview}
-                onDuplicate={handleDuplicateRoutine}
-                onUseInAssignment={handleUseInAssignment}
-            />
+                {/* Modal de preview */}
+                <RoutinePreview
+                    routine={selectedRoutine}
+                    open={previewModalOpen}
+                    isPremiumUser={isPremiumUser}
+                    onClose={handleClosePreview}
+                    onDuplicate={handleDuplicateRoutine}
+                    onUseInAssignment={handleUseInAssignment}
+                />
+            </PermissionGate>
         </Container>
     );
 }
