@@ -10,6 +10,15 @@ export { default as ProgressBar } from './ProgressBar';
 export { default as StatusChip } from './StatusChip';
 export { default as TimeDisplay } from './TimeDisplay';
 
+// Create Exercise Components
+export { AdvancedConfigSection } from './AdvancedConfigSection';
+export { BasicInfoSection } from './BasicInfoSection';
+export { CategoriesSection } from './CategoriesSection';
+export { ExercisePreviewModal } from './ExercisePreviewModal';
+export { ExerciseSidebar } from './ExerciseSidebar';
+export { InstructionsSection } from './InstructionsSection';
+export { MediaSection } from './MediaSection';
+
 export type { ActionButtonProps } from './ActionButton';
 export type { AvatarWithBadgeProps } from './AvatarWithBadge';
 export type { DifficultyChipProps } from './DifficultyChip';

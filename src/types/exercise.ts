@@ -56,3 +56,40 @@ export interface ExerciseDetailModalProps {
   onClose: () => void;
   onToggleFavorite: (exerciseId: number) => void;
 }
+
+// 🏋️ TIPOS PARA CREAR EJERCICIO
+export interface CreateExerciseForm {
+  title: string;
+  description: string;
+  duration: number;
+  calories: number;
+  difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
+  categories: string[];
+  gifUrl: string;
+  instructions: string[];
+  equipment: string[];
+  targetAudience: 'kids' | 'teens' | 'all';
+  safetyNotes: string[];
+  isPublic: boolean;
+}
+
+export interface CreateExerciseRequest {
+  title: string;
+  description: string;
+  duration: number;
+  calories: number;
+  difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
+  categories: string[];
+  gifUrl: string;
+  instructions: string[];
+  equipment: string[];
+  targetAudience: 'kids' | 'teens' | 'all';
+  safetyNotes: string[];
+  isPublic: boolean;
+}
+
+export interface TargetAudienceOption {
+  value: 'kids' | 'teens' | 'all';
+  label: string;
+  description: string;
+}
