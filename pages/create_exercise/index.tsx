@@ -181,7 +181,7 @@ export default function CreateExercisePage() {
                 />
 
                 {/* Tips emergentes */}
-                <ExerciseTips showInitially={true} />
+                <ExerciseTips showInitially={true} showHelpButton={true} />
             </Container>
         </PermissionGate>
     );

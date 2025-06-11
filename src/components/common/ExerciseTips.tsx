@@ -9,21 +9,37 @@ import {
     Typography,
     Zoom
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ExerciseTipsProps {
     showInitially?: boolean;
+    showHelpButton?: boolean; // Nueva prop para controlar si mostrar el botón desde el inicio
 }
 
 export const ExerciseTips: React.FC<ExerciseTipsProps> = ({
-    showInitially = true
+    showInitially = true,
+    showHelpButton = true // Por defecto mostrar el botón de ayuda
 }) => {
     const [showTips, setShowTips] = useState(showInitially);
-    const [showFab, setShowFab] = useState(!showInitially);
+    const [showFab, setShowFab] = useState(showHelpButton && !showInitially);
+    const [showPulse, setShowPulse] = useState(false);
+
+    // Mostrar animación de pulso cuando aparece el FAB
+    useEffect(() => {
+        if (showFab) {
+            setShowPulse(true);
+            const timer = setTimeout(() => {
+                setShowPulse(false);
+            }, 6000); // Pulsar por 6 segundos
+            return () => clearTimeout(timer);
+        }
+    }, [showFab]);
 
     const handleCloseTips = () => {
         setShowTips(false);
-        setShowFab(true);
+        if (showHelpButton) {
+            setShowFab(true);
+        }
     };
 
     const handleOpenTips = () => {
@@ -110,21 +126,38 @@ export const ExerciseTips: React.FC<ExerciseTipsProps> = ({
             </Modal>
 
             {/* Botón flotante para mostrar tips */}
-            <Zoom in={showFab}>
-                <Fab
-                    color="secondary"
-                    aria-label="mostrar tips"
-                    onClick={handleOpenTips}
-                    sx={{
-                        position: 'fixed',
-                        bottom: 24,
-                        right: 24,
-                        zIndex: 1000
-                    }}
-                >
-                    <HelpIcon />
-                </Fab>
-            </Zoom>
+            {showHelpButton && (
+                <Zoom in={showFab}>
+                    <Fab
+                        color="secondary"
+                        aria-label="mostrar tips"
+                        onClick={handleOpenTips}
+                        sx={{
+                            position: 'fixed',
+                            bottom: 24,
+                            right: 24,
+                            zIndex: 1000,
+                            animation: showPulse ? 'pulse 2s infinite' : 'none',
+                            '@keyframes pulse': {
+                                '0%': {
+                                    transform: 'scale(1)',
+                                    boxShadow: '0 0 0 0 rgba(156, 39, 176, 0.7)'
+                                },
+                                '70%': {
+                                    transform: 'scale(1.05)',
+                                    boxShadow: '0 0 0 10px rgba(156, 39, 176, 0)'
+                                },
+                                '100%': {
+                                    transform: 'scale(1)',
+                                    boxShadow: '0 0 0 0 rgba(156, 39, 176, 0)'
+                                }
+                            }
+                        }}
+                    >
+                        <HelpIcon />
+                    </Fab>
+                </Zoom>
+            )}
         </>
     );
 };
