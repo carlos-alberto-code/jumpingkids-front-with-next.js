@@ -93,3 +93,31 @@ export interface TargetAudienceOption {
   label: string;
   description: string;
 }
+
+// 🔄 Tipos para respuestas de API
+export interface CreateExerciseResponse {
+  success: boolean;
+  exercise: Exercise;
+  message?: string;
+}
+
+export interface ApiError {
+  success: false;
+  message: string;
+  code?: string;
+  details?: any;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  data?: T;
+  message?: string;
+  error?: string;
+}
+
+// 🎯 Estados de operaciones asíncronas
+export interface AsyncOperationState {
+  loading: boolean;
+  error: string | null;
+  success: boolean;
+}

@@ -17,90 +17,49 @@ import {
     ExercisePreviewModal,
     ExerciseSidebar,
     InstructionsSection,
-    MediaSection
+    MediaSection,
+    Notification
 } from '../../src/components/common';
-import { DEFAULT_CREATE_EXERCISE_FORM } from '../../src/constants/exercise';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
-import { CreateExerciseForm } from '../../src/types/exercise';
+import { useNotification } from '../../src/hooks/common/useNotification';
+import { useCreateExercise, useExerciseForm } from '../../src/hooks/exercise';
 
 export default function CreateExercisePage() {
     const { user, isPremiumUser } = usePermissionCheck();
     const [showPreview, setShowPreview] = useState(false);
-    const [formData, setFormData] = useState<CreateExerciseForm>(DEFAULT_CREATE_EXERCISE_FORM);
-    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
-    // Handlers
-    const handleInputChange = (field: keyof CreateExerciseForm, value: any) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-        // Limpiar error del campo
-        if (formErrors[field]) {
-            setFormErrors(prev => ({ ...prev, [field]: '' }));
+    // Hooks personalizados para manejar el formulario y la API
+    const {
+        formData,
+        formErrors,
+        handleInputChange,
+        handleCategoryToggle,
+        handleEquipmentToggle,
+        handleArrayFieldChange,
+        addArrayField,
+        removeArrayField,
+        validateForm,
+        resetForm,
+        estimatedCalories
+    } = useExerciseForm();
+
+    const { createExercise, loading, error, clearError } = useCreateExercise();
+    const { notification, showSuccess, showError, hideNotification } = useNotification();
+
+    const handleSave = async () => {
+        if (!validateForm()) {
+            showError('Por favor, completa todos los campos requeridos.');
+            return;
         }
-    };
 
-    const handleCategoryToggle = (category: string) => {
-        setFormData(prev => ({
-            ...prev,
-            categories: prev.categories.includes(category)
-                ? prev.categories.filter(c => c !== category)
-                : [...prev.categories, category]
-        }));
-    };
+        const result = await createExercise(formData);
 
-    const handleEquipmentToggle = (equipment: string) => {
-        setFormData(prev => ({
-            ...prev,
-            equipment: prev.equipment.includes(equipment)
-                ? prev.equipment.filter(e => e !== equipment)
-                : [...prev.equipment, equipment]
-        }));
-    };
-
-    const handleArrayFieldChange = (field: 'instructions' | 'safetyNotes', index: number, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: prev[field].map((item, i) => i === index ? value : item)
-        }));
-    };
-
-    const addArrayField = (field: 'instructions' | 'safetyNotes') => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: [...prev[field], '']
-        }));
-    };
-
-    const removeArrayField = (field: 'instructions' | 'safetyNotes', index: number) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: prev[field].filter((_, i) => i !== index)
-        }));
-    };
-
-    const validateForm = (): boolean => {
-        const errors: Record<string, string> = {};
-
-        if (!formData.title.trim()) errors.title = 'El título es requerido';
-        if (!formData.description.trim()) errors.description = 'La descripción es requerida';
-        if (formData.duration < 1) errors.duration = 'La duración debe ser mayor a 0';
-        if (formData.calories < 1) errors.calories = 'Las calorías deben ser mayores a 0';
-        if (formData.categories.length === 0) errors.categories = 'Selecciona al menos una categoría';
-        if (!formData.gifUrl.trim()) errors.gifUrl = 'La URL del GIF es requerida';
-        if (formData.instructions.every(inst => !inst.trim())) errors.instructions = 'Agrega al menos una instrucción';
-
-        setFormErrors(errors);
-        return Object.keys(errors).length === 0;
-    };
-
-    const handleSave = () => {
-        if (!validateForm()) return;
-
-        // Simular guardado
-        console.log('Guardando ejercicio:', formData);
-        alert('✅ Ejercicio creado exitosamente (funcionalidad simulada)');
-
-        // Reset form
-        handleReset();
+        if (result) {
+            showSuccess('✅ Ejercicio creado exitosamente');
+            resetForm(); // Usar el método del hook
+        } else if (error) {
+            showError(`Error al crear ejercicio: ${error}`);
+        }
     };
 
     const handlePreview = () => {
@@ -109,11 +68,9 @@ export default function CreateExercisePage() {
     };
 
     const handleReset = () => {
-        setFormData(DEFAULT_CREATE_EXERCISE_FORM);
-        setFormErrors({});
+        resetForm();
+        clearError(); // Limpiar errores de API también
     };
-
-    const estimatedCalories = Math.round(formData.duration * 5 + (formData.difficulty === 'Avanzado' ? 10 : formData.difficulty === 'Intermedio' ? 5 : 0));
 
     return (
         <PermissionGate
@@ -207,6 +164,8 @@ export default function CreateExercisePage() {
                     <Grid size={{ xs: 12, md: 4 }}>
                         <ExerciseSidebar
                             formData={formData}
+                            loading={loading}
+                            error={error}
                             onSave={handleSave}
                             onPreview={handlePreview}
                             onReset={handleReset}
@@ -220,6 +179,12 @@ export default function CreateExercisePage() {
                     formData={formData}
                     onClose={() => setShowPreview(false)}
                     onSave={handleSave}
+                />
+
+                {/* Sistema de notificaciones */}
+                <Notification
+                    notification={notification}
+                    onClose={hideNotification}
                 />
             </Container>
         </PermissionGate>

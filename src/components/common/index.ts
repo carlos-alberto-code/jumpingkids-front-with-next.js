@@ -19,6 +19,9 @@ export { ExerciseSidebar } from './ExerciseSidebar';
 export { InstructionsSection } from './InstructionsSection';
 export { MediaSection } from './MediaSection';
 
+// Notification
+export { Notification } from './Notification';
+
 export type { ActionButtonProps } from './ActionButton';
 export type { AvatarWithBadgeProps } from './AvatarWithBadge';
 export type { DifficultyChipProps } from './DifficultyChip';
