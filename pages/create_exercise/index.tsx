@@ -55,7 +55,7 @@ export default function CreateExercisePage() {
         const result = await createExercise(formData);
 
         if (result) {
-            showSuccess('✅ Ejercicio creado exitosamente');
+            showSuccess('Ejercicio creado exitosamente');
             resetForm();
             setShowPreview(false); // Cerrar modal después del éxito
         } else if (error) {

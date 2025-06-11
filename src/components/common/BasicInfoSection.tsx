@@ -66,10 +66,36 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                             type="number"
                             label="Duración (minutos)"
                             value={formData.duration}
-                            onChange={(e) => onInputChange('duration', Number(e.target.value))}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Solo permitir números enteros
+                                if (value === '' || /^\d+$/.test(value)) {
+                                    onInputChange('duration', value === '' ? 0 : parseInt(value, 10));
+                                }
+                            }}
+                            onKeyDown={(e) => {
+                                // Prevenir entrada de punto decimal y caracteres no numéricos
+                                if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                                    e.preventDefault();
+                                }
+                            }}
                             error={!!formErrors.duration}
                             helperText={formErrors.duration}
-                            inputProps={{ min: 1, max: 60 }}
+                            inputProps={{
+                                min: 1,
+                                max: 60,
+                                step: 1
+                            }}
+                            sx={{
+                                '& input[type="number"]::-webkit-outer-spin-button, & input[type="number"]::-webkit-inner-spin-button': {
+                                    WebkitAppearance: 'auto',
+                                    height: '30px',
+                                    opacity: 1
+                                },
+                                '& input[type="number"]': {
+                                    MozAppearance: 'textfield'
+                                }
+                            }}
                         />
                     </Grid>
 
@@ -79,7 +105,19 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                             type="number"
                             label="Calorías estimadas"
                             value={formData.calories}
-                            onChange={(e) => onInputChange('calories', Number(e.target.value))}
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                // Solo permitir números enteros
+                                if (value === '' || /^\d+$/.test(value)) {
+                                    onInputChange('calories', value === '' ? 0 : parseInt(value, 10));
+                                }
+                            }}
+                            onKeyDown={(e) => {
+                                // Prevenir entrada de punto decimal y caracteres no numéricos
+                                if (e.key === '.' || e.key === ',' || e.key === 'e' || e.key === 'E' || e.key === '+' || e.key === '-') {
+                                    e.preventDefault();
+                                }
+                            }}
                             slotProps={{
                                 input: {
                                     endAdornment: (
@@ -92,7 +130,21 @@ export const BasicInfoSection: React.FC<BasicInfoSectionProps> = ({
                                 },
                             }}
                             helperText="Ajusta según la intensidad"
-                            inputProps={{ min: 1, max: 500 }}
+                            inputProps={{
+                                min: 1,
+                                max: 500,
+                                step: 1
+                            }}
+                            sx={{
+                                '& input[type="number"]::-webkit-outer-spin-button, & input[type="number"]::-webkit-inner-spin-button': {
+                                    WebkitAppearance: 'auto',
+                                    height: '30px',
+                                    opacity: 1
+                                },
+                                '& input[type="number"]': {
+                                    MozAppearance: 'textfield'
+                                }
+                            }}
                         />
                     </Grid>
 
