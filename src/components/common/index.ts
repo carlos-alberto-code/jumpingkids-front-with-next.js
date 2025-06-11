@@ -11,11 +11,11 @@ export { default as StatusChip } from './StatusChip';
 export { default as TimeDisplay } from './TimeDisplay';
 
 // Create Exercise Components
-export { AdvancedConfigSection } from './AdvancedConfigSection';
 export { BasicInfoSection } from './BasicInfoSection';
 export { CategoriesSection } from './CategoriesSection';
 export { ExercisePreviewModal } from './ExercisePreviewModal';
 export { ExerciseSidebar } from './ExerciseSidebar';
+export { ExerciseTips } from './ExerciseTips';
 export { InstructionsSection } from './InstructionsSection';
 export { MediaSection } from './MediaSection';
 

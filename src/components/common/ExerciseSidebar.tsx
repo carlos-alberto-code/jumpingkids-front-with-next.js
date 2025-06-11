@@ -13,11 +13,12 @@ import {
     Typography
 } from '@mui/material';
 import { CreateExerciseForm } from '../../types/exercise';
+import { AppError } from '../../utils/errorHandling';
 
 interface ExerciseSidebarProps {
     formData: CreateExerciseForm;
     loading?: boolean;
-    error?: string | null;
+    error?: AppError | null;
     onSave: () => void;
     onPreview: () => void;
     onReset: () => void;
@@ -72,7 +73,7 @@ export const ExerciseSidebar: React.FC<ExerciseSidebarProps> = ({
 
                     {error && (
                         <Alert severity="error" sx={{ mt: 2 }}>
-                            {error}
+                            {error.message}
                         </Alert>
                     )}
                 </CardContent>
@@ -115,32 +116,6 @@ export const ExerciseSidebar: React.FC<ExerciseSidebarProps> = ({
                                 {formData.instructions.filter(i => i.trim()).length}
                             </Typography>
                         </Box>
-                    </Stack>
-                </CardContent>
-            </Card>
-
-            {/* Tips */}
-            <Card>
-                <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                        💡 Tips para Crear Ejercicios
-                    </Typography>
-                    <Stack spacing={1}>
-                        <Alert severity="info" sx={{ p: 1 }}>
-                            <Typography variant="caption">
-                                Usa nombres divertidos que atraigan a los niños
-                            </Typography>
-                        </Alert>
-                        <Alert severity="success" sx={{ p: 1 }}>
-                            <Typography variant="caption">
-                                Las instrucciones claras mejoran la seguridad
-                            </Typography>
-                        </Alert>
-                        <Alert severity="warning" sx={{ p: 1 }}>
-                            <Typography variant="caption">
-                                Considera la edad del niño al establecer la dificultad
-                            </Typography>
-                        </Alert>
                     </Stack>
                 </CardContent>
             </Card>

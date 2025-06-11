@@ -2,7 +2,8 @@ import { API_CONFIG, buildApiUrl, getApiConfig } from '../../config/api';
 import { MOCK_LOADING_DELAY_MS } from '../../constants/exercise';
 import { MOCK_EXERCISES } from '../../constants/exerciseMocks';
 import { CreateExerciseRequest, Exercise } from '../../types/exercise';
-import { getAuthHeaders, handleHttpError } from '../../utils/httpUtils';
+import { exerciseCache, generateCacheKey } from '../../utils/cacheUtils';
+import { checkConnectivity, DEFAULT_RETRY_CONFIG, executeWithRetry, getAuthHeaders, handleHttpError } from '../../utils/httpUtils';
 
 export class ExerciseService {
     /**
@@ -83,7 +84,7 @@ export class ExerciseService {
     }
 
     /**
-     * Crear un nuevo ejercicio
+     * Crear un nuevo ejercicio con retry logic y verificación de conectividad
      */
     static async createExercise(exerciseData: CreateExerciseRequest): Promise<Exercise> {
         const config = getApiConfig();
@@ -113,23 +114,41 @@ export class ExerciseService {
                         return;
                     }
 
-                    // Modo producción: llamada real a la API
-                    const apiUrl = buildApiUrl(API_CONFIG.ENDPOINTS.EXERCISES);
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: getAuthHeaders(),
-                        body: JSON.stringify(exerciseData)
-                    });
-
-                    if (!response.ok) {
-                        handleHttpError(response);
+                    // Verificar conectividad antes de intentar la petición
+                    const isConnected = await checkConnectivity();
+                    if (!isConnected) {
+                        reject(new Error('No hay conexión a internet. Verifica tu conexión y vuelve a intentar.'));
+                        return;
                     }
 
-                    const newExercise = await response.json();
+                    // Modo producción: llamada real a la API con retry logic
+                    const apiUrl = buildApiUrl(API_CONFIG.ENDPOINTS.EXERCISES);
+
+                    const requestFn = async () => {
+                        const response = await fetch(apiUrl, {
+                            method: 'POST',
+                            headers: getAuthHeaders(),
+                            body: JSON.stringify(exerciseData)
+                        });
+
+                        if (!response.ok) {
+                            handleHttpError(response);
+                        }
+
+                        return await response.json();
+                    };
+
+                    const newExercise = await executeWithRetry(requestFn, {
+                        ...DEFAULT_RETRY_CONFIG,
+                        maxRetries: 2 // Reducir reintentos para operaciones de escritura
+                    });
 
                     if (config.ENABLE_API_LOGS) {
                         console.log('✅ Ejercicio creado exitosamente:', newExercise);
                     }
+
+                    // Invalidar cache después de crear
+                    this.invalidateExerciseCache();
 
                     resolve(newExercise);
                 } catch (error) {
@@ -138,10 +157,56 @@ export class ExerciseService {
                         console.error('❌ Error creating exercise:', error);
                     }
 
-                    reject(error instanceof Error ? error : new Error('Error desconocido al crear ejercicio'));
+                    // Detectar diferentes tipos de errores
+                    let errorMessage = 'Error desconocido al crear ejercicio';
+
+                    if (error instanceof TypeError && error.message.includes('fetch')) {
+                        errorMessage = 'No se pudo conectar con el servidor. Asegúrate de que el backend esté funcionando.';
+                    } else if (error instanceof Error) {
+                        if (error.message.includes('NetworkError') || error.message.includes('ERR_NETWORK')) {
+                            errorMessage = 'Error de red. Verifica tu conexión a internet.';
+                        } else if (error.message.includes('ERR_CONNECTION_REFUSED')) {
+                            errorMessage = 'El servidor no está disponible. Contacta al administrador.';
+                        } else {
+                            errorMessage = error.message;
+                        }
+                    }
+
+                    reject(new Error(errorMessage));
                 }
             }, config.SIMULATE_NETWORK_DELAY ? config.DELAY_MS : 0);
         });
+    }
+
+    /**
+     * Invalidar cache de ejercicios después de mutaciones
+     */
+    static invalidateExerciseCache(): void {
+        const cacheKeys = exerciseCache.getStats().keys;
+        cacheKeys.forEach(key => {
+            if (key.includes('exercises')) {
+                exerciseCache.delete(key);
+            }
+        });
+    }
+
+    /**
+     * Obtener ejercicios con cache
+     */
+    static async getCachedExercises(): Promise<Exercise[]> {
+        const cacheKey = generateCacheKey('exercises');
+
+        // Intentar obtener del cache primero
+        const cachedData = exerciseCache.get(cacheKey);
+        if (cachedData) {
+            return cachedData;
+        }
+
+        // Si no está en cache, obtener y guardar
+        const exercises = await this.getExercises();
+        exerciseCache.set(cacheKey, exercises);
+
+        return exercises;
     }
 
     /**

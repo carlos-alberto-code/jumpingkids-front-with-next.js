@@ -1,41 +1,42 @@
 import { useState } from 'react';
 import { ExerciseService } from '../../services/exercise/ExerciseService';
 import { CreateExerciseForm, Exercise } from '../../types/exercise';
+import { AppError, safeAsync } from '../../utils/errorHandling';
 
 export interface UseCreateExerciseReturn {
     createExercise: (formData: CreateExerciseForm) => Promise<Exercise | null>;
     loading: boolean;
-    error: string | null;
+    error: AppError | null;
     clearError: () => void;
 }
 
 /**
- * Hook personalizado para crear ejercicios
+ * Hook personalizado para crear ejercicios con manejo robusto de errores
  * Maneja el estado de loading, error y la petición HTTP
  */
 export const useCreateExercise = (): UseCreateExerciseReturn => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<AppError | null>(null);
 
     const createExercise = async (formData: CreateExerciseForm): Promise<Exercise | null> => {
         setLoading(true);
         setError(null);
 
-        try {
-            // Validar y transformar datos usando el servicio
-            const validatedData = ExerciseService.validateCreateExerciseData(formData);
+        const [result, createError] = await safeAsync(
+            ExerciseService.createExercise(
+                ExerciseService.validateCreateExerciseData(formData)
+            ),
+            'useCreateExercise.createExercise'
+        );
 
-            // Crear el ejercicio
-            const newExercise = await ExerciseService.createExercise(validatedData);
+        setLoading(false);
 
-            return newExercise;
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Error al crear el ejercicio';
-            setError(errorMessage);
+        if (createError) {
+            setError(createError);
             return null;
-        } finally {
-            setLoading(false);
         }
+
+        return result;
     };
 
     const clearError = () => {

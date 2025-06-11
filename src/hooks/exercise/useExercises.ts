@@ -1,37 +1,63 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ExerciseService } from '../../services/exercise/ExerciseService';
 import { Exercise } from '../../types/exercise';
+import { exerciseCache, generateCacheKey } from '../../utils/cacheUtils';
 
-export const useExercises = () => {
+export interface UseExercisesReturn {
+    exercises: Exercise[];
+    loading: boolean;
+    error: string | null;
+    refreshExercises: () => Promise<void>;
+    clearError: () => void;
+    toggleFavorite: (exerciseId: number) => void;
+}
+
+export const useExercises = (): UseExercisesReturn => {
     const [exercises, setExercises] = useState<Exercise[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadExercises = async () => {
-            setLoading(true);
-            setError(null);
+    const loadExercises = useCallback(async (useCache = true) => {
+        setLoading(true);
+        setError(null);
 
-            try {
-                // Usar el servicio para cargar ejercicios
-                const exercisesData = await ExerciseService.getExercises();
+        try {
+            let exercisesData: Exercise[];
 
-                // Aplicar favoritos guardados
-                const exercisesWithFavorites = ExerciseService.applyFavorites(exercisesData);
-
-                setExercises(exercisesWithFavorites);
-            } catch (err) {
-                setError('Error al cargar ejercicios');
-                console.error('Error loading exercises:', err);
-            } finally {
-                setLoading(false);
+            if (useCache) {
+                exercisesData = await ExerciseService.getCachedExercises();
+            } else {
+                exercisesData = await ExerciseService.getExercises();
+                // Actualizar cache manualmente si se solicita sin cache
+                const cacheKey = generateCacheKey('exercises');
+                exerciseCache.set(cacheKey, exercisesData);
             }
-        };
 
-        loadExercises();
+            // Aplicar favoritos guardados
+            const exercisesWithFavorites = ExerciseService.applyFavorites(exercisesData);
+            setExercises(exercisesWithFavorites);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Error al cargar ejercicios';
+            setError(errorMessage);
+            console.error('Error loading exercises:', err);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    const toggleFavorite = (exerciseId: number) => {
+    const refreshExercises = useCallback(async () => {
+        await loadExercises(false); // Forzar recarga sin cache
+    }, [loadExercises]);
+
+    const clearError = useCallback(() => {
+        setError(null);
+    }, []);
+
+    useEffect(() => {
+        loadExercises();
+    }, [loadExercises]);
+
+    const toggleFavorite = useCallback((exerciseId: number) => {
         setExercises(prevExercises => {
             const updatedExercises = prevExercises.map(exercise =>
                 exercise.id === exerciseId
@@ -47,12 +73,14 @@ export const useExercises = () => {
 
             return updatedExercises;
         });
-    };
+    }, []);
 
     return {
         exercises,
         loading,
         error,
+        refreshExercises,
+        clearError,
         toggleFavorite
     };
 };

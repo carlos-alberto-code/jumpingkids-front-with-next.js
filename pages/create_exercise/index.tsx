@@ -11,11 +11,11 @@ import {
 import { useState } from 'react';
 import PermissionGate from '../../src/components/auth/PermissionGate';
 import {
-    AdvancedConfigSection,
     BasicInfoSection,
     CategoriesSection,
     ExercisePreviewModal,
     ExerciseSidebar,
+    ExerciseTips,
     InstructionsSection,
     MediaSection,
     Notification
@@ -56,14 +56,18 @@ export default function CreateExercisePage() {
 
         if (result) {
             showSuccess('✅ Ejercicio creado exitosamente');
-            resetForm(); // Usar el método del hook
+            resetForm();
+            setShowPreview(false); // Cerrar modal después del éxito
         } else if (error) {
-            showError(`Error al crear ejercicio: ${error}`);
+            showError(`Error al crear ejercicio: ${error.message}`);
         }
     };
 
     const handlePreview = () => {
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            showError('Por favor, completa todos los campos requeridos antes de la vista previa.');
+            return;
+        }
         setShowPreview(true);
     };
 
@@ -145,18 +149,6 @@ export default function CreateExercisePage() {
                                 onAddInstruction={() => addArrayField('instructions')}
                                 onRemoveInstruction={(index) => removeArrayField('instructions', index)}
                             />
-
-                            {/* Configuraciones avanzadas */}
-                            <AdvancedConfigSection
-                                targetAudience={formData.targetAudience}
-                                safetyNotes={formData.safetyNotes}
-                                isPublic={formData.isPublic}
-                                onTargetAudienceChange={(value) => handleInputChange('targetAudience', value)}
-                                onSafetyNoteChange={(index, value) => handleArrayFieldChange('safetyNotes', index, value)}
-                                onAddSafetyNote={() => addArrayField('safetyNotes')}
-                                onRemoveSafetyNote={(index) => removeArrayField('safetyNotes', index)}
-                                onIsPublicChange={(value) => handleInputChange('isPublic', value)}
-                            />
                         </Stack>
                     </Grid>
 
@@ -177,6 +169,7 @@ export default function CreateExercisePage() {
                 <ExercisePreviewModal
                     open={showPreview}
                     formData={formData}
+                    loading={loading}
                     onClose={() => setShowPreview(false)}
                     onSave={handleSave}
                 />
@@ -186,6 +179,9 @@ export default function CreateExercisePage() {
                     notification={notification}
                     onClose={hideNotification}
                 />
+
+                {/* Tips emergentes */}
+                <ExerciseTips showInitially={true} />
             </Container>
         </PermissionGate>
     );
