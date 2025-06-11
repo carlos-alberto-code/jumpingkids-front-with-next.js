@@ -16,7 +16,6 @@ import { useRouter } from 'next/router';
 import { useAuthContext } from '../src/context/auth/AuthContext';
 import { usePermissionCheck } from '../src/hooks/auth/useUserPermissions';
 
-// Importar componentes refactorizados
 import { PageHeader } from '../src/components/analytics';
 import {
   DashboardTabs,

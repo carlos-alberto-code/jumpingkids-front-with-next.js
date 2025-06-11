@@ -1,7 +1,9 @@
 // src/services/routine/RoutineService.ts
 
 import { findAssignmentsByKid, findTodayAssignment, MOCK_ROUTINE_ASSIGNMENTS, MOCK_ROUTINES } from "@/constants/routinesMocks";
-import { ExerciseResult, Routine, RoutineAssignment, TrainingSession } from "@/types/routines";
+import { CreateRoutineForm, CreateRoutineRequest, ExerciseResult, Routine, RoutineAssignment, TrainingSession } from "@/types/routines";
+import { buildApiUrl, getApiConfig } from '../../config/api';
+import { executeWithRetry } from '../../utils/httpUtils';
 
 
 export class RoutineService {
@@ -67,7 +69,7 @@ export class RoutineService {
     static getCurrentTrainingSession(): TrainingSession | null {
         try {
             if (typeof window === 'undefined') return null;
-            
+
             const sessionData = localStorage.getItem(this.STORAGE_KEY);
             if (!sessionData) return null;
 
@@ -86,7 +88,7 @@ export class RoutineService {
     static saveTrainingSession(session: TrainingSession): void {
         try {
             if (typeof window === 'undefined') return;
-            
+
             localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
             console.log('💾 Sesión guardada:', session);
         } catch (error) {
@@ -224,20 +226,20 @@ export class RoutineService {
      * Obtiene las asignaciones de un niño en un rango de fechas
      */
     static async getAssignments(
-        kidId: string, 
-        startDate?: string, 
+        kidId: string,
+        startDate?: string,
         endDate?: string
     ): Promise<RoutineAssignment[]> {
         return new Promise((resolve) => {
             setTimeout(() => {
                 let assignments = findAssignmentsByKid(kidId);
-                
+
                 if (startDate && endDate) {
-                    assignments = assignments.filter(a => 
+                    assignments = assignments.filter(a =>
                         a.assignedDate >= startDate && a.assignedDate <= endDate
                     );
                 }
-                
+
                 resolve(assignments);
             }, this.MOCK_DELAY_MS);
         });
@@ -264,10 +266,10 @@ export class RoutineService {
         };
 
         // Agregar token de autenticación cuando esté disponible
-        const token = typeof window !== 'undefined' 
-            ? localStorage.getItem('jumpingkids-session') 
+        const token = typeof window !== 'undefined'
+            ? localStorage.getItem('jumpingkids-session')
             : null;
-        
+
         if (token) {
             try {
                 const session = JSON.parse(token);
@@ -312,4 +314,138 @@ export class RoutineService {
     //     });
     //     if (!response.ok) throw new Error('Error completing routine');
     // }
+
+    /**
+     * 🔧 FUNCIONES PARA CREAR RUTINAS
+     */
+
+    /**
+     * Crear una nueva rutina con retry logic y verificación de conectividad
+     */
+    static async createRoutine(routineData: CreateRoutineRequest): Promise<Routine> {
+        const config = getApiConfig();
+
+        return new Promise((resolve, reject) => {
+            setTimeout(async () => {
+                try {
+                    if (config.USE_MOCK_DATA) {
+                        // Simular respuesta exitosa
+                        const mockRoutine: Routine = {
+                            id: Date.now().toString(),
+                            title: routineData.title,
+                            description: routineData.description,
+                            exercises: [], // Se poblaría desde exerciseIds
+                            totalDuration: routineData.totalDuration,
+                            difficulty: routineData.difficulty,
+                            categories: routineData.categories,
+                            isPublic: routineData.isPublic || false,
+                            createdBy: 'mock-user-id',
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString()
+                        };
+
+                        if (config.ENABLE_API_LOGS) {
+                            console.log('🎯 Mock: Rutina creada:', mockRoutine);
+                        }
+
+                        resolve(mockRoutine);
+                        return;
+                    }
+
+                    // Verificar conectividad antes de intentar la petición
+                    const isOnline = navigator.onLine;
+                    if (!isOnline) {
+                        throw new Error('Sin conexión a internet');
+                    }
+
+                    // Realizar petición HTTP real
+                    const url = buildApiUrl('/routines');
+                    const response = await executeWithRetry(() =>
+                        fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                // Agregar headers de autenticación aquí si es necesario
+                                // 'Authorization': `Bearer ${getToken()}`
+                            },
+                            body: JSON.stringify(routineData)
+                        })
+                    );
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (config.ENABLE_API_LOGS) {
+                        console.log('✅ Rutina creada exitosamente:', result);
+                    }
+
+                    resolve(result.data || result);
+
+                } catch (error) {
+                    if (config.ENABLE_API_LOGS) {
+                        console.error('❌ Error al crear rutina:', error);
+                    }
+                    reject(error);
+                }
+            }, config.SIMULATE_NETWORK_DELAY ? config.DELAY_MS : 0);
+        });
+    }
+
+    /**
+     * Validar y transformar datos antes de enviar a la API
+     */
+    static validateCreateRoutineData(data: CreateRoutineForm): CreateRoutineRequest {
+        // Validar campos requeridos
+        if (!data.title?.trim()) {
+            throw new Error('El título es requerido');
+        }
+
+        if (!data.description?.trim()) {
+            throw new Error('La descripción es requerida');
+        }
+
+        if (!data.exercises || data.exercises.length === 0) {
+            throw new Error('Selecciona al menos un ejercicio');
+        }
+
+        if (data.exercises.length < 2) {
+            throw new Error('Una rutina debe tener al menos 2 ejercicios');
+        }
+
+        // Transformar y limpiar datos
+        return {
+            title: data.title.trim(),
+            description: data.description.trim(),
+            exerciseIds: data.exercises.map(ex => ex.id),
+            totalDuration: data.totalDuration || 0,
+            difficulty: data.difficulty || 'Principiante',
+            categories: data.categories.filter(cat => cat.trim()),
+            isPublic: Boolean(data.isPublic),
+            targetAge: data.targetAge || 'kids',
+            restTime: Number(data.restTime) || 30
+        };
+    }
+
+    /**
+     * Validar que una rutina tenga todos los campos requeridos
+     */
+    static validateRoutine(routine: Partial<Routine>): routine is Routine {
+        return !!(
+            routine.id &&
+            routine.title &&
+            routine.description &&
+            routine.exercises &&
+            routine.totalDuration !== undefined &&
+            routine.difficulty &&
+            routine.categories &&
+            routine.createdBy &&
+            routine.createdAt &&
+            routine.updatedAt
+        );
+    }
 }

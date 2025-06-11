@@ -58,7 +58,7 @@ export interface CreateRoutineRequest {
     title: string;
     description: string;
     exerciseIds: number[];
-    isPublic?: boolean;
+    isPublic: boolean;
 }
 
 export interface UpdateRoutineRequest extends Partial<CreateRoutineRequest> {
@@ -83,4 +83,49 @@ export interface CompleteRoutineRequest {
     assignmentId: string;
     totalTimeSpent: number;
     exerciseResults: ExerciseResult[];
+}
+
+// 🏃‍♀️ TIPOS PARA CREAR RUTINA
+export interface CreateRoutineForm {
+    title: string;
+    description: string;
+    exercises: Exercise[];
+    totalDuration: number;
+    difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
+    categories: string[];
+    isPublic: boolean;
+    targetAge: string;
+    restTime: number; // segundos entre ejercicios
+}
+
+export interface CreateRoutineRequest {
+    title: string;
+    description: string;
+    exerciseIds: number[]; // Solo IDs de ejercicios
+    totalDuration: number;
+    difficulty: 'Principiante' | 'Intermedio' | 'Avanzado';
+    categories: string[];
+    isPublic: boolean;
+    targetAge: string;
+    restTime: number;
+}
+
+export interface CreateRoutineResponse {
+    success: boolean;
+    routine: Routine;
+    message?: string;
+}
+
+// Filtros para ejercicios en el selector
+export interface ExerciseFilter {
+    search: string;
+    category: string;
+    difficulty: string;
+}
+
+// Estados de operaciones asíncronas para rutinas
+export interface AsyncRoutineOperationState {
+    loading: boolean;
+    error: string | null;
+    success: boolean;
 }

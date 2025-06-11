@@ -11,7 +11,6 @@ import {
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
 
-// Importar componentes refactorizados
 import { PageHeader } from '../../src/components/analytics';
 import {
     AchievementsList,
@@ -103,7 +102,6 @@ export default function ProgressPage() {
                 }
             />
 
-            {/* Estadísticas principales usando componente refactorizado */}
             <ProgressStats progressData={MOCK_PROGRESS_DATA} />
 
             <Grid container spacing={3} sx={{ mt: 1 }}>
