@@ -1,7 +1,15 @@
 // src/hooks/training/useTraining.ts
 import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+    clearTrainingSession,
+    completeExercise as completeExerciseService,
+    completeRoutine as completeRoutineService,
+    getCurrentTrainingSession,
+    getTodayRoutine,
+    pauseTrainingSession,
+    startTrainingSession
+} from '../../services/routine/RoutineService';
 import { RoutineAssignment, TrainingSession } from '../../types/routines';
-import { RoutineService } from '../../services/routine/RoutineService';
 
 export const useTraining = (kidId: string) => {
     const [todayRoutine, setTodayRoutine] = useState<RoutineAssignment | null>(null);
@@ -17,7 +25,7 @@ export const useTraining = (kidId: string) => {
         setError(null);
 
         try {
-            const routine = await RoutineService.getTodayRoutine(kidId);
+            const routine = await getTodayRoutine(kidId);
             setTodayRoutine(routine);
             console.log('📅 Rutina del día cargada:', routine);
         } catch (err) {
@@ -35,7 +43,7 @@ export const useTraining = (kidId: string) => {
         setError(null);
 
         try {
-            const session = await RoutineService.startTrainingSession(assignmentId);
+            const session = await startTrainingSession(assignmentId);
             setCurrentSession(session);
             console.log('🏃‍♀️ Entrenamiento iniciado:', session);
             return session;
@@ -63,7 +71,7 @@ export const useTraining = (kidId: string) => {
         setError(null);
 
         try {
-            const updatedSession = await RoutineService.completeExercise(
+            const updatedSession = await completeExerciseService(
                 currentSession.assignmentId,
                 exerciseId,
                 timeSpent,
@@ -92,7 +100,7 @@ export const useTraining = (kidId: string) => {
         setError(null);
 
         try {
-            await RoutineService.completeRoutine(currentSession.assignmentId);
+            await completeRoutineService(currentSession.assignmentId);
             setCurrentSession(null);
             // Recargar rutina del día para ver el cambio de estado
             await loadTodayRoutine();
@@ -111,21 +119,21 @@ export const useTraining = (kidId: string) => {
     // Pausar/reanudar entrenamiento
     const togglePause = useCallback(() => {
         if (currentSession) {
-            RoutineService.pauseTrainingSession();
+            pauseTrainingSession();
             setCurrentSession(prev => prev ? { ...prev, isPaused: !prev.isPaused } : null);
         }
     }, [currentSession]);
 
     // Cancelar entrenamiento
     const cancelTraining = useCallback(() => {
-        RoutineService.clearTrainingSession();
+        clearTrainingSession();
         setCurrentSession(null);
         console.log('❌ Entrenamiento cancelado');
     }, []);
 
     // Recuperar sesión existente al cargar
     const checkExistingSession = useCallback(() => {
-        const existingSession = RoutineService.getCurrentTrainingSession();
+        const existingSession = getCurrentTrainingSession();
         if (existingSession && !existingSession.isCompleted) {
             setCurrentSession(existingSession);
             console.log('🔄 Sesión existente recuperada:', existingSession);

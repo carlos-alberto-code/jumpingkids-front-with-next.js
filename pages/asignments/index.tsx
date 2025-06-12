@@ -21,10 +21,10 @@ import {
     Typography,
     useTheme
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
-import { RoutineService } from '../../src/services/routine/RoutineService';
+import { getAssignments } from '../../src/services/routine/RoutineService';
 import { RoutineAssignment } from '../../src/types/routines';
 
 // Tipos para el calendario
@@ -39,7 +39,7 @@ export default function AssignmentsPage() {
     const { session } = useAuthContext();
     const { isPremiumUser, isKid } = usePermissionCheck();
     const theme = useTheme();
-    
+
     const [assignments, setAssignments] = useState<RoutineAssignment[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -71,16 +71,16 @@ export default function AssignmentsPage() {
 
             try {
                 console.log('📅 Cargando asignaciones para kidId:', session.user.id);
-                
+
                 const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
                 const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
-                
-                const monthAssignments = await RoutineService.getAssignments(
+
+                const monthAssignments = await getAssignments(
                     session.user.id,
                     startOfMonth.toISOString().split('T')[0],
                     endOfMonth.toISOString().split('T')[0]
                 );
-                
+
                 console.log('✅ Asignaciones cargadas:', monthAssignments);
                 setAssignments(monthAssignments);
             } catch (err) {
@@ -98,29 +98,29 @@ export default function AssignmentsPage() {
     const generateCalendarDays = (): CalendarDay[] => {
         const year = currentMonth.getFullYear();
         const month = currentMonth.getMonth();
-        
+
         const firstDayOfMonth = new Date(year, month, 1);
         const lastDayOfMonth = new Date(year, month + 1, 0);
         const startDate = new Date(firstDayOfMonth);
         startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay());
-        
+
         const days: CalendarDay[] = [];
         const currentDate = new Date(startDate);
-        
+
         for (let i = 0; i < 42; i++) { // 6 semanas × 7 días
             const dateStr = currentDate.toISOString().split('T')[0];
             const assignment = assignments.find(a => a.assignedDate === dateStr);
-            
+
             days.push({
                 date: new Date(currentDate),
                 dayNumber: currentDate.getDate(),
                 isCurrentMonth: currentDate.getMonth() === month,
                 assignment
             });
-            
+
             currentDate.setDate(currentDate.getDate() + 1);
         }
-        
+
         return days;
     };
 
@@ -210,7 +210,7 @@ export default function AssignmentsPage() {
 
             {/* Información para el niño */}
             <Alert severity="info" sx={{ mb: 3 }}>
-                💡 <strong>¿Cómo funciona?</strong> Tu tutor programa rutinas para ti cada día. 
+                💡 <strong>¿Cómo funciona?</strong> Tu tutor programa rutinas para ti cada día.
                 Puedes ver qué rutina tienes hoy y qué viene después.
             </Alert>
 
@@ -245,7 +245,7 @@ export default function AssignmentsPage() {
                     {/* Días de la semana */}
                     <Grid container sx={{ borderBottom: `1px solid ${theme.palette.divider}` }}>
                         {dayNames.map((day) => (
-                            <Grid size={{ xs: 12/7 }} key={day}>
+                            <Grid size={{ xs: 12 / 7 }} key={day}>
                                 <Box sx={{
                                     p: 2,
                                     textAlign: 'center',
@@ -265,9 +265,9 @@ export default function AssignmentsPage() {
                         {calendarDays.map((day, index) => {
                             const { status, color, icon } = getAssignmentStatus(day.assignment, day.date);
                             const isToday = day.date.toDateString() === new Date().toDateString();
-                            
+
                             return (
-                                <Grid size={{ xs: 12/7 }} key={index}>
+                                <Grid size={{ xs: 12 / 7 }} key={index}>
                                     <Paper
                                         elevation={0}
                                         sx={{
@@ -297,7 +297,7 @@ export default function AssignmentsPage() {
                                             >
                                                 {day.dayNumber}
                                             </Typography>
-                                            
+
                                             {icon && (
                                                 <Box sx={{
                                                     display: 'flex',
@@ -378,19 +378,19 @@ export default function AssignmentsPage() {
                                 <Typography variant="body2" color="text.secondary" paragraph>
                                     {selectedAssignment.routine.description}
                                 </Typography>
-                                
+
                                 <Stack direction="row" spacing={1} sx={{ mb: 2 }}>
-                                    <Chip 
+                                    <Chip
                                         label={`${selectedAssignment.routine.exercises.length} ejercicios`}
                                         size="small"
                                         variant="outlined"
                                     />
-                                    <Chip 
+                                    <Chip
                                         label={`${selectedAssignment.routine.totalDuration} min`}
                                         size="small"
                                         variant="outlined"
                                     />
-                                    <Chip 
+                                    <Chip
                                         label={selectedAssignment.routine.difficulty}
                                         size="small"
                                         variant="outlined"
@@ -401,11 +401,11 @@ export default function AssignmentsPage() {
                                     📅 Fecha: {new Date(selectedAssignment.assignedDate).toLocaleDateString()}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    📊 Estado: {selectedAssignment.status === 'completed' ? '✅ Completada' : 
-                                            selectedAssignment.status === 'pending' ? '⏳ Pendiente' : 
+                                    📊 Estado: {selectedAssignment.status === 'completed' ? '✅ Completada' :
+                                        selectedAssignment.status === 'pending' ? '⏳ Pendiente' :
                                             selectedAssignment.status}
                                 </Typography>
-                                
+
                                 {selectedAssignment.completedAt && (
                                     <Typography variant="body2" color="success.main" sx={{ mt: 1 }}>
                                         🎉 ¡Completada el {new Date(selectedAssignment.completedAt).toLocaleString()}!

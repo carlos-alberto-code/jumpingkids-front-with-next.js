@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { RoutineService } from '../../services/routine/RoutineService';
+import { createRoutine as createRoutineService, validateCreateRoutineData } from '../../services/routine/RoutineService';
 import { CreateRoutineForm, Routine } from '../../types/routines';
 import { AppError, safeAsync } from '../../utils/errorHandling';
 
@@ -23,8 +23,8 @@ export const useCreateRoutine = (): UseCreateRoutineReturn => {
         setError(null);
 
         const [result, createError] = await safeAsync(
-            RoutineService.createRoutine(
-                RoutineService.validateCreateRoutineData(formData)
+            createRoutineService(
+                validateCreateRoutineData(formData)
             ),
             'useCreateRoutine.createRoutine'
         );
