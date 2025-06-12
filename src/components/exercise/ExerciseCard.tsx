@@ -1,7 +1,6 @@
 // src/components/exercise/ExerciseCard.tsx
 import {
     AccessTime,
-    Add as AddIcon,
     Favorite,
     FavoriteBorder,
     FitnessCenter,
@@ -21,7 +20,6 @@ import React, { memo, useState } from 'react';
 import { usePermissionCheck } from '../../hooks/auth/useUserPermissions';
 import { Exercise } from '../../types/exercise';
 import { useThemeHelpers } from '../../utils/themeHelpers';
-import PermissionGate from '../auth/PermissionGate';
 
 interface ExerciseCardProps {
     exercise: Exercise;
@@ -95,7 +93,7 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                     }}
                 />
             )}
-            
+
             <CardContent sx={{
                 p: 2,
                 display: 'flex',
@@ -297,35 +295,6 @@ const ExerciseCard: React.FC<ExerciseCardProps> = memo(({
                                 />
                             )}
                         </IconButton>
-
-                        {/* Botón crear similar - solo tutores premium */}
-                        <PermissionGate permission="canCreateCustomExercises">
-                            <IconButton
-                                size="small"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    console.log('Crear ejercicio basado en:', exercise.title);
-                                }}
-                                sx={{
-                                    p: 1,
-                                    transition: theme.transitions.create(['transform', 'background-color'], {
-                                        duration: theme.transitions.duration.short,
-                                    }),
-                                    '&:hover': {
-                                        backgroundColor: `color-mix(in srgb, ${theme.vars?.palette.primary.main || theme.palette.primary.main} 8%, transparent)`,
-                                        transform: 'scale(1.1)',
-                                    },
-                                }}
-                                aria-label="Crear ejercicio similar"
-                            >
-                                <AddIcon
-                                    sx={{
-                                        color: theme.vars?.palette.primary.main || theme.palette.primary.main,
-                                        fontSize: 20
-                                    }}
-                                />
-                            </IconButton>
-                        </PermissionGate>
                     </Box>
                 </Box>
             </CardContent>

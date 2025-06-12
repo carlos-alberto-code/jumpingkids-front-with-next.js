@@ -8,6 +8,7 @@ export interface Exercise {
   gifUrl: string;
   description: string;
   isFavorite: boolean;
+  createdBy?: string; // ID del tutor que creó el ejercicio (opcional para ejercicios del sistema)
 }
 
 // Estado de la filtración de ejercicios
@@ -16,6 +17,7 @@ export interface FilterState {
   category: string | null;
   difficulty: Exercise['difficulty'] | null;
   favoriteFilter: 'all' | 'favorites' | 'non-favorites';
+  myExercisesOnly: boolean; // Filtro para mostrar solo ejercicios creados por el tutor actual
 }
 
 // Modo de vista

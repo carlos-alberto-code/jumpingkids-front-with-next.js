@@ -1,9 +1,11 @@
 import { useMemo, useState } from 'react';
 import { DEFAULT_FILTERS } from '../../constants/exercise';
+import { useAuthContext } from '../../context/auth/AuthContext'; // Usar contexto de autenticación
 import { Exercise, FilterState } from '../../types/exercise';
 
 export const useExerciseFilters = (exercises: Exercise[]) => {
     const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+    const { session } = useAuthContext(); // Obtener sesión actual
 
     const availableCategories = useMemo(() => {
         const allCategories = exercises.flatMap(exercise => exercise.categories);
@@ -39,9 +41,13 @@ export const useExerciseFilters = (exercises: Exercise[]) => {
                 }
             })();
 
-            return matchesSearch && matchesCategory && matchesDifficulty && matchesFavorite;
+            // Filtro por ejercicios creados por mí
+            const matchesMyExercises = !filters.myExercisesOnly ||
+                (exercise.createdBy && session?.user?.id && exercise.createdBy === session.user.id);
+
+            return matchesSearch && matchesCategory && matchesDifficulty && matchesFavorite && matchesMyExercises;
         });
-    }, [exercises, filters]);
+    }, [exercises, filters, session?.user?.id]);
 
     const clearFilters = () => setFilters(DEFAULT_FILTERS);
 

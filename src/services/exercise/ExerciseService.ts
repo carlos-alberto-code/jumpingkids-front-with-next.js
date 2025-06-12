@@ -26,7 +26,8 @@ const createMockExercise = (exerciseData: CreateExerciseRequest): Exercise => {
         difficulty: exerciseData.difficulty,
         categories: exerciseData.categories,
         gifUrl: exerciseData.gifUrl,
-        isFavorite: false
+        isFavorite: false,
+        createdBy: 'tutor-premium-001' // Mock: asignar al tutor premium por defecto
     };
 };
 

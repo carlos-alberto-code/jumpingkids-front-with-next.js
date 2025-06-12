@@ -33,7 +33,8 @@ export const MOCK_EXERCISES: Exercise[] = [
     difficulty: 'Intermedio',
     isFavorite: true,
     categories: ['Core', 'Fuerza'],
-    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif',
+    createdBy: 'tutor-premium-001' // Ejercicio creado por Carlos (tutor premium)
   },
   {
     id: 4,
@@ -55,7 +56,8 @@ export const MOCK_EXERCISES: Exercise[] = [
     difficulty: 'Avanzado',
     isFavorite: true,
     categories: ['Cardio', 'Fuerza', 'Cuerpo Completo'],
-    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif',
+    createdBy: 'tutor-free-001' // Ejercicio creado por Ana (tutor free)
   },
   {
     id: 6,
@@ -77,7 +79,8 @@ export const MOCK_EXERCISES: Exercise[] = [
     difficulty: 'Avanzado',
     isFavorite: false,
     categories: ['Cardio', 'Core'],
-    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif',
+    createdBy: 'tutor-premium-001' // Ejercicio creado por Carlos (tutor premium)
   },
   {
     id: 10,
@@ -99,7 +102,8 @@ export const MOCK_EXERCISES: Exercise[] = [
     difficulty: 'Intermedio',
     isFavorite: true,
     categories: ['Flexibilidad', 'Movilidad', 'Bienestar'],
-    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif'
+    gifUrl: 'https://1.bp.blogspot.com/-_4R4WLvGHIw/X4dxNpQOh3I/AAAAAAAAZOY/9io_-OLTL8gQNFFuGkIlCUNLFniqyJrEACLcBGAsYHQ/s818/lagartijasweb.gif',
+    createdBy: 'tutor-free-001' // Ejercicio creado por Ana (tutor free)
   },
   {
     id: 8,

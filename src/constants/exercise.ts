@@ -7,7 +7,8 @@ export const DEFAULT_FILTERS: FilterState = {
   searchQuery: '',
   category: null,
   difficulty: null,
-  favoriteFilter: 'all'
+  favoriteFilter: 'all',
+  myExercisesOnly: false
 };
 
 // Constantes para dificultades disponibles
