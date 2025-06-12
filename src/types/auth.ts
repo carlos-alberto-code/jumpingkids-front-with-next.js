@@ -84,14 +84,3 @@ export interface AuthLoadingStates {
     checkSession: boolean;
     updateProfile: boolean;
 }
-
-/**
- * ✅ TIPOS PARA ACCESO RÁPIDO (TESTING)
- */
-export type QuickAccessUserType = 'kid-free' | 'kid-premium' | 'tutor-free' | 'tutor-premium';
-
-export interface QuickAccessUser {
-    email: string;
-    password: string;
-    description: string;
-}

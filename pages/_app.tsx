@@ -9,7 +9,6 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import AuthDebug from '../src/components/auth/AuthDebug';
 import { AuthProvider, useAuthContext } from '../src/context/auth/AuthContext';
 import { useUserTheme } from '../src/hooks/auth/useUserTheme';
 import { useDynamicNavigation } from '../src/utils/navigation';
@@ -119,12 +118,7 @@ function AppContent({ Component, pageProps }: AppProps) {
   // Para rutas de autenticación, renderizar sin layout de Toolpad
   if (isAuthRoute) {
     console.log('🔓 Renderizando página de auth sin layout');
-    return (
-      <>
-        <Component {...pageProps} />
-        <AuthDebug />
-      </>
-    );
+    return <Component {...pageProps} />;
   }
 
   // Si no hay sesión y no estamos en ruta de auth, mostrar loading
@@ -163,9 +157,6 @@ function AppContent({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </PageContainer>
       </DashboardLayout>
-
-      {/* 🔍 Debug component */}
-      <AuthDebug />
     </NextAppProvider>
   );
 }

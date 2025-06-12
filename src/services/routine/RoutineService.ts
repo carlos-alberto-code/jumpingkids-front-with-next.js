@@ -3,7 +3,7 @@
 import { findAssignmentsByKid, findTodayAssignment, MOCK_ROUTINE_ASSIGNMENTS, MOCK_ROUTINES } from "@/constants/routinesMocks";
 import { CreateRoutineForm, CreateRoutineRequest, ExerciseResult, Routine, RoutineAssignment, TrainingSession } from "@/types/routines";
 import { buildApiUrl, getApiConfig } from '../../config/api';
-import { executeWithRetry } from '../../utils/httpUtils';
+import { executeWithRetry } from '../../utils/apiUtils'; // ✅ Corregido
 
 // ============================================================================
 // Constants & Configuration
@@ -212,17 +212,6 @@ export const createRoutine = async (routineData: CreateRoutineRequest): Promise<
     // Simular delay de red si está configurado
     if (config.SIMULATE_NETWORK_DELAY) {
         await simulateDelay(config.DELAY_MS);
-    }
-
-    if (config.USE_MOCK_DATA) {
-        // Simular respuesta exitosa
-        const mockRoutine = createMockRoutine(routineData);
-
-        if (config.ENABLE_API_LOGS) {
-            console.log('🎯 Mock: Rutina creada:', mockRoutine);
-        }
-
-        return mockRoutine;
     }
 
     // Verificar conectividad antes de intentar la petición

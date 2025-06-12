@@ -4,7 +4,7 @@
 
 export const API_CONFIG = {
     // URL base de la API
-    BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api',
+    BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
 
     // Endpoints específicos
     ENDPOINTS: {
@@ -20,18 +20,14 @@ export const API_CONFIG = {
         DELAY_MS: 1000,
 
         // Logs de desarrollo
-        ENABLE_API_LOGS: true,
-
-        // Modo mock (usar datos simulados)
-        USE_MOCK_DATA: process.env.NODE_ENV === 'development'
+        ENABLE_API_LOGS: true
     },
 
     // Configuración de producción
     PROD: {
         SIMULATE_NETWORK_DELAY: false,
         DELAY_MS: 0,
-        ENABLE_API_LOGS: false,
-        USE_MOCK_DATA: false
+        ENABLE_API_LOGS: false
     }
 };
 

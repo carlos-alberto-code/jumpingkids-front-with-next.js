@@ -3,13 +3,19 @@
  */
 
 /**
- * Obtener token de autenticación
- * TODO: Implementar según el sistema de auth utilizado
+ * Obtener token de autenticación desde la sesión guardada
  */
 export const getAuthToken = (): string | null => {
-    // Por ahora retorna null, se implementará con el sistema de auth
     if (typeof window !== 'undefined') {
-        return localStorage.getItem('authToken') || null;
+        try {
+            const sessionData = localStorage.getItem('jumpingkids-session');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                return session.token || null;
+            }
+        } catch (error) {
+            console.warn('Error al obtener token de auth:', error);
+        }
     }
     return null;
 };

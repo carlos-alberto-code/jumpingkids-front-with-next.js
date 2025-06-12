@@ -91,16 +91,6 @@ export const createExercise = async (exerciseData: CreateExerciseRequest): Promi
     }
 
     try {
-        if (config.USE_MOCK_DATA) {
-            // Modo desarrollo: usar datos simulados
-            if (config.ENABLE_API_LOGS) {
-                console.log('🔧 [DEV] Simulando creación de ejercicio:', exerciseData);
-            }
-
-            const mockExercise = createMockExercise(exerciseData);
-            return mockExercise;
-        }
-
         // Verificar conectividad antes de intentar la petición
         const isConnected = await checkConnectivity();
         if (!isConnected) {
