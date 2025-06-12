@@ -75,7 +75,7 @@ export default function LoginPage() {
                                     required
                                     fullWidth
                                     id="username"
-                                    label="Email o nombre de usuario"
+                                    label="Nombre de usuario"
                                     name="username"
                                     autoComplete="username"
                                     autoFocus

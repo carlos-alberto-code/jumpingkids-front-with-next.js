@@ -1,5 +1,5 @@
 // src/types/api.ts
-import { User, UserType, SubscriptionType } from './auth';
+import { SubscriptionType, User, UserType } from './auth';
 
 // ===== REQUEST TYPES =====
 export interface SignUpRequest {
@@ -16,7 +16,7 @@ export interface SignUpRequest {
 }
 
 export interface SignInRequest {
-  email: string;
+  username: string;
   password: string;
   rememberMe?: boolean;
 }
@@ -58,15 +58,15 @@ export const API_ENDPOINTS = {
   refreshToken: '/auth/refresh',
   verifyAccount: '/auth/verify',
   checkEmail: '/auth/check-email',
-  
+
   // User endpoints
   profile: '/user/profile',
   updateProfile: '/user/profile',
-  
+
   // Exercise endpoints
   exercises: '/exercises',
   createExercise: '/exercises',
-  
+
   // Routine endpoints
   routines: '/routines',
   createRoutine: '/routines',

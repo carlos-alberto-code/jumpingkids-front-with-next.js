@@ -1,13 +1,13 @@
 // src/services/api/authApi.ts
-import { httpClient } from './httpClient';
-import { 
-  SignUpRequest, 
-  SignUpResponse, 
-  SignInRequest, 
-  SignInResponse,
+import {
+  API_ENDPOINTS,
   ApiResponse,
-  API_ENDPOINTS 
+  SignInRequest,
+  SignInResponse,
+  SignUpRequest,
+  SignUpResponse
 } from '../../types/api';
+import { httpClient } from './httpClient';
 
 export class AuthApi {
   /**
@@ -30,7 +30,7 @@ export class AuthApi {
         confirm_password: userData.confirmPassword, // Backend usa snake_case
         user_type: userData.userType,
         subscription: userData.subscription || 'free',
-        
+
         // Campos opcionales para tutores
         ...(userData.userType === 'tutor' && {
           phone_number: userData.phoneNumber?.trim(),
@@ -68,11 +68,11 @@ export class AuthApi {
   static async signIn(credentials: SignInRequest): Promise<SignInResponse> {
     try {
       console.log('🚀 AuthApi.signIn:', {
-        email: credentials.email
+        username: credentials.username
       });
 
       const requestData = {
-        email: credentials.email.toLowerCase().trim(),
+        username: credentials.username.toLowerCase().trim(),
         password: credentials.password,
         remember_me: credentials.rememberMe || false
       };
@@ -123,7 +123,7 @@ export class AuthApi {
       const response = await httpClient.get<ApiResponse<{ exists: boolean }>>(
         `${API_ENDPOINTS.checkEmail}?email=${encodeURIComponent(email)}`
       );
-      
+
       return response.data?.exists || false;
     } catch (error) {
       console.error('❌ Error al verificar email:', error);
@@ -141,7 +141,7 @@ export class AuthApi {
     try {
       const formData = new FormData();
       formData.append('user_id', data.userId);
-      
+
       if (data.verificationPhoto) {
         formData.append('verification_photo', data.verificationPhoto);
       }

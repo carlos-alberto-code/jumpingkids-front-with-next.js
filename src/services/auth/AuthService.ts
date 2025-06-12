@@ -16,7 +16,7 @@ export class AuthService {
 
         try {
             const request: SignInRequest = {
-                email: username.trim(),
+                username: username.trim(),
                 password: password,
                 rememberMe: true
             };
