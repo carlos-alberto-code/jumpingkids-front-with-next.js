@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ExerciseService } from '../../services/exercise/ExerciseService';
+import { applyFavorites, getCachedExercises, getExercises, saveFavorites } from '../../services/exercise/ExerciseService';
 import { Exercise } from '../../types/exercise';
 import { exerciseCache, generateCacheKey } from '../../utils/cacheUtils';
 
@@ -25,16 +25,16 @@ export const useExercises = (): UseExercisesReturn => {
             let exercisesData: Exercise[];
 
             if (useCache) {
-                exercisesData = await ExerciseService.getCachedExercises();
+                exercisesData = await getCachedExercises();
             } else {
-                exercisesData = await ExerciseService.getExercises();
+                exercisesData = await getExercises();
                 // Actualizar cache manualmente si se solicita sin cache
                 const cacheKey = generateCacheKey('exercises');
                 exerciseCache.set(cacheKey, exercisesData);
             }
 
             // Aplicar favoritos guardados
-            const exercisesWithFavorites = ExerciseService.applyFavorites(exercisesData);
+            const exercisesWithFavorites = applyFavorites(exercisesData);
             setExercises(exercisesWithFavorites);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Error al cargar ejercicios';
@@ -69,7 +69,7 @@ export const useExercises = (): UseExercisesReturn => {
             const favoriteIds = updatedExercises
                 .filter(ex => ex.isFavorite)
                 .map(ex => ex.id);
-            ExerciseService.saveFavorites(favoriteIds);
+            saveFavorites(favoriteIds);
 
             return updatedExercises;
         });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExerciseService } from '../../services/exercise/ExerciseService';
+import { validateCreateExerciseData } from '../../services/exercise/ExerciseService';
 import { CreateExerciseForm, Exercise } from '../../types/exercise';
 import { AppError, safeAsync } from '../../utils/errorHandling';
 
@@ -23,8 +23,8 @@ export const useCreateExercise = (): UseCreateExerciseReturn => {
         setError(null);
 
         const [result, createError] = await safeAsync(
-            ExerciseService.createExercise(
-                ExerciseService.validateCreateExerciseData(formData)
+            createExercise(
+                validateCreateExerciseData(formData)
             ),
             'useCreateExercise.createExercise'
         );

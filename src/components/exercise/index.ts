@@ -8,7 +8,9 @@ export { MOCK_EXERCISES } from '../../constants/exerciseMocks';
 export { ExerciseProvider, useExerciseContext } from '../../context/exercise/ExerciseContext';
 export { useExerciseFilters } from '../../hooks/exercise/useExerciseFilters';
 export { useExercises } from '../../hooks/exercise/useExercises';
-export { ExerciseService } from '../../services/exercise/ExerciseService';
+export {
+    applyFavorites, createExercise, ExerciseService, getCachedExercises, getExercises, invalidateExerciseCache, loadFavorites, saveFavorites, validateCreateExerciseData, validateExercise
+} from '../../services/exercise/ExerciseService';
 export type {
     Exercise, ExerciseDetailModalProps, ExerciseFilterProps,
     ExerciseListProps,
