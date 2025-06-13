@@ -13,6 +13,7 @@ import {
   Stack
 } from '@mui/material';
 import { useRouter } from 'next/router';
+import React from 'react';
 import { useAuthContext } from '../src/context/auth/AuthContext';
 import { usePermissionCheck } from '../src/hooks/auth/useUserPermissions';
 
@@ -82,6 +83,25 @@ export default function DashboardPage() {
   const router = useRouter();
   const { session } = useAuthContext();
   const { user, isPremiumUser, canManageMultipleKids } = usePermissionCheck();
+
+  // Redireccionar según tipo de usuario
+  React.useEffect(() => {
+    if (session && user) {
+      if (user.userType === 'kid') {
+        // Los niños van a sus asignaciones
+        console.log('🧒 Usuario niño detectado, redirigiendo a asignaciones...');
+        router.push('/asignments');
+        return;
+      }
+      // Los tutores se quedan en el dashboard (esta página)
+      console.log('👨‍🏫 Usuario tutor detectado, mostrando dashboard...');
+    }
+  }, [session, user, router]);
+
+  // Si es un niño, no renderizar nada mientras redirige
+  if (session && user && user.userType === 'kid') {
+    return null;
+  }
 
   // Datos según suscripción  
   const kidsData = isPremiumUser ? MOCK_KIDS_DATA : MOCK_KIDS_DATA.slice(0, 1);

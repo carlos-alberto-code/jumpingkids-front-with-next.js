@@ -17,7 +17,7 @@ export class AuthApi {
     try {
       console.log('🚀 AuthApi.signUp:', {
         name: userData.name,
-        email: userData.email,
+        username: userData.username,  // Cambiado de email a username
         userType: userData.userType,
         subscription: userData.subscription
       });
@@ -25,7 +25,7 @@ export class AuthApi {
       // Preparar datos para el backend
       const requestData = {
         name: userData.name.trim(),
-        email: userData.email.toLowerCase().trim(),
+        username: userData.username.toLowerCase().trim(),  // Cambiado de email a username
         password: userData.password,
         confirm_password: userData.confirmPassword, // Backend usa snake_case
         user_type: userData.userType,

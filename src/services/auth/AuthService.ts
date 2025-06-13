@@ -54,7 +54,7 @@ export class AuthService {
         try {
             const request: SignUpRequest = {
                 name: userData.name.trim(),
-                email: userData.username.trim(),
+                username: userData.username.trim(),  // Cambiado de email a username
                 password: userData.password,
                 confirmPassword: userData.confirmPassword,
                 userType: userData.userType,

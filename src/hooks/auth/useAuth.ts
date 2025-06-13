@@ -4,6 +4,7 @@ import {
     AuthState,
     SignUpData
 } from '../../types/auth';
+import { parseHttpError } from '../../utils/errorHandling';
 
 /**
  * Hook principal para manejo de autenticación
@@ -72,14 +73,14 @@ export const useAuth = () => {
             });
         } catch (error) {
             console.error('❌ Error en login:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            const appError = parseHttpError(error);
 
             setAuthState(prev => ({
                 ...prev,
                 loading: false,
-                error: errorMessage
+                error: appError.message
             }));
-            throw error;
+            throw appError;
         }
     }, []);
 
@@ -101,14 +102,14 @@ export const useAuth = () => {
             });
         } catch (error) {
             console.error('❌ Error en registro:', error);
-            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            const appError = parseHttpError(error);
 
             setAuthState(prev => ({
                 ...prev,
                 loading: false,
-                error: errorMessage
+                error: appError.message
             }));
-            throw error;
+            throw appError;
         }
     }, []);
 

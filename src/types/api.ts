@@ -4,7 +4,7 @@ import { SubscriptionType, User, UserType } from './auth';
 // ===== REQUEST TYPES =====
 export interface SignUpRequest {
   name: string;
-  email: string;
+  username: string;  // Cambiado de email a username
   password: string;
   confirmPassword: string;
   userType: UserType;

@@ -46,13 +46,14 @@ export interface LoginCredentials {
 
 /**
  * Datos para registro de usuario
+ * El userType se asume como 'tutor' implícitamente
  */
 export interface SignUpData {
     name: string;
     username: string;
     password: string;
     confirmPassword: string;
-    userType: UserType;
+    userType: UserType; // Siempre será 'tutor' en el registro
     subscription?: SubscriptionType;
 }
 
