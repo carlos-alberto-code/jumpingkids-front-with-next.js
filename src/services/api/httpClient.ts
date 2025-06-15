@@ -1,5 +1,5 @@
 // src/services/api/httpClient.ts
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios from 'axios';
 
 interface ApiConfig {
   baseURL: string;
@@ -7,48 +7,57 @@ interface ApiConfig {
   headers: Record<string, string>;
 }
 
+// Create axios instance without explicit typing
+const createHttpClient = (config: ApiConfig) => {
+  return axios.create({
+    baseURL: config.baseURL,
+    timeout: config.timeout,
+    headers: config.headers,
+  });
+};
+
 export class HttpClient {
-  private client: AxiosInstance;
+  private instance: ReturnType<typeof axios.create>;
   private authToken: string | null = null;
 
   constructor(config: ApiConfig) {
-    this.client = axios.create(config);
+    this.instance = createHttpClient(config);
     this.setupInterceptors();
   }
 
   private setupInterceptors() {
     // Request interceptor - agregar auth token automáticamente
-    this.client.interceptors.request.use(
-      (config) => {
-        if (this.authToken) {
+    this.instance.interceptors.request.use(
+      (config: any) => {
+        if (this.authToken && config.headers) {
           config.headers.Authorization = `Bearer ${this.authToken}`;
         }
-        
+
         console.log('🚀 API Request:', {
           method: config.method?.toUpperCase(),
           url: config.url,
           data: config.data ? { ...config.data, password: '[HIDDEN]' } : undefined
         });
-        
+
         return config;
       },
-      (error) => {
+      (error: any) => {
         console.error('❌ Request Error:', error);
         return Promise.reject(error);
       }
     );
 
     // Response interceptor - manejo global de errores
-    this.client.interceptors.response.use(
-      (response: AxiosResponse) => {
+    this.instance.interceptors.response.use(
+      (response: any) => {
         console.log('✅ API Response:', {
           status: response.status,
           url: response.config.url,
-          success: response.data?.success
+          success: response.data?.success || true
         });
         return response;
       },
-      (error) => {
+      (error: any) => {
         console.error('❌ API Error:', {
           status: error.response?.status,
           url: error.config?.url,
@@ -74,7 +83,7 @@ export class HttpClient {
     if (error.response?.data?.message) {
       return new Error(error.response.data.message);
     }
-    
+
     // Errores de validación
     if (error.response?.data?.errors) {
       const errors = error.response.data.errors;
@@ -86,28 +95,28 @@ export class HttpClient {
       }
       return new Error('Datos inválidos');
     }
-    
+
     // Errores HTTP estándar
     if (error.response?.status) {
       const statusMessages: Record<number, string> = {
         400: 'Datos inválidos',
         401: 'No autorizado',
-        403: 'Acceso denegado', 
+        403: 'Acceso denegado',
         404: 'Recurso no encontrado',
         409: 'El email ya está registrado',
         422: 'Datos de validación incorrectos',
         500: 'Error interno del servidor',
         503: 'Servicio no disponible'
       };
-      
+
       return new Error(statusMessages[error.response.status] || 'Error del servidor');
     }
-    
+
     // Error de conexión
     if (error.code === 'ECONNREFUSED' || error.code === 'NETWORK_ERROR' || !error.response) {
       return new Error('Error de conexión - verifica que el servidor esté ejecutándose');
     }
-    
+
     return new Error(error.message || 'Error desconocido');
   }
 
@@ -120,24 +129,24 @@ export class HttpClient {
     this.authToken = null;
   }
 
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.get(url, config);
-    return response.data;
+  async get<T>(url: string, config?: Record<string, any>): Promise<T> {
+    const response = await this.instance.get(url, config);
+    return response.data as T;
   }
 
-  async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.post(url, data, config);
-    return response.data;
+  async post<T>(url: string, data?: any, config?: Record<string, any>): Promise<T> {
+    const response = await this.instance.post(url, data, config);
+    return response.data as T;
   }
 
-  async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.put(url, data, config);
-    return response.data;
+  async put<T>(url: string, data?: any, config?: Record<string, any>): Promise<T> {
+    const response = await this.instance.put(url, data, config);
+    return response.data as T;
   }
 
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    const response = await this.client.delete(url, config);
-    return response.data;
+  async delete<T>(url: string, config?: Record<string, any>): Promise<T> {
+    const response = await this.instance.delete(url, config);
+    return response.data as T;
   }
 }
 

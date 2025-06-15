@@ -4,7 +4,7 @@
 
 export const API_CONFIG = {
     // URL base de la API
-    BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api',
+    BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'https://ubiquitous-space-adventure-gvx9qjr5494fppp6-8000.app.github.dev',
 
     // Endpoints específicos
     ENDPOINTS: {
