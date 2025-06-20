@@ -22,6 +22,7 @@ import {
     useTheme
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { getMockAssignmentsForKid } from '../../src/constants/progressMocks';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { usePermissionCheck } from '../../src/hooks/auth/useUserPermissions';
 import { getAssignments } from '../../src/services/routine/RoutineService';
@@ -72,6 +73,17 @@ export default function AssignmentsPage() {
             try {
                 console.log('📅 Cargando asignaciones para kidId:', session.user.id);
 
+                // 🎭 Usar datos mock si está configurado
+                if (process.env.NEXT_PUBLIC_USE_MOCK === 'true') {
+                    console.log('🎭 Usando datos mock para asignaciones');
+                    const mockAssignments = getMockAssignmentsForKid(session.user.id);
+                    console.log('✅ Asignaciones mock cargadas:', mockAssignments);
+                    setAssignments(mockAssignments);
+                    setLoading(false);
+                    return;
+                }
+
+                // 🌐 Usar API real
                 const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
                 const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0);
 

@@ -1,19 +1,39 @@
 import { SignInRequest, SignUpRequest } from '../../types/api';
 import { SignUpData, User, UserSession } from '../../types/auth';
 import { AuthApi } from '../api/authApi';
+import { MockAuthService } from './MockAuthService';
 
+/**
+ * 🎯 SERVICIO DE AUTENTICACIÓN PRINCIPAL
+ * Decide entre usar API real o mocks según configuración
+ */
 export class AuthService {
     private static readonly STORAGE_KEY = 'jumpingkids-session';
 
     /**
-     * Iniciar sesión usando API real
+     * ✅ Verificar si debe usar mocks
+     */
+    private static shouldUseMock(): boolean {
+        return process.env.NEXT_PUBLIC_USE_MOCK === 'true';
+    }
+
+    /**
+     * Iniciar sesión (API real o mock)
      */
     static async signIn(username: string, password: string): Promise<UserSession> {
         console.log('🔐 AuthService.signIn:', {
             username: username,
+            useMock: this.shouldUseMock(),
             apiUrl: process.env.NEXT_PUBLIC_API_URL
         });
 
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            console.log('🎭 Usando MockAuthService para login');
+            return await MockAuthService.signIn(username, password);
+        }
+
+        // 🌐 Usar API real
         try {
             const request: SignInRequest = {
                 username: username.trim(),
@@ -42,15 +62,23 @@ export class AuthService {
     }
 
     /**
-     * Registrar usuario usando API real
+     * Registrar usuario (API real o mock)
      */
     static async signUp(userData: SignUpData): Promise<UserSession> {
         console.log('📝 AuthService.signUp:', {
             email: userData.username,
             userType: userData.userType,
+            useMock: this.shouldUseMock(),
             apiUrl: process.env.NEXT_PUBLIC_API_URL
         });
 
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            console.log('🎭 Usando MockAuthService para registro');
+            return await MockAuthService.signUp(userData);
+        }
+
+        // 🌐 Usar API real
         try {
             const request: SignUpRequest = {
                 name: userData.name.trim(),
@@ -82,11 +110,19 @@ export class AuthService {
     }
 
     /**
-     * Cerrar sesión usando API real
+     * Cerrar sesión (API real o mock)
      */
     static async signOut(): Promise<void> {
-        console.log('🚪 AuthService.signOut');
+        console.log('🚪 AuthService.signOut:', { useMock: this.shouldUseMock() });
 
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            console.log('🎭 Usando MockAuthService para logout');
+            await MockAuthService.signOut();
+            return;
+        }
+
+        // 🌐 Usar API real
         try {
             await AuthApi.signOut();
         } catch (error) {
@@ -98,8 +134,14 @@ export class AuthService {
         console.log('✅ Logout completado');
     }
 
-    // ===== MÉTODOS DE SESIÓN (sin cambios) =====
+    // ===== MÉTODOS DE SESIÓN =====
     static getCurrentSession(): UserSession | null {
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            return MockAuthService.getCurrentSession();
+        }
+
+        // 🌐 Usar almacenamiento real
         try {
             if (typeof window === 'undefined') return null;
 
@@ -123,6 +165,13 @@ export class AuthService {
     }
 
     static saveSession(session: UserSession): void {
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            MockAuthService.saveSession(session);
+            return;
+        }
+
+        // 🌐 Usar almacenamiento real
         try {
             if (typeof window === 'undefined') return;
             const sessionData = JSON.stringify(session);
@@ -133,9 +182,11 @@ export class AuthService {
     }
 
     static clearSession(): void {
+        // 🎭 Limpiar ambos almacenamientos para estar seguros
         try {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem(this.STORAGE_KEY);
+                localStorage.removeItem('jumpingkids-session-mock'); // Limpiar mock también
             }
         } catch (error) {
             console.error('❌ Error al limpiar sesión:', error);
@@ -154,6 +205,12 @@ export class AuthService {
 
     // ===== NUEVOS MÉTODOS PARA API =====
     static async checkEmailExists(email: string): Promise<boolean> {
+        // 🎭 Usar mock si está configurado
+        if (this.shouldUseMock()) {
+            return await MockAuthService.checkEmailExists(email);
+        }
+
+        // 🌐 Usar API real
         try {
             return await AuthApi.checkEmailExists(email);
         } catch (error) {

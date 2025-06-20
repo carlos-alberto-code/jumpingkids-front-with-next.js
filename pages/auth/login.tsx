@@ -14,6 +14,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
+import { DevModeIndicator, QuickLoginPanel } from '../../src/components/common/DevModeIndicator';
 import { useAuthContext } from '../../src/context/auth/AuthContext';
 import { jumpingkidsTheme } from '../../src/theme/theme';
 
@@ -36,6 +37,16 @@ export default function LoginPage() {
         }
     };
 
+    const handleQuickLogin = async (email: string, password: string) => {
+        try {
+            setFormData({ username: email, password });
+            await signIn(email, password);
+            router.push('/');
+        } catch {
+            // Error será manejado por el contexto
+        }
+    };
+
     return (
         <ThemeProvider theme={jumpingkidsTheme}>
             <CssBaseline />
@@ -47,6 +58,9 @@ export default function LoginPage() {
                     flexDirection: 'column',
                     alignItems: 'center',
                 }}>
+                    {/* Indicador de modo de desarrollo */}
+                    <DevModeIndicator />
+
                     {/* Logo/Branding */}
                     <Avatar sx={{
                         m: 1,
@@ -121,6 +135,9 @@ export default function LoginPage() {
                             </Box>
                         </CardContent>
                     </Card>
+
+                    {/* Panel de login rápido para desarrollo */}
+                    <QuickLoginPanel onLogin={handleQuickLogin} />
                 </Box>
             </Container>
         </ThemeProvider>

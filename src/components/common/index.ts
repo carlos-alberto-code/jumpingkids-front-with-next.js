@@ -2,6 +2,7 @@ export { default as ActionButton } from './ActionButton';
 export { AgeSelector } from './AgeSelector';
 export { AvatarPicker } from './AvatarPicker';
 export { default as AvatarWithBadge } from './AvatarWithBadge';
+export { default as DevModeIndicator, QuickLoginPanel } from './DevModeIndicator';
 export { default as DifficultyChip } from './DifficultyChip';
 export { default as EmptyState } from './EmptyState';
 export { default as FilterPanel } from './FilterPanel';
